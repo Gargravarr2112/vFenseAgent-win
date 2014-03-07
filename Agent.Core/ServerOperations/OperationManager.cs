@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
@@ -228,14 +229,21 @@ namespace Agent.Core.ServerOperations
 
         public void ResumeOperations()
         {
-            var operation = new SofOperation {Type = OperationValue.ResumeOp};
-            var data = operation.ToJson();
-            var json = JObject.Parse(data);
+            try
+            {
+                var operation = new SofOperation {Type = OperationValue.ResumeOp};
+                var data = operation.ToJson();
+                var json = JObject.Parse(data);
                 json["plugin"] = "rv";
                 json["type"] = OperationValue.ResumeOp;
-            var stringJson = json.ToString();
-                
-            ProcessOperation(stringJson);
+                var stringJson = json.ToString();
+
+                ProcessOperation(stringJson);
+            }
+            catch
+            {
+                Logger.Log("Error while ResumingOperations", LogLevel.Error);
+            }
         }
 
         public void InitialDataSender()
@@ -370,13 +378,20 @@ namespace Agent.Core.ServerOperations
         {
             while (true)
             {
-                var operation = _queue.Get();
-                if (operation != null)
+                try
                 {
-                    ProcessOperation(operation);
-                    _queue.Done();
+                    var operation = _queue.Get();
+                    if (operation != null)
+                    {
+                        ProcessOperation(operation);
+                        _queue.Done();
+                    }
+                    Thread.Sleep(5000);
                 }
-                Thread.Sleep(5000);
+                catch
+                {
+                    Logger.Log("Error with QueueCheckerLoop", LogLevel.Error);
+                }
             }
         }
 
@@ -387,34 +402,43 @@ namespace Agent.Core.ServerOperations
 
             while (true)
             {
-                Thread.Sleep(600000); //1 hour
-                //TODO: Implement checking of local operations folder to see if some operations are not being handled with.
-               
-                var tempOperations = Operations.LoadOpDirectory();
-                if (tempOperations != null && tempOperations.Any())
+                try
                 {
-                    Logger.Log("Checking operations folder for remaining operations.");
-                    Logger.Log("{0} updates left for processing.", LogLevel.Info, tempOperations.Count);
+                    Thread.Sleep(7200000); //2 hour
+                    //TODO: Implement checking of local operations folder to see if some operations are not being handled with.
 
-                    foreach (var tempOperation in tempOperations)
+                    var tempOperations = Operations.LoadOpDirectory();
+                    if (tempOperations != null && tempOperations.Any())
                     {
-                        string creationFileTime = Operations.GetCreationTime(tempOperation);
-                        var dateTimeFileTime = DateTime.Parse(creationFileTime);
+                        Logger.Log("Checking operations folder for remaining operations.");
+                        Logger.Log("{0} updates left for processing.", LogLevel.Info, tempOperations.Count);
 
-                        Logger.Log("{0} with id of {1} was created at {2}", LogLevel.Info,tempOperation.filedata_app_name, tempOperation.filedata_app_id, dateTimeFileTime.TimeOfDay.ToString());
-
-                        var currentTime = DateTime.Now;
-                        var diff = currentTime.TimeOfDay - dateTimeFileTime.TimeOfDay;
-
-                        if (diff.Minutes >= minutesToWait)
+                        foreach (var tempOperation in tempOperations)
                         {
-                            var rawOperation = Operations.GetRawOperation(tempOperation);
-                            if (!String.IsNullOrEmpty(rawOperation))
-                                AddToOperationQueue(rawOperation);
+                            string creationFileTime = Operations.GetCreationTime(tempOperation);
+                            var dateTimeFileTime = DateTime.Parse(creationFileTime);
+
+                            Logger.Log("{0} with id of {1} was created at {2}", LogLevel.Info,
+                                tempOperation.filedata_app_name, tempOperation.filedata_app_id,
+                                dateTimeFileTime.TimeOfDay.ToString());
+
+                            var currentTime = DateTime.Now;
+                            var diff = currentTime.TimeOfDay - dateTimeFileTime.TimeOfDay;
+
+                            if (diff.Minutes >= minutesToWait)
+                            {
+                                var rawOperation = Operations.GetRawOperation(tempOperation);
+                                if (!String.IsNullOrEmpty(rawOperation))
+                                    AddToOperationQueue(rawOperation);
+                            }
+
                         }
-                            
+
                     }
-                    
+                }
+                catch
+                {
+                    Logger.Log("Error with OperationsQueueChekcerLoop", LogLevel.Error);
                 }
             }
         }
