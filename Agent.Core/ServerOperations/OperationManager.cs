@@ -242,23 +242,30 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                Logger.Log("Error while ResumingOperations", LogLevel.Error);
+                Logger.Log("Error while \"ResumingOperations\".", LogLevel.Error);
             }
         }
 
         public void InitialDataSender()
         {
             var operation = new SofOperation();
-            
-            if (!(Settings.AgentId.Equals(String.Empty)))
+
+            try
             {
-                operation.Api = ApiCalls.CoreStartUp();
-                operation.Type = OperationValue.Startup;
+                if (!(Settings.AgentId.Equals(String.Empty)))
+                {
+                    operation.Api = ApiCalls.CoreStartUp();
+                    operation.Type = OperationValue.Startup;
+                }
+                else
+                {
+                    operation.Type = OperationValue.NewAgent;
+                    operation.Api = ApiCalls.CoreNewAgent;
+                }
             }
-            else
+            catch
             {
-                operation.Type = OperationValue.NewAgent;
-                operation.Api = ApiCalls.CoreNewAgent;
+                Logger.Log("Error while gathering Inititial Data for \"InititalDataSender\".", LogLevel.Error);
             }
 
             ProcessOperation(operation.ToJson());
