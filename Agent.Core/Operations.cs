@@ -327,7 +327,7 @@ namespace Agent.Core
         private static void Serialize(string operationJson)
         {
             var parsed = JObject.Parse(operationJson);
-            var deserialized = JsonConvert.DeserializeObject<UninstallApplication>(parsed.ToString());
+            var deserialized = JsonConvert.DeserializeObject<IncomingData>(parsed.ToString());
             var directoryname = OpDirectory;
 
             foreach (var data in deserialized.file_data)
@@ -357,6 +357,9 @@ namespace Agent.Core
                 opdata.reboot_required = false.ToString().ToLower();
                 opdata.success = false.ToString().ToLower();
                 opdata.operation_status = OperationStatus.Pending;
+                //ttl
+                opdata.server_queue_ttl = (String.IsNullOrEmpty(deserialized.server_queue_ttl)) ? String.Empty : deserialized.server_queue_ttl;
+                opdata.agent_queue_ttl = (String.IsNullOrEmpty(deserialized.agent_queue_ttl)) ? String.Empty : deserialized.agent_queue_ttl;
 
                 foreach (var uridata in data.app_uris)
                 {
@@ -371,18 +374,20 @@ namespace Agent.Core
                     appUri.file_hash = (String.IsNullOrEmpty(uridata.file_hash)) ? String.Empty : uridata.file_hash;
                     opdata.filedata_app_uris.Add(appUri);
                     }
+                
 
                 var serialized = JsonConvert.SerializeObject(opdata);
                 File.WriteAllText(filename, serialized);
             }
         }
 
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        /// Partial class to hold data parsed from incoming operation for Windows Update Install
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        #region InstallWindowsUpdate (Incoming operation class)
-        internal partial class InstallWindowsUpdate
+        /////////////////////////////////////////////////////////////////
+        /// Partial class to hold data parsed from incoming operation
+        /////////////////////////////////////////////////////////////////
+        #region Incoming data (Incoming operation class)
+        internal partial class IncomingData
         {
+            
             internal class AppUri
             {
                 public string file_name;
@@ -393,46 +398,7 @@ namespace Agent.Core
             }
         }
 
-        internal partial class InstallWindowsUpdate
-        {
-            internal class FileData
-            {
-                public string app_id;
-                public string app_name;
-                public List<AppUri> app_uris = new List<AppUri>();
-            }
-        }
-
-        internal partial class InstallWindowsUpdate
-        {
-                public string cpu_throttle;
-                public string agent_id;
-                public string plugin;
-                public List<FileData> file_data = new List<FileData>();
-                public string operation_id;
-                public string operation;
-                public int net_throttle;
-                public string restart;
-        }
-        #endregion
-        
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        /// Partial class to hold data parsed from incoming operation for Custom App Install
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        #region InstallCustom (Incoming operation class)
-        internal partial class InstallCustom
-        {
-            internal class AppUri
-            {
-                public string file_name;
-                public string file_uri;
-                public List<string> file_uris = new List<string>(); 
-                public int file_size;
-                public string file_hash;
-            }
-        }
-
-        internal partial class InstallCustom
+        internal partial class IncomingData
         {
             internal class FileData
             {
@@ -443,7 +409,7 @@ namespace Agent.Core
             }
         }
 
-        internal partial class InstallCustom
+        internal partial class IncomingData
         {
             public string cpu_throttle;
             public string agent_id;
@@ -453,126 +419,8 @@ namespace Agent.Core
             public string operation;
             public int net_throttle;
             public string restart;
-        }
-        #endregion
-
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        /// Partial class to hold data parsed from incoming operation for Custom App Install
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        #region InstallSupported (Incoming operation class)
-        internal partial class InstallSupported
-        {
-            internal class AppUri
-            {
-                public string file_name;
-                public string file_uri;
-                public List<string> file_uris = new List<string>(); 
-                public int file_size;
-                public string file_hash;
-            }
-        }
-
-        internal partial class InstallSupported
-        {
-            internal class FileData
-            {
-                public string app_id;
-                public string app_name;
-                public string cli_options;
-                public List<AppUri> app_uris = new List<AppUri>();
-            }
-        }
-
-        internal partial class InstallSupported
-        {
-            public string cpu_throttle;
-            public string agent_id;
-            public string plugin;
-            public List<FileData> file_data = new List<FileData>();
-            public string operation_id;
-            public string operation;
-            public int net_throttle;
-            public string restart;
-        }
-        #endregion
-
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        /// Partial class to hold data parsed from incoming operation for Agent Update Install
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        #region InstallAgentUpdate (Incoming operation class)
-        internal partial class InstallAgentUpdate
-        {
-            internal class AppUri
-            {
-                public string file_name;
-                public string file_uri;
-                public List<string> file_uris = new List<string>(); 
-                public int file_size;
-                public string file_hash;
-            }
-        }
-
-        internal partial class InstallAgentUpdate
-        {
-            internal class FileData
-            {
-                public string app_id;
-                public string app_name;
-                public string cli_options;
-                public List<AppUri> app_uris = new List<AppUri>();
-            }
-        }
-
-        internal partial class InstallAgentUpdate
-        {
-            public string cpu_throttle;
-            public string agent_id;
-            public string plugin;
-            public List<FileData> file_data = new List<FileData>();
-            public string operation_id;
-            public string operation;
-            public int net_throttle;
-            public string restart;
-        }
-        #endregion
-
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        /// Partial class to hold data parsed from incoming operation for Uninstalling an App
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        #region UninstallApplication (Incoming operation class)
-        internal partial class UninstallApplication
-        {
-            internal class AppUri
-            {
-                public string file_name;
-                public string file_uri;
-                public List<string> file_uris = new List<string>(); 
-                public int file_size;
-                public string file_hash;
-            }
-        }
-
-        internal partial class UninstallApplication
-        {
-            internal class FileData
-            {
-                public string app_id;
-                public string app_name;
-                public string cli_options;
-                public List<AppUri> app_uris = new List<AppUri>();
-            }
-        }
-
-        internal partial class UninstallApplication
-        {
-            public string cpu_throttle;
-            public string agent_id;
-            public string plugin;
-            public List<FileData> file_data = new List<FileData>();
-            public string operation_id;
-            public string operation;
-            public int net_throttle;
-            public string restart;
+            public string server_queue_ttl;
+            public string agent_queue_ttl;
         }
         #endregion
 
@@ -615,6 +463,10 @@ namespace Agent.Core
             public string filedata_app_name;
             public string filedata_app_clioptions;
             public List<AppUri> filedata_app_uris = new List<AppUri>();
+
+            //TTL 
+            public string server_queue_ttl;
+            public string agent_queue_ttl;
         }
         #endregion
 

@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agent.Console", "Agent.Cons
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agent.RV.Service", "Agent.RV.Service\Agent.RV.Service.csproj", "{1E74D9CD-F00B-4D0B-8A95-FC2A6FAA1398}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallerActions", "InstallerActions\CustomAction\InstallerActions.csproj", "{AF86D8A8-423D-43DA-84DB-C38675DE2258}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agent.RV", "Agent.RV\Agent.RV.csproj", "{CAD295BF-F689-4E70-B585-052FFDCDFDC9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agent.RV.WatcherService", "Agent.RV.WatcherService\Agent.RV.WatcherService.csproj", "{90A8C183-D7BD-41C0-B570-8ED329598F12}"
@@ -88,20 +86,6 @@ Global
 		{1E74D9CD-F00B-4D0B-8A95-FC2A6FAA1398}.Release|x64.ActiveCfg = Release|x86
 		{1E74D9CD-F00B-4D0B-8A95-FC2A6FAA1398}.Release|x86.ActiveCfg = Release|x86
 		{1E74D9CD-F00B-4D0B-8A95-FC2A6FAA1398}.Release|x86.Build.0 = Release|x86
-		{AF86D8A8-423D-43DA-84DB-C38675DE2258}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{AF86D8A8-423D-43DA-84DB-C38675DE2258}.Debug|Any CPU.Build.0 = Debug|x86
-		{AF86D8A8-423D-43DA-84DB-C38675DE2258}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{AF86D8A8-423D-43DA-84DB-C38675DE2258}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{AF86D8A8-423D-43DA-84DB-C38675DE2258}.Debug|x64.ActiveCfg = Debug|x86
-		{AF86D8A8-423D-43DA-84DB-C38675DE2258}.Debug|x86.ActiveCfg = Debug|x86
-		{AF86D8A8-423D-43DA-84DB-C38675DE2258}.Debug|x86.Build.0 = Debug|x86
-		{AF86D8A8-423D-43DA-84DB-C38675DE2258}.Release|Any CPU.ActiveCfg = Release|x86
-		{AF86D8A8-423D-43DA-84DB-C38675DE2258}.Release|Any CPU.Build.0 = Release|x86
-		{AF86D8A8-423D-43DA-84DB-C38675DE2258}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{AF86D8A8-423D-43DA-84DB-C38675DE2258}.Release|Mixed Platforms.Build.0 = Release|x86
-		{AF86D8A8-423D-43DA-84DB-C38675DE2258}.Release|x64.ActiveCfg = Release|x86
-		{AF86D8A8-423D-43DA-84DB-C38675DE2258}.Release|x86.ActiveCfg = Release|x86
-		{AF86D8A8-423D-43DA-84DB-C38675DE2258}.Release|x86.Build.0 = Release|x86
 		{CAD295BF-F689-4E70-B585-052FFDCDFDC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CAD295BF-F689-4E70-B585-052FFDCDFDC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAD295BF-F689-4E70-B585-052FFDCDFDC9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
