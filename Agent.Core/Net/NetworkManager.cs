@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.AccessControl;
+using System.Security.Permissions;
 using System.Timers;
 using System.Net;
 using Agent.Core.ServerOperations;
@@ -19,9 +20,12 @@ namespace Agent.Core.Net
         private static RestRequest _request;
         private static string _user = string.Empty;
         private static string _pass = string.Empty;
+        public static int CheckIntimer = 60000;
 
         public static void Initialize(string address, int secondsToCheckin = 60000)
         {
+            //check in timer change
+            secondsToCheckin.Equals(CheckIntimer);
             //DISABLE THIS WHEN SSL IS WORKING ON SERVER.
             ServicePointManager.ServerCertificateValidationCallback =
                 delegate { return true; };
