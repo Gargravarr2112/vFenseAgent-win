@@ -10,7 +10,7 @@
 =========================================================
 0.107.86
 =========================================================
-	Enchancements
+	Enhancements
 		-Enable Optimize Code
 	Misc
 		-Removed unwanted code
@@ -25,7 +25,7 @@ Alpha        ___
 =========================================================
 	Bug Fixes
 		-Updater Fail 
-	Enchancements
+	Enhancements
 		-New updater updates RA
 		-New updater updates all files
 
