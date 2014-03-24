@@ -55,7 +55,7 @@ namespace Agent.Monitoring
             json["operation_id"] = rawMonitorOperation.Id;
             json["data"] = MonitorData.GetRawMonitorData();
             json["timezone"] = MonitorData.SysTimeZone();
-            json["services"] = MonitorData.Services();
+            //json["services"] = MonitorData.Services();
 
             rawMonitorOperation.Api = ApiCalls.MonData();
             rawMonitorOperation.Type = MonOperationValue.CheckIn;
