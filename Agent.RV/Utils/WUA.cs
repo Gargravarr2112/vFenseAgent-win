@@ -7,6 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 using Agent.Core.Utils;
 using Microsoft.Deployment.Compression.Cab;
+using WUApiLib;
 
 namespace Agent.RV.Utils
 {
