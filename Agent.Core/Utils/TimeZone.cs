@@ -10,12 +10,16 @@ namespace Agent.Core.Utils
             var timezone = new MyTimeZone();
 
             var thisis = System.TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
+            var time = DateTime.Now;
+            bool isDayLight = TimeZoneInfo.Local.IsDaylightSavingTime(time);
 
             int houroffset = thisis.Hours;
             int minutesoffset = thisis.Minutes;
             int timeoffset = 0;
+            if (isDayLight)
+                houroffset = houroffset - 1;
 
-            timezone.utc_offset = thisis.ToString();
+            timezone.utc_offset = houroffset.ToString() + ":" + minutesoffset.ToString() + ":00";
             //set the time for Zones with half hours in it, itll add the minutes to the hours
             //exp: 5:30 = 35, 30 minutes plus 5 <-- hours 
             if (minutesoffset != 0)

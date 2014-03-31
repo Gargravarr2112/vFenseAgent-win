@@ -63,8 +63,7 @@ namespace Agent.RV
             try
             {
                 var sysTimeZone = GetTimeZone.GetMyTimeZone();
-                Logger.Log("Current time zone {0}, utc off set {1}.", LogLevel.Info, sysTimeZone.time_zone,
-                    sysTimeZone.utc_offset);
+                Logger.Log("Current time zone {0}, utc off set {1}.", LogLevel.Info, sysTimeZone.time_zone, sysTimeZone.utc_offset);
             }
             catch
             {
