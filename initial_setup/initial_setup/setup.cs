@@ -154,10 +154,11 @@ namespace initial_setup
 
         public static void MoveFiles()
         {
+            var binDir = Path.Combine(defaultPath, "bin");
             var installPath = Path.Combine(defaultPath, "core");
             var pluginsDir = Path.Combine(defaultPath, "plugins");
-            var opensshDir = Path.Combine(defaultPath, "openssh");
-            var vncDir = Path.Combine(defaultPath, "vnc");
+            var opensshDir = Path.Combine(binDir, "openssh");
+            var vncDir = Path.Combine(binDir, "vnc");
             var etcDir = Path.Combine(defaultPath, "etc");
             var content = Path.Combine(defaultPath, "content");
 
@@ -413,13 +414,13 @@ namespace initial_setup
                         break;
                     case "mkpasswd.exe":
                         Data.Logger(filename);
-                        if (!Tools.CopyFile(file, Path.Combine(opensshDir, "mkpassed.exe")))
+                        if (!Tools.CopyFile(file, Path.Combine(opensshDir, "mkpasswd.exe")))
                             throw new Exception("Unable to copy Microsoft.Deployment.Compression.Cab.dll, access denied by the OS.");
                         Data.Logger("Copied to: " + opensshDir);
                         break;
                     case "quietcmd.bat":
                         Data.Logger(filename);
-                        if (!Tools.CopyFile(file, Path.Combine(opensshDir, "quitecmd.bat")))
+                        if (!Tools.CopyFile(file, Path.Combine(opensshDir, "quietcmd.bat")))
                             throw new Exception("Unable to copy Microsoft.Deployment.Compression.Cab.dll, access denied by the OS.");
                         Data.Logger("Copied to: " + opensshDir);
                         break;
