@@ -60,6 +60,7 @@ namespace Agent.RV
             Logger.Log("WSUS enabled? {0}", LogLevel.Info, WSUS.IsWSUSEnabled());
             Logger.Log("WSUS address? {0}", LogLevel.Info, WSUS.GetServerWSUS);
             Logger.Log("Automatic updates Enabled? {0}", LogLevel.Info, WSUS.IsAutomaticUpdatesEnabled());
+            Logger.Log("Epoch Time: {0}", LogLevel.Info, Time.EpochTime().ToString());
             try
             {
                 var sysTimeZone = Time.GetMyTimeZone();
