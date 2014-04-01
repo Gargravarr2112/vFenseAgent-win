@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using System;
 using System.CodeDom;
 using System.IO;
 using System.Net;
@@ -40,7 +38,7 @@ namespace Agent.RV.Utils
 
                             localStream.Write(buffer, 0, bytesRead);
                             bytesProcessed += bytesRead;
-                            Thread.Sleep(10);
+                            Thread.Sleep(1000);
                         } while (bytesRead > 0);
                     }
                 }

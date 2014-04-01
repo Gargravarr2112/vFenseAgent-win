@@ -97,7 +97,16 @@ namespace Agent.RV
                                 if (downloaded) break;
 
                                 Logger.Log("Attempting to download {1} from {0} with file size of {2}.", LogLevel.Info, relayserver, file.FileName, file.FileSize);
-                                client.DownloadFile(uriSingle, filepath);
+
+                                byte NetThrottle = byte.Parse(update.net_throttle);
+                                if (NetThrottle > 0 || NetThrottle == null)
+                                {
+                                    Agent.RV.Utils.NetworkThrottle.DownloadThrottle(filepath, uriSingle, file.FileName, NetThrottle);
+                                }
+                                else
+                                {
+                                    client.DownloadFile(uriSingle, filepath);
+                                }
 
                                 if (File.Exists(filepath))
                                 {
