@@ -62,7 +62,7 @@ namespace Agent.RV
             Logger.Log("Automatic updates Enabled? {0}", LogLevel.Info, WSUS.IsAutomaticUpdatesEnabled());
             try
             {
-                var sysTimeZone = GetTimeZone.GetMyTimeZone();
+                var sysTimeZone = Time.GetMyTimeZone();
                 Logger.Log("Current time zone {0}, utc off set {1}.", LogLevel.Info, sysTimeZone.time_zone, sysTimeZone.utc_offset);
             }
             catch

@@ -111,7 +111,7 @@
     <Compile Include="ServerOperations\OperationManager.cs" />
     <Compile Include="Utils\CmdExitCode.cs" />
     <Compile Include="Utils\DisableUpdaters.cs" />
-    <Compile Include="Utils\TimeZone.cs" />
+    <Compile Include="Utils\Time.cs" />
     <Compile Include="Utils\WindowsFirewall.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\RegistryReader.cs" />

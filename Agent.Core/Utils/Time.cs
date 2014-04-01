@@ -2,7 +2,7 @@
 
 namespace Agent.Core.Utils
 {
-    public static class GetTimeZone
+    public static class Time
     {
 
         public static MyTimeZone GetMyTimeZone()
@@ -27,7 +27,7 @@ namespace Agent.Core.Utils
             else
                 timeoffset = houroffset;
             string timeZone = "";
-
+            #region switch case to get name of the timezone
             switch (timeoffset)
             {
                 case (0):
@@ -136,10 +136,13 @@ namespace Agent.Core.Utils
                     timeZone = "Unable to get Time Zone";
                     break;
             }
+            #endregion
             timezone.time_zone = timeZone;
 
             return timezone;
         }
+
+
 
         public class MyTimeZone
         {
