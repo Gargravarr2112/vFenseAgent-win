@@ -142,7 +142,13 @@ namespace Agent.Core.Utils
             return timezone;
         }
 
+        public static int EpochTime()
+        {
+            TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+            int epoch = (int)t.TotalSeconds;
 
+            return epoch;
+        }
 
         public class MyTimeZone
         {
