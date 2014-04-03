@@ -24,8 +24,6 @@ namespace Agent.Core.Net
 
         public static void Initialize(string address, int secondsToCheckin = 60000)
         {
-            //check in timer change
-            secondsToCheckin.Equals(CheckIntimer);
             //DISABLE THIS WHEN SSL IS WORKING ON SERVER.
             ServicePointManager.ServerCertificateValidationCallback =
                 delegate { return true; };
@@ -64,6 +62,18 @@ namespace Agent.Core.Net
             catch (Exception ex)
             {
                 Logger.Log("Error when attempting to checking with RV Server: {0}", LogLevel.Warning, ex.Message);
+            }
+            //checkin timer ramdon change
+            try
+            {
+                Random rnd = new Random();
+                int checkintime = rnd.Next(60000, 300000);
+                _timer.Interval = checkintime;
+                Logger.Log("new checkin timer interval set to: {0}", LogLevel.Debug, checkintime);
+            }
+            catch
+            {
+                Logger.Log("error while setting new timer for checkin time", LogLevel.Error);
             }
         }
 
