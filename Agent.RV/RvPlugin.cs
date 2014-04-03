@@ -372,87 +372,126 @@ namespace Agent.RV
 
             foreach (var update in savedOperations)
             {
-                if (operation.ListOfInstalledApps.Count > 0) operation.ListOfInstalledApps.Clear();
-                if (operation.ListOfAppsAfterInstall.Count > 0) operation.ListOfAppsAfterInstall.Clear();
+                //ttl check for Windows Update
+                int ttl = new int();
+                if (update.agent_queue_ttl != string.Empty)
+                    ttl = int.Parse(update.agent_queue_ttl);
+                else
+                    ttl = 0;
 
-                operation.ListOfInstalledApps = registry.GetRegistryInstalledApplicationNames();
-
-                Logger.Log("Preparing to Install {0}", LogLevel.Info, update.filedata_app_name);
-
-                Operations.SavedOpData updateDownloadResults = Downloader.DownloadFile(update, Downloader.UpdateDirectories.CustomAppDir);
-                Operations.UpdateStatus(updateDownloadResults, Operations.OperationStatus.Processing);
-
-                //If download fails, send back results to server and move to next package (if any)
-                if (!String.IsNullOrEmpty(updateDownloadResults.error))
+                int time = Agent.Core.Utils.Time.EpochTime();
+                if (ttl < time && ttl != 0 && !string.IsNullOrEmpty(update.agent_queue_ttl))
                 {
-                    InstallSendResults(updateDownloadResults, operation);
-                    continue;
+                    update.success = "false";
+                    update.error = "ttl expired.";
+                    Logger.Log("ttl expired.", LogLevel.Debug);
+                    RvSofOperation sOperation = new RvSofOperation(operation.RawOperation);
+                    InstallSendResults(update, sOperation);
                 }
-                Logger.Log("Download completed for {0}", LogLevel.Info, update.filedata_app_name);
-
-                Operations.SavedOpData updateInstallResults = CustomAppsManager.InstallCustomAppsOperation(updateDownloadResults);
-
-                //Get all installed application after installing..
-                operation.ListOfAppsAfterInstall = registry.GetRegistryInstalledApplicationNames();
-
-                //GET DATA FOR APPSTOADD/APPSTODELETE
-                var appListToDelete = RegistryReader.GetAppsToDelete(operation.ListOfInstalledApps, operation.ListOfAppsAfterInstall);
-                var appListToAdd    = RegistryReader.GetAppsToAdd(operation.ListOfInstalledApps, operation.ListOfAppsAfterInstall);
-
-                //APPS TO DELETE
-                #region Apps to Delete
-                if (appListToDelete != null)
+                else
                 {
-                    var temp = registry.GetAllInstalledApplicationDetails();
-                    foreach (var app in appListToDelete)
+                    if (operation.ListOfInstalledApps.Count > 0) operation.ListOfInstalledApps.Clear();
+                    if (operation.ListOfAppsAfterInstall.Count > 0) operation.ListOfAppsAfterInstall.Clear();
+
+                    operation.ListOfInstalledApps = registry.GetRegistryInstalledApplicationNames();
+
+                    Logger.Log("Preparing to Install {0}", LogLevel.Info, update.filedata_app_name);
+
+                    Operations.SavedOpData updateDownloadResults = Downloader.DownloadFile(update,
+                        Downloader.UpdateDirectories.CustomAppDir);
+                    Operations.UpdateStatus(updateDownloadResults, Operations.OperationStatus.Processing);
+
+                    //If download fails, send back results to server and move to next package (if any)
+                    if (!String.IsNullOrEmpty(updateDownloadResults.error))
                     {
-                        var appsToDelete = new RVsofResult.AppsToDelete2();
-                        var version = (from d in temp where d.Name == updateInstallResults.filedata_app_name select d.Version).FirstOrDefault();
-
-                        appsToDelete.Name       = (String.IsNullOrEmpty(app)) ? String.Empty : app;
-                        appsToDelete.Version    = (String.IsNullOrEmpty(version)) ? String.Empty : version;
-
-                        tempAppsToDelete.Add(appsToDelete);
+                        InstallSendResults(updateDownloadResults, operation);
+                        continue;
                     }
-                }
-                #endregion
+                    Logger.Log("Download completed for {0}", LogLevel.Info, update.filedata_app_name);
 
-                //APPS TO ADD 
-                #region Apps to Add
-                if (appListToAdd != null)
-                {
-                    var installedAppsDetails = registry.GetAllInstalledApplicationDetails();
+                    Operations.SavedOpData updateInstallResults =
+                        CustomAppsManager.InstallCustomAppsOperation(updateDownloadResults);
 
-                    foreach (var app in appListToAdd)
+                    //Get all installed application after installing..
+                    operation.ListOfAppsAfterInstall = registry.GetRegistryInstalledApplicationNames();
+
+                    //GET DATA FOR APPSTOADD/APPSTODELETE
+                    var appListToDelete = RegistryReader.GetAppsToDelete(operation.ListOfInstalledApps,
+                        operation.ListOfAppsAfterInstall);
+                    var appListToAdd = RegistryReader.GetAppsToAdd(operation.ListOfInstalledApps,
+                        operation.ListOfAppsAfterInstall);
+
+                    //APPS TO DELETE
+
+                    #region Apps to Delete
+
+                    if (appListToDelete != null)
                     {
-                        var temp = new RVsofResult.AppsToAdd2();
-                        var localApp    = app;
-                        var version     = (from d in installedAppsDetails where d.Name == updateInstallResults.filedata_app_name select d.Version).FirstOrDefault(); //Default NULL
-                        var vendor      = (from d in installedAppsDetails where d.Name == localApp select d.VendorName).FirstOrDefault(); //Default NULL
-                        var installDate = Tools.ConvertDateToEpoch((from d in installedAppsDetails where d.Name == localApp select d.Date).FirstOrDefault()); //Default 0.0D
+                        var temp = registry.GetAllInstalledApplicationDetails();
+                        foreach (var app in appListToDelete)
+                        {
+                            var appsToDelete = new RVsofResult.AppsToDelete2();
+                            var version =
+                                (from d in temp where d.Name == updateInstallResults.filedata_app_name select d.Version)
+                                    .FirstOrDefault();
 
-                        temp.AppsToAdd.Name             = (String.IsNullOrEmpty(localApp)) ? String.Empty : localApp; 
-                        temp.AppsToAdd.Version          = (String.IsNullOrEmpty(version)) ? String.Empty : version;
-                        temp.AppsToAdd.InstallDate      = (installDate.Equals(0.0D)) ? 0.0D : installDate;
-                        temp.AppsToAdd.VendorName       = (String.IsNullOrEmpty(vendor)) ? String.Empty : vendor;
-                        temp.AppsToAdd.RebootRequired   = "no";
-                        temp.AppsToAdd.ReleaseDate      = 0.0;
-                        temp.AppsToAdd.Status           = "installed";
-                        temp.AppsToAdd.Description      = String.Empty;
-                        temp.AppsToAdd.SupportUrl       = String.Empty;
-                        temp.AppsToAdd.VendorId         = String.Empty;
-                        temp.AppsToAdd.VendorSeverity   = String.Empty;
-                        temp.AppsToAdd.KB               = String.Empty;
+                            appsToDelete.Name = (String.IsNullOrEmpty(app)) ? String.Empty : app;
+                            appsToDelete.Version = (String.IsNullOrEmpty(version)) ? String.Empty : version;
 
-                        tempAppsToAdd.Add(temp);
+                            tempAppsToDelete.Add(appsToDelete);
+                        }
                     }
-                }
-                #endregion
 
-                InstallSendResults(updateInstallResults, operation, tempAppsToAdd, tempAppsToDelete);
+                    #endregion
+
+                    //APPS TO ADD 
+
+                    #region Apps to Add
+
+                    if (appListToAdd != null)
+                    {
+                        var installedAppsDetails = registry.GetAllInstalledApplicationDetails();
+
+                        foreach (var app in appListToAdd)
+                        {
+                            var temp = new RVsofResult.AppsToAdd2();
+                            var localApp = app;
+                            var version =
+                                (from d in installedAppsDetails
+                                    where d.Name == updateInstallResults.filedata_app_name
+                                    select d.Version).FirstOrDefault(); //Default NULL
+                            var vendor =
+                                (from d in installedAppsDetails where d.Name == localApp select d.VendorName)
+                                    .FirstOrDefault(); //Default NULL
+                            var installDate =
+                                Tools.ConvertDateToEpoch(
+                                    (from d in installedAppsDetails where d.Name == localApp select d.Date)
+                                        .FirstOrDefault()); //Default 0.0D
+
+                            temp.AppsToAdd.Name = (String.IsNullOrEmpty(localApp)) ? String.Empty : localApp;
+                            temp.AppsToAdd.Version = (String.IsNullOrEmpty(version)) ? String.Empty : version;
+                            temp.AppsToAdd.InstallDate = (installDate.Equals(0.0D)) ? 0.0D : installDate;
+                            temp.AppsToAdd.VendorName = (String.IsNullOrEmpty(vendor)) ? String.Empty : vendor;
+                            temp.AppsToAdd.RebootRequired = "no";
+                            temp.AppsToAdd.ReleaseDate = 0.0;
+                            temp.AppsToAdd.Status = "installed";
+                            temp.AppsToAdd.Description = String.Empty;
+                            temp.AppsToAdd.SupportUrl = String.Empty;
+                            temp.AppsToAdd.VendorId = String.Empty;
+                            temp.AppsToAdd.VendorSeverity = String.Empty;
+                            temp.AppsToAdd.KB = String.Empty;
+
+                            tempAppsToAdd.Add(temp);
+                        }
+                    }
+
+                    #endregion
+
+                    InstallSendResults(updateInstallResults, operation, tempAppsToAdd, tempAppsToDelete);
+                }
             }
-            
-            
+
+
         }
 
         private void InstallSupportedApplication(RvSofOperation operation)
