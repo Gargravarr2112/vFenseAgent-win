@@ -372,7 +372,7 @@ namespace Agent.RV
 
             foreach (var update in savedOperations)
             {
-                //ttl check for Windows Update
+                //ttl check for Custome app
                 int ttl = new int();
                 if (update.agent_queue_ttl != string.Empty)
                     ttl = int.Parse(update.agent_queue_ttl);
@@ -510,7 +510,7 @@ namespace Agent.RV
 
             foreach (var update in savedOperations)
             {
-                //ttl check for Windows Update
+                //ttl check for Supported app
                 int ttl = new int();
                 if (update.agent_queue_ttl != string.Empty)
                     ttl = int.Parse(update.agent_queue_ttl);
@@ -704,129 +704,175 @@ namespace Agent.RV
 
             foreach (var localOp in savedOperations)
             {
-                if (operation.ListOfInstalledApps.Any()) operation.ListOfInstalledApps.Clear();
-                if (operation.ListOfAppsAfterInstall.Any()) operation.ListOfAppsAfterInstall.Clear();
+                //ttl check for uninstall app
+                int ttl = new int();
+                if (localOp.agent_queue_ttl != string.Empty)
+                    ttl = int.Parse(localOp.agent_queue_ttl);
+                else
+                    ttl = 0;
 
-                //Retrieve a list of all updates installed in the system before uninstalling anything.
-                operation.ListOfInstalledApps = registry.GetRegistryInstalledApplicationNames();
-                Operations.UpdateStatus(localOp, Operations.OperationStatus.Processing);
-
-                var msiUninstall = new MSIUninstaller.MSIprop();
-                try
+                int time = Agent.Core.Utils.Time.EpochTime();
+                if (ttl < time && ttl != 0 && !string.IsNullOrEmpty(localOp.agent_queue_ttl))
                 {
-                    if (localOp.filedata_app_name != String.Empty)
-                        msiUninstall = MSIUninstaller.UnistallApp(localOp.filedata_app_name);
-                }
-                catch
-                {
-                    Logger.Log("MSIuninstaller crashed while attempting to uninstall {0}", LogLevel.Error, localOp.filedata_app_name);
-                    msiUninstall.UninstallPass = false;
-                }
-
-                Application update = null;
-                if (!msiUninstall.UninstallPass)
-                {
-                    var installedUpdates = WindowsUpdates.GetInstalledUpdates();
-                    update = (from n in installedUpdates where n.Name == localOp.filedata_app_name select n).FirstOrDefault();
-                }
-
-                var uninstallerResults = new UninstallerResults();
-                if (!msiUninstall.UninstallPass)
-                {
-                    try
-                    {
-                        uninstallerResults = WindowsUninstaller.Uninstall(update);
-                    }
-                    catch
-                    {
-                        Logger.Log("Windows Uninstall Update failed.", LogLevel.Error);
-                        uninstallerResults.Success = false;
-                    }
-                }
-
-                //Get all installed application after installing..
-                operation.ListOfAppsAfterInstall = registry.GetRegistryInstalledApplicationNames();
-
-                //GET DATA FOR APPSTOADD/APPSTODELETE
-                var appListToDelete = RegistryReader.GetAppsToDelete(operation.ListOfInstalledApps, operation.ListOfAppsAfterInstall);
-                var appListToAdd    = RegistryReader.GetAppsToAdd(operation.ListOfInstalledApps, operation.ListOfAppsAfterInstall);
-
-                //APPS TO DELETE
-                #region Apps to Delete
-                if (appListToDelete != null)
-                {
-                    var temp = registry.GetAllInstalledApplicationDetails();
-                    foreach (var app in appListToDelete)
-                    {
-                        var appsToDelete = new RVsofResult.AppsToDelete2();
-                        var version = (from d in temp where d.Name == localOp.filedata_app_name select d.Version).FirstOrDefault();
-
-                        appsToDelete.Name = (String.IsNullOrEmpty(app)) ? String.Empty : app;
-                        appsToDelete.Version = (String.IsNullOrEmpty(version)) ? String.Empty : version;
-
-                        tempAppsToDelete.Add(appsToDelete);
-                    }
-                }
-                #endregion
-
-                //APPS TO ADD 
-                #region Apps to Add
-                if (appListToAdd != null)
-                {
-                    var installedAppsDetails = registry.GetAllInstalledApplicationDetails();
-
-                    foreach (var app in appListToAdd)
-                    {
-                        var temp = new RVsofResult.AppsToAdd2();
-                        var localApp = app;
-                        var version = (from d in installedAppsDetails where d.Name == localOp.filedata_app_name select d.Version).FirstOrDefault(); //Default NULL
-                        var vendor = (from d in installedAppsDetails where d.Name == localApp select d.VendorName).FirstOrDefault(); //Default NULL
-                        var installDate = Tools.ConvertDateToEpoch((from d in installedAppsDetails where d.Name == localApp select d.Date).FirstOrDefault()); //Default 0.0D
-
-                        temp.AppsToAdd.Name = (String.IsNullOrEmpty(localApp)) ? String.Empty : localApp;
-                        temp.AppsToAdd.Version = (String.IsNullOrEmpty(version)) ? String.Empty : version;
-                        temp.AppsToAdd.InstallDate = (installDate.Equals(0.0D)) ? 0.0D : installDate;
-                        temp.AppsToAdd.VendorName = (String.IsNullOrEmpty(vendor)) ? String.Empty : vendor;
-                        temp.AppsToAdd.RebootRequired = "no";
-                        temp.AppsToAdd.ReleaseDate = 0.0;
-                        temp.AppsToAdd.Status = "installed";
-                        temp.AppsToAdd.Description = String.Empty;
-                        temp.AppsToAdd.SupportUrl = String.Empty;
-                        temp.AppsToAdd.VendorId = String.Empty;
-                        temp.AppsToAdd.VendorSeverity = String.Empty;
-                        temp.AppsToAdd.KB = String.Empty;
-
-                        tempAppsToAdd.Add(temp);
-                    }
-                }
-                #endregion
-
-
-                if (uninstallerResults.Success || msiUninstall.UninstallPass)
-                {
-                    // Success! Uinstalled OK
-                    localOp.success = true.ToString().ToLower();
-                    localOp.reboot_required = String.IsNullOrEmpty(uninstallerResults.Restart.ToString()) ? "no" : uninstallerResults.Restart.ToString();
-                    localOp.error = string.Empty;
-
-                    operation.Api = ApiCalls.RvUninstallOperation();
-                    operation.Type = OperationValue.Uninstall;
-                    operation.Id = localOp.operation_id;
-
-                    InstallSendResults(localOp, operation, tempAppsToAdd, tempAppsToDelete);
+                    localOp.success = "false";
+                    localOp.error = "ttl expired.";
+                    Logger.Log("ttl expired.", LogLevel.Debug);
+                    RvSofOperation sOperation = new RvSofOperation(operation.RawOperation);
+                    InstallSendResults(localOp, sOperation);
                 }
                 else
                 {
-                    // Fail! Uinstalled Failed.
-                    localOp.success = false.ToString().ToLower();
-                    localOp.reboot_required = String.IsNullOrEmpty(uninstallerResults.Restart.ToString()) ? "no" : uninstallerResults.Restart.ToString();
-                    localOp.error = "Unable to successfully uninstall application. If this is not a Windows Update Uninstall, ensure that the application is of type MSI We currently do not support other installers. Error: " + msiUninstall.Error;
+                    if (operation.ListOfInstalledApps.Any()) operation.ListOfInstalledApps.Clear();
+                    if (operation.ListOfAppsAfterInstall.Any()) operation.ListOfAppsAfterInstall.Clear();
 
-                    operation.Api = ApiCalls.RvUninstallOperation();
-                    operation.Type = OperationValue.Uninstall;
-                    operation.Id = localOp.operation_id;
+                    //Retrieve a list of all updates installed in the system before uninstalling anything.
+                    operation.ListOfInstalledApps = registry.GetRegistryInstalledApplicationNames();
+                    Operations.UpdateStatus(localOp, Operations.OperationStatus.Processing);
 
-                    InstallSendResults(localOp, operation, tempAppsToAdd, tempAppsToDelete);
+                    var msiUninstall = new MSIUninstaller.MSIprop();
+                    try
+                    {
+                        if (localOp.filedata_app_name != String.Empty)
+                            msiUninstall = MSIUninstaller.UnistallApp(localOp.filedata_app_name);
+                    }
+                    catch
+                    {
+                        Logger.Log("MSIuninstaller crashed while attempting to uninstall {0}", LogLevel.Error,
+                            localOp.filedata_app_name);
+                        msiUninstall.UninstallPass = false;
+                    }
+
+                    Application update = null;
+                    if (!msiUninstall.UninstallPass)
+                    {
+                        var installedUpdates = WindowsUpdates.GetInstalledUpdates();
+                        update =
+                            (from n in installedUpdates where n.Name == localOp.filedata_app_name select n)
+                                .FirstOrDefault();
+                    }
+
+                    var uninstallerResults = new UninstallerResults();
+                    if (!msiUninstall.UninstallPass)
+                    {
+                        try
+                        {
+                            uninstallerResults = WindowsUninstaller.Uninstall(update);
+                        }
+                        catch
+                        {
+                            Logger.Log("Windows Uninstall Update failed.", LogLevel.Error);
+                            uninstallerResults.Success = false;
+                        }
+                    }
+
+                    //Get all installed application after installing..
+                    operation.ListOfAppsAfterInstall = registry.GetRegistryInstalledApplicationNames();
+
+                    //GET DATA FOR APPSTOADD/APPSTODELETE
+                    var appListToDelete = RegistryReader.GetAppsToDelete(operation.ListOfInstalledApps,
+                        operation.ListOfAppsAfterInstall);
+                    var appListToAdd = RegistryReader.GetAppsToAdd(operation.ListOfInstalledApps,
+                        operation.ListOfAppsAfterInstall);
+
+                    //APPS TO DELETE
+
+                    #region Apps to Delete
+
+                    if (appListToDelete != null)
+                    {
+                        var temp = registry.GetAllInstalledApplicationDetails();
+                        foreach (var app in appListToDelete)
+                        {
+                            var appsToDelete = new RVsofResult.AppsToDelete2();
+                            var version =
+                                (from d in temp where d.Name == localOp.filedata_app_name select d.Version)
+                                    .FirstOrDefault();
+
+                            appsToDelete.Name = (String.IsNullOrEmpty(app)) ? String.Empty : app;
+                            appsToDelete.Version = (String.IsNullOrEmpty(version)) ? String.Empty : version;
+
+                            tempAppsToDelete.Add(appsToDelete);
+                        }
+                    }
+
+                    #endregion
+
+                    //APPS TO ADD 
+
+                    #region Apps to Add
+
+                    if (appListToAdd != null)
+                    {
+                        var installedAppsDetails = registry.GetAllInstalledApplicationDetails();
+
+                        foreach (var app in appListToAdd)
+                        {
+                            var temp = new RVsofResult.AppsToAdd2();
+                            var localApp = app;
+                            var version =
+                                (from d in installedAppsDetails
+                                    where d.Name == localOp.filedata_app_name
+                                    select d.Version).FirstOrDefault(); //Default NULL
+                            var vendor =
+                                (from d in installedAppsDetails where d.Name == localApp select d.VendorName)
+                                    .FirstOrDefault(); //Default NULL
+                            var installDate =
+                                Tools.ConvertDateToEpoch(
+                                    (from d in installedAppsDetails where d.Name == localApp select d.Date)
+                                        .FirstOrDefault()); //Default 0.0D
+
+                            temp.AppsToAdd.Name = (String.IsNullOrEmpty(localApp)) ? String.Empty : localApp;
+                            temp.AppsToAdd.Version = (String.IsNullOrEmpty(version)) ? String.Empty : version;
+                            temp.AppsToAdd.InstallDate = (installDate.Equals(0.0D)) ? 0.0D : installDate;
+                            temp.AppsToAdd.VendorName = (String.IsNullOrEmpty(vendor)) ? String.Empty : vendor;
+                            temp.AppsToAdd.RebootRequired = "no";
+                            temp.AppsToAdd.ReleaseDate = 0.0;
+                            temp.AppsToAdd.Status = "installed";
+                            temp.AppsToAdd.Description = String.Empty;
+                            temp.AppsToAdd.SupportUrl = String.Empty;
+                            temp.AppsToAdd.VendorId = String.Empty;
+                            temp.AppsToAdd.VendorSeverity = String.Empty;
+                            temp.AppsToAdd.KB = String.Empty;
+
+                            tempAppsToAdd.Add(temp);
+                        }
+                    }
+
+                    #endregion
+
+
+                    if (uninstallerResults.Success || msiUninstall.UninstallPass)
+                    {
+                        // Success! Uinstalled OK
+                        localOp.success = true.ToString().ToLower();
+                        localOp.reboot_required = String.IsNullOrEmpty(uninstallerResults.Restart.ToString())
+                            ? "no"
+                            : uninstallerResults.Restart.ToString();
+                        localOp.error = string.Empty;
+
+                        operation.Api = ApiCalls.RvUninstallOperation();
+                        operation.Type = OperationValue.Uninstall;
+                        operation.Id = localOp.operation_id;
+
+                        InstallSendResults(localOp, operation, tempAppsToAdd, tempAppsToDelete);
+                    }
+                    else
+                    {
+                        // Fail! Uinstalled Failed.
+                        localOp.success = false.ToString().ToLower();
+                        localOp.reboot_required = String.IsNullOrEmpty(uninstallerResults.Restart.ToString())
+                            ? "no"
+                            : uninstallerResults.Restart.ToString();
+                        localOp.error =
+                            "Unable to successfully uninstall application. If this is not a Windows Update Uninstall, ensure that the application is of type MSI We currently do not support other installers. Error: " +
+                            msiUninstall.Error;
+
+                        operation.Api = ApiCalls.RvUninstallOperation();
+                        operation.Type = OperationValue.Uninstall;
+                        operation.Id = localOp.operation_id;
+
+                        InstallSendResults(localOp, operation, tempAppsToAdd, tempAppsToDelete);
+                    }
                 }
             }
         }
