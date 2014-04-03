@@ -124,7 +124,7 @@ namespace Agent.RV
                     int time = Agent.Core.Utils.Time.EpochTime();
                     if (ttl < time && ttl != 0 && !string.IsNullOrEmpty(data.agent_queue_ttl))
                     {
-                        data.success = "Error, ttl has expired.";
+                        data.success = "false";
                         Logger.Log("Fail to install do to ttl.", LogLevel.Error);
                         RvSofOperation sOperation = new RvSofOperation(operation.RawOperation);
                         InstallSendResults(data, sOperation);
@@ -233,86 +233,125 @@ namespace Agent.RV
 
             foreach (var update in savedOperations)
             {
-                //Check if update is already installed.
-                ///////////////////////////////////////////////////////////////////////////////////////////
-                if (WindowsUpdates.IsUpdateInstalled(update.filedata_app_name))
-                {
-                    Logger.Log("Update is already installed ({0}), sending back results.", LogLevel.Info, update.filedata_app_name);
-                    Operations.UpdateStatus(update, Operations.OperationStatus.ResultsPending);
-                    InstallSendResults(update, operation);
-                    continue; //Move on to next update.
-                }
-              
-                Logger.Log("Preparing to download");
-                Operations.SavedOpData updateDownloadResults = Downloader.DownloadFile(update, Downloader.UpdateDirectories.OSUpdateDir);
+                //ttl check for Windows Update
+                int ttl = new int();
+                if (update.agent_queue_ttl != string.Empty)
+                    ttl = int.Parse(update.agent_queue_ttl);
+                else
+                    ttl = 0;
 
-                //If download fails, send back results to server and move to next package (if any).
-                ////////////////////////////////////////////////////////////////////////////////////////////
-                if (!String.IsNullOrEmpty(updateDownloadResults.error))
+                int time = Agent.Core.Utils.Time.EpochTime();
+                if (ttl < time && ttl != 0 && !string.IsNullOrEmpty(update.agent_queue_ttl))
                 {
-                    Operations.UpdateStatus(updateDownloadResults, Operations.OperationStatus.ResultsPending);
-                    InstallSendResults(updateDownloadResults, operation);
-                    continue;
-                }
-                Logger.Log("Download completed for {0}", LogLevel.Info, update.filedata_app_name);
-
-                Logger.Log("Installing {0} ", LogLevel.Info, update.filedata_app_name);
-                Operations.SavedOpData updateInstallResults = WindowsUpdates.InstallWindowsUpdate(update);
-
-                //If installation fails, send back results to server and move to next package (if any).
-                /////////////////////////////////////////////////////////////////////////////////////////////
-                if (!String.IsNullOrEmpty(updateInstallResults.error))
-                {
-                    Operations.UpdateStatus(updateDownloadResults, Operations.OperationStatus.ResultsPending);
-                    InstallSendResults(updateInstallResults, operation);
-                    continue;
-                }
-                Logger.Log("Installation of {0} was a success.", LogLevel.Info, update.filedata_app_name);
-                Operations.UpdateStatus(updateDownloadResults, Operations.OperationStatus.ResultsPending);
-
-
-
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                //Check scenerio for this update, react accordingly.
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                if (Convert.ToBoolean(updateInstallResults.reboot_required) && Convert.ToBoolean(updateInstallResults.success) && (updateInstallResults.restart == "optional" || updateInstallResults.restart == "forced"))
-                {
-                   Operations.UpdateOperation(updateInstallResults, true, true, Operations.OperationStatus.Rebooting);
-                   Operations.DeleteLocalUpdateBundleFolder(updateInstallResults);
-                   Logger.Log("Rebooting system as per update requirement.");
-                   RvUtils.RestartSystem();
-                   Stop(); //System will restart to continue Windows update configuration, then ResumeOperations will start where we left off.
-                }
-                else if (Convert.ToBoolean(updateInstallResults.reboot_required) && !Convert.ToBoolean(updateInstallResults.success) && (updateInstallResults.restart == "optional" || updateInstallResults.restart == "forced"))
-                {
-                   Operations.UpdateOperation(updateInstallResults, false, true, Operations.OperationStatus.Rebooting);
-                   Operations.DeleteLocalUpdateBundleFolder(updateInstallResults);
-                   Logger.Log("Rebooting system as per update requirement.");
-                   RvUtils.RestartSystem();
-                   Stop(); //System will restart to continue Windows update configuration, then ResumeOperations will start where we left off.
-                }
-                else if (Convert.ToBoolean(updateInstallResults.reboot_required) && Convert.ToBoolean(updateInstallResults.success) && updateInstallResults.restart == "none")
-                {
-                   InstallSendResults(updateInstallResults, operation);
-                }
-                else if (Convert.ToBoolean(updateInstallResults.reboot_required) && !Convert.ToBoolean(updateInstallResults.success) && updateInstallResults.restart != "none")
-                {
-                   Operations.UpdateOperation(updateInstallResults, false, true, Operations.OperationStatus.Rebooting);
-                   Operations.DeleteLocalUpdateBundleFolder(updateInstallResults);
-                   RvUtils.RestartSystem();
-                   Stop(); //System will restart to continue Windows update configuration, then ResumeOperations will start where we left off.
-                }
-                else if (Convert.ToBoolean(updateInstallResults.reboot_required) && updateInstallResults.restart != "none")
-                {
-                   var isInstalled = WindowsUpdates.IsUpdateInstalled(updateInstallResults.filedata_app_name);
-                   Logger.Log("Rebooting system as per update requirement.");
-                   Operations.UpdateOperation(updateInstallResults, isInstalled, true, Operations.OperationStatus.Rebooting);
-                   RvUtils.RestartSystem();
-                   Stop(); //System will restart to continue Windows update configuration, then ResumeOperations will start where we left off.
+                    update.success = "false";
+                    update.error = "ttl expired.";
+                    Logger.Log("ttl expired.", LogLevel.Debug);
+                    RvSofOperation sOperation = new RvSofOperation(operation.RawOperation);
+                    InstallSendResults(update, sOperation);
                 }
                 else
                 {
-                   InstallSendResults(updateInstallResults, operation);
+
+                    //Check if update is already installed.
+                    ///////////////////////////////////////////////////////////////////////////////////////////
+                    if (WindowsUpdates.IsUpdateInstalled(update.filedata_app_name))
+                    {
+                        Logger.Log("Update is already installed ({0}), sending back results.", LogLevel.Info,
+                            update.filedata_app_name);
+                        Operations.UpdateStatus(update, Operations.OperationStatus.ResultsPending);
+                        InstallSendResults(update, operation);
+                        continue; //Move on to next update.
+                    }
+
+                    Logger.Log("Preparing to download");
+                    Operations.SavedOpData updateDownloadResults = Downloader.DownloadFile(update,
+                        Downloader.UpdateDirectories.OSUpdateDir);
+
+                    //If download fails, send back results to server and move to next package (if any).
+                    ////////////////////////////////////////////////////////////////////////////////////////////
+                    if (!String.IsNullOrEmpty(updateDownloadResults.error))
+                    {
+                        Operations.UpdateStatus(updateDownloadResults, Operations.OperationStatus.ResultsPending);
+                        InstallSendResults(updateDownloadResults, operation);
+                        continue;
+                    }
+                    Logger.Log("Download completed for {0}", LogLevel.Info, update.filedata_app_name);
+
+                    Logger.Log("Installing {0} ", LogLevel.Info, update.filedata_app_name);
+                    Operations.SavedOpData updateInstallResults = WindowsUpdates.InstallWindowsUpdate(update);
+
+                    //If installation fails, send back results to server and move to next package (if any).
+                    /////////////////////////////////////////////////////////////////////////////////////////////
+                    if (!String.IsNullOrEmpty(updateInstallResults.error))
+                    {
+                        Operations.UpdateStatus(updateDownloadResults, Operations.OperationStatus.ResultsPending);
+                        InstallSendResults(updateInstallResults, operation);
+                        continue;
+                    }
+                    Logger.Log("Installation of {0} was a success.", LogLevel.Info, update.filedata_app_name);
+                    Operations.UpdateStatus(updateDownloadResults, Operations.OperationStatus.ResultsPending);
+
+
+
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //Check scenerio for this update, react accordingly.
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    if (Convert.ToBoolean(updateInstallResults.reboot_required) &&
+                        Convert.ToBoolean(updateInstallResults.success) &&
+                        (updateInstallResults.restart == "optional" || updateInstallResults.restart == "forced"))
+                    {
+                        Operations.UpdateOperation(updateInstallResults, true, true,
+                            Operations.OperationStatus.Rebooting);
+                        Operations.DeleteLocalUpdateBundleFolder(updateInstallResults);
+                        Logger.Log("Rebooting system as per update requirement.");
+                        RvUtils.RestartSystem();
+                        Stop();
+                        //System will restart to continue Windows update configuration, then ResumeOperations will start where we left off.
+                    }
+                    else if (Convert.ToBoolean(updateInstallResults.reboot_required) &&
+                             !Convert.ToBoolean(updateInstallResults.success) &&
+                             (updateInstallResults.restart == "optional" || updateInstallResults.restart == "forced"))
+                    {
+                        Operations.UpdateOperation(updateInstallResults, false, true,
+                            Operations.OperationStatus.Rebooting);
+                        Operations.DeleteLocalUpdateBundleFolder(updateInstallResults);
+                        Logger.Log("Rebooting system as per update requirement.");
+                        RvUtils.RestartSystem();
+                        Stop();
+                        //System will restart to continue Windows update configuration, then ResumeOperations will start where we left off.
+                    }
+                    else if (Convert.ToBoolean(updateInstallResults.reboot_required) &&
+                             Convert.ToBoolean(updateInstallResults.success) && updateInstallResults.restart == "none")
+                    {
+                        InstallSendResults(updateInstallResults, operation);
+                    }
+                    else if (Convert.ToBoolean(updateInstallResults.reboot_required) &&
+                             !Convert.ToBoolean(updateInstallResults.success) &&
+                             updateInstallResults.restart != "none")
+                    {
+                        Operations.UpdateOperation(updateInstallResults, false, true,
+                            Operations.OperationStatus.Rebooting);
+                        Operations.DeleteLocalUpdateBundleFolder(updateInstallResults);
+                        RvUtils.RestartSystem();
+                        Stop();
+                        //System will restart to continue Windows update configuration, then ResumeOperations will start where we left off.
+                    }
+                    else if (Convert.ToBoolean(updateInstallResults.reboot_required) &&
+                             updateInstallResults.restart != "none")
+                    {
+                        var isInstalled =
+                            WindowsUpdates.IsUpdateInstalled(updateInstallResults.filedata_app_name);
+                        Logger.Log("Rebooting system as per update requirement.");
+                        Operations.UpdateOperation(updateInstallResults, isInstalled, true,
+                            Operations.OperationStatus.Rebooting);
+                        RvUtils.RestartSystem();
+                        Stop();
+                        //System will restart to continue Windows update configuration, then ResumeOperations will start where we left off.
+                    }
+                    else
+                    {
+                        InstallSendResults(updateInstallResults, operation);
+                    }
                 }
             }
         }
