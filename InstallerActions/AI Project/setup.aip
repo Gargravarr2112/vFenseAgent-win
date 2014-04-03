@@ -53,10 +53,10 @@
     <ROW Property="DialogBitmap" Value="dialog" MultiBuildValue="DefaultBuild:TopPatchSetupImage.jpg" Type="1" MsiKey="DialogBitmap"/>
     <ROW Property="Manufacturer" Value="TopPatch Inc."/>
     <ROW Property="MsiLogging" MultiBuildValue="DefaultBuild:v"/>
-    <ROW Property="ProductCode" Value="1033:{B1C094B1-D11D-4D7D-84E8-49F76A06D109} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{DBB6951B-ABF2-4571-A925-02929D9519A8} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="TopPatch Agent"/>
-    <ROW Property="ProductVersion" Value="0.7.0" Type="32"/>
+    <ROW Property="ProductVersion" Value="0.8.1" Type="32"/>
     <ROW Property="REBOOT" MultiBuildValue="DefaultBuild:Suppress"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{EEF08928-1597-4376-8CFE-C404B14EDB4C}"/>
@@ -233,7 +233,7 @@
     <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DigCertStoreComponent">
-    <ROW SignerDescription="Toppatch vFense" SignOptions="7" SignTool="0" Thumbprint="8bef4449b0ebb8264a2b450b0c88c0e6fec0c29a Subject: Top Patch Inc.&#10;Issuer: DigiCert EV Code Signing CA&#10;Valid from 06/23/2013 to 06/06/2016"/>
+    <ROW SignerDescription="Toppatch vFense" SignOptions="0" SignTool="0" Thumbprint="8bef4449b0ebb8264a2b450b0c88c0e6fec0c29a Subject: Top Patch Inc.&#10;Issuer: DigiCert EV Code Signing CA&#10;Valid from 06/23/2013 to 06/06/2016"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.FirewallExceptionComponent">
     <ROW FirewallException="Agent.RV.Service.exe" DisplayName="Agent.RV.Service.exe" Enabled="1" Scope="*" Condition="((?Agent.RV.Service.exe=2) AND ($Agent.RV.Service.exe=3))" Profiles="0" AppPath="[#Agent.RV.Service.exe]"/>

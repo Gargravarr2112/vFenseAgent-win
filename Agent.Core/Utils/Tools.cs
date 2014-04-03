@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Threading;
 using Agent.Core.ServerOperations;
 using Newtonsoft.Json.Linq;
 using Timer = System.Timers.Timer;

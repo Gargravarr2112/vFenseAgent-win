@@ -71,7 +71,7 @@ namespace Agent.Monitoring
             var myZone = new JObject();
             try
             {
-                var zoneDetails = GetTimeZone.GetMyTimeZone();
+                var zoneDetails = Time.GetMyTimeZone();
                 myZone["time_zone"] = zoneDetails.time_zone;
                 myZone["utc_offset"] = zoneDetails.utc_offset;
             }

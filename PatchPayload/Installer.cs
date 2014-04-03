@@ -553,14 +553,14 @@ namespace PatchPayload
                                 break;
                             case "mkpasswd.exe":
                                 Data.Logger(filename);
-                                if (!Tools.CopyFile(file, Path.Combine(opensshDir, "mkpassed.exe")))
+                                if (!Tools.CopyFile(file, Path.Combine(opensshDir, "mkpasswd.exe")))
                                     throw new Exception(
                                         "Unable to copy Microsoft.Deployment.Compression.Cab.dll, access denied by the OS.");
                                 Data.Logger("Copied to: " + opensshDir);
                                 break;
                             case "quietcmd.bat":
                                 Data.Logger(filename);
-                                if (!Tools.CopyFile(file, Path.Combine(opensshDir, "quitecmd.bat")))
+                                if (!Tools.CopyFile(file, Path.Combine(opensshDir, "quietcmd.bat")))
                                     throw new Exception(
                                         "Unable to copy Microsoft.Deployment.Compression.Cab.dll, access denied by the OS.");
                                 Data.Logger("Copied to: " + opensshDir);

@@ -2,7 +2,7 @@
 
 namespace Agent.Core.Utils
 {
-    public static class GetTimeZone
+    public static class Time
     {
 
         public static MyTimeZone GetMyTimeZone()
@@ -10,12 +10,16 @@ namespace Agent.Core.Utils
             var timezone = new MyTimeZone();
 
             var thisis = System.TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
+            var time = DateTime.Now;
+            bool isDayLight = TimeZoneInfo.Local.IsDaylightSavingTime(time);
 
             int houroffset = thisis.Hours;
             int minutesoffset = thisis.Minutes;
             int timeoffset = 0;
+            if (isDayLight)
+                houroffset = houroffset - 1;
 
-            timezone.utc_offset = thisis.ToString();
+            timezone.utc_offset = houroffset.ToString() + ":" + minutesoffset.ToString() + ":00";
             //set the time for Zones with half hours in it, itll add the minutes to the hours
             //exp: 5:30 = 35, 30 minutes plus 5 <-- hours 
             if (minutesoffset != 0)
@@ -23,7 +27,7 @@ namespace Agent.Core.Utils
             else
                 timeoffset = houroffset;
             string timeZone = "";
-
+            #region switch case to get name of the timezone
             switch (timeoffset)
             {
                 case (0):
@@ -132,9 +136,18 @@ namespace Agent.Core.Utils
                     timeZone = "Unable to get Time Zone";
                     break;
             }
+            #endregion
             timezone.time_zone = timeZone;
 
             return timezone;
+        }
+
+        public static int EpochTime()
+        {
+            TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+            int epoch = (int)t.TotalSeconds;
+
+            return epoch;
         }
 
         public class MyTimeZone

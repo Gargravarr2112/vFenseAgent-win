@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Agent.Core.Data.Model
+﻿namespace Agent.Core.Data.Model
 {
     public class Update
     {

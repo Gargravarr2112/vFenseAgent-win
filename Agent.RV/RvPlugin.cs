@@ -60,11 +60,11 @@ namespace Agent.RV
             Logger.Log("WSUS enabled? {0}", LogLevel.Info, WSUS.IsWSUSEnabled());
             Logger.Log("WSUS address? {0}", LogLevel.Info, WSUS.GetServerWSUS);
             Logger.Log("Automatic updates Enabled? {0}", LogLevel.Info, WSUS.IsAutomaticUpdatesEnabled());
+            Logger.Log("Epoch Time: {0}", LogLevel.Info, Time.EpochTime().ToString());
             try
             {
-                var sysTimeZone = GetTimeZone.GetMyTimeZone();
-                Logger.Log("Current time zone {0}, utc off set {1}.", LogLevel.Info, sysTimeZone.time_zone,
-                    sysTimeZone.utc_offset);
+                var sysTimeZone = Time.GetMyTimeZone();
+                Logger.Log("Current time zone {0}, utc off set {1}.", LogLevel.Info, sysTimeZone.time_zone, sysTimeZone.utc_offset);
             }
             catch
             {

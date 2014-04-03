@@ -1,5 +1,4 @@
-﻿using System;
-using Agent.Core.ServerOperations;
+﻿using Agent.Core.ServerOperations;
 
 namespace Agent.Core
 {
