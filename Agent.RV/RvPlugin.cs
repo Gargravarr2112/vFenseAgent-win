@@ -115,65 +115,85 @@ namespace Agent.RV
                 var savedOperations = Operations.LoadOpDirectory();
                 foreach (var data in savedOperations)
                 {
-                    if (int.Parse(data.agent_queue_ttl) < )
-                    switch (rvOperation.Type)
+                    int ttl;
+                    if (data.agent_queue_ttl != string.Empty)
+                        ttl = int.Parse(data.agent_queue_ttl);
+                    else
+                        ttl = 0;
+
+                    int time = Agent.Core.Utils.Time.EpochTime();
+                    if (ttl < time && ttl != 0 && !string.IsNullOrEmpty(data.agent_queue_ttl))
                     {
-                        case OperationValue.InstallWindowsUpdate:
-                            rvOperation.Api = ApiCalls.RvInstallWinUpdateResults();
-                            rvOperation.Type = OperationValue.InstallWindowsUpdate;
-                            InstallWindowsUpdate(rvOperation);
-                            break;
+                        data.success = "Error, ttl has expired.";
+                        Logger.Log("Fail to install do to ttl.", LogLevel.Error);
+                        RvSofOperation sOperation = new RvSofOperation(operation.RawOperation);
+                        InstallSendResults(data, sOperation);
+                    }
+                    else
+                    {
 
-                        case OperationValue.InstallSupportedApp:
-                            rvOperation.Api = ApiCalls.RvInstallSupportedAppsResults();
-                            rvOperation.Type = OperationValue.InstallSupportedApp;
-                            InstallSupportedApplication(rvOperation);
-                            break;
+                        switch (rvOperation.Type)
+                        {
+                            case OperationValue.InstallWindowsUpdate:
+                                rvOperation.Api = ApiCalls.RvInstallWinUpdateResults();
+                                rvOperation.Type = OperationValue.InstallWindowsUpdate;
+                                InstallWindowsUpdate(rvOperation);
+                                break;
 
-                        case OperationValue.InstallCustomApp:
-                            rvOperation.Api = ApiCalls.RvInstallCustomAppsResults();
-                            rvOperation.Type = OperationValue.InstallCustomApp;
-                            InstallCustomApplication(rvOperation);
-                            break;
+                            case OperationValue.InstallSupportedApp:
+                                rvOperation.Api = ApiCalls.RvInstallSupportedAppsResults();
+                                rvOperation.Type = OperationValue.InstallSupportedApp;
+                                InstallSupportedApplication(rvOperation);
+                                break;
 
-                        case OperationValue.InstallAgentUpdate:
-                            rvOperation.Api = ApiCalls.RvInstallAgentUpdateResults();
-                            rvOperation.Type = OperationValue.InstallAgentUpdate;
-                            InstallAgentUpdate(rvOperation);
-                            break;
+                            case OperationValue.InstallCustomApp:
+                                rvOperation.Api = ApiCalls.RvInstallCustomAppsResults();
+                                rvOperation.Type = OperationValue.InstallCustomApp;
+                                InstallCustomApplication(rvOperation);
+                                break;
 
-                        case OperationValue.Uninstall:
-                            rvOperation.Api = ApiCalls.RvUninstallOperation();
-                            rvOperation.Type = OperationValue.Uninstall;
-                            UninstallOperation(rvOperation);
-                            break;
+                            case OperationValue.InstallAgentUpdate:
+                                rvOperation.Api = ApiCalls.RvInstallAgentUpdateResults();
+                                rvOperation.Type = OperationValue.InstallAgentUpdate;
+                                InstallAgentUpdate(rvOperation);
+                                break;
 
-                        case OperationValue.AgentUninstall:
-                            rvOperation.Type = OperationValue.AgentUninstall;
-                            UninstallRvAgentOperation();
-                            break;
+                            case OperationValue.Uninstall:
+                                rvOperation.Api = ApiCalls.RvUninstallOperation();
+                                rvOperation.Type = OperationValue.Uninstall;
+                                UninstallOperation(rvOperation);
+                                break;
 
-                        case RvOperationValue.UpdatesAndApplications:
-                            rvOperation.Type = RvOperationValue.UpdatesAndApplications;
-                            rvOperation = UpdatesApplicationsOperation(rvOperation);
-                            rvOperation.RawResult = RvFormatter.Applications(rvOperation);
-                            rvOperation.Api = ApiCalls.RvUpdatesApplications();
-                            SendResults(rvOperation);
-                            break;
+                            case OperationValue.AgentUninstall:
+                                rvOperation.Type = OperationValue.AgentUninstall;
+                                UninstallRvAgentOperation();
+                                break;
 
-                        case OperationValue.ResumeOp:
-                            ResumeOperations();
-                            break;
-
-                        default:
-                            Logger.Log("Received unrecognized operation. Ignoring.");
-                            break;
+                            default:
+                                Logger.Log("Received unrecognized operation. Ignoring.");
+                                break;
+                        }
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.Log("Error while gathering operation ttl.", LogLevel.Error);
+            }
+
+            switch (rvOperation.Type)
+            {
+                case RvOperationValue.UpdatesAndApplications:
+                    rvOperation.Type = RvOperationValue.UpdatesAndApplications;
+                    rvOperation = UpdatesApplicationsOperation(rvOperation);
+                    rvOperation.RawResult = RvFormatter.Applications(rvOperation);
+                    rvOperation.Api = ApiCalls.RvUpdatesApplications();
+                    SendResults(rvOperation);
+                    break;
+
+                case OperationValue.ResumeOp:
+                    ResumeOperations();
+                    break;
             }
 
         }
