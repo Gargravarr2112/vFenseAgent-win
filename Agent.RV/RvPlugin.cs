@@ -614,7 +614,7 @@ namespace Agent.RV
             {
                 foreach (var savedOp in savedOperations)
                 {
-                    //ttl check for Supported app
+                    //ttl check for install agent update
                     int ttl = new int();
                     if (savedOp.agent_queue_ttl != string.Empty)
                         ttl = int.Parse(savedOp.agent_queue_ttl);
