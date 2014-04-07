@@ -91,6 +91,8 @@ namespace Agent.Core.ServerOperations
         public string Id { get; set; }
         public string Type { get; set; }
         public string Api { get; set; }
+        public string ResponseUri { get; set; }
+        public string RequestMethod { get; set; }
         public List<string> Data { get; set; }
 
 
