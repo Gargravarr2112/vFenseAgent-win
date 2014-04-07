@@ -109,29 +109,8 @@ namespace Agent.RV
         {
             var rvOperation = new RvSofOperation(operation.RawOperation);
 
-            //new check for the operation ttl
             try
             {
-                var savedOperations = Operations.LoadOpDirectory();
-                foreach (var data in savedOperations)
-                {
-                    int ttl;
-                    if (data.agent_queue_ttl != string.Empty)
-                        ttl = int.Parse(data.agent_queue_ttl);
-                    else
-                        ttl = 0;
-
-                    int time = Agent.Core.Utils.Time.EpochTime();
-                    if (ttl < time && ttl != 0 && !string.IsNullOrEmpty(data.agent_queue_ttl))
-                    {
-                        data.success = "false";
-                        Logger.Log("Fail to install do to ttl.", LogLevel.Error);
-                        RvSofOperation sOperation = new RvSofOperation(operation.RawOperation);
-                        InstallSendResults(data, sOperation);
-                    }
-                    else
-                    {
-
                         switch (rvOperation.Type)
                         {
                             case OperationValue.InstallWindowsUpdate:
@@ -169,31 +148,26 @@ namespace Agent.RV
                                 UninstallRvAgentOperation();
                                 break;
 
+                            case RvOperationValue.UpdatesAndApplications:
+                                rvOperation.Type = RvOperationValue.UpdatesAndApplications;
+                                rvOperation = UpdatesApplicationsOperation(rvOperation);
+                                rvOperation.RawResult = RvFormatter.Applications(rvOperation);
+                                rvOperation.Api = ApiCalls.RvUpdatesApplications();
+                                SendResults(rvOperation);
+                                break;
+
+                            case OperationValue.ResumeOp:
+                                ResumeOperations();
+                                break;
+
                             default:
                                 Logger.Log("Received unrecognized operation. Ignoring.");
                                 break;
                         }
-                    }
-                }
             }
             catch (Exception e)
             {
-                Logger.Log("Error while gathering operation ttl.", LogLevel.Error);
-            }
-
-            switch (rvOperation.Type)
-            {
-                case RvOperationValue.UpdatesAndApplications:
-                    rvOperation.Type = RvOperationValue.UpdatesAndApplications;
-                    rvOperation = UpdatesApplicationsOperation(rvOperation);
-                    rvOperation.RawResult = RvFormatter.Applications(rvOperation);
-                    rvOperation.Api = ApiCalls.RvUpdatesApplications();
-                    SendResults(rvOperation);
-                    break;
-
-                case OperationValue.ResumeOp:
-                    ResumeOperations();
-                    break;
+                Logger.Log(e.Message, LogLevel.Error);
             }
 
         }
@@ -636,57 +610,92 @@ namespace Agent.RV
             var submittedInstall   = false;
             var counter            = 30;
             var savedOperations    = Operations.LoadOpDirectory().Where(p => p.operation == OperationValue.InstallAgentUpdate).ToList();
-
-            if (!savedOperations.Any())
+            try
             {
-                Logger.Log("There are no operations remaining, Unable to update RV Agent: {0}", LogLevel.Warning, operation.Type);
-                return;
-            }
-
-            Operations.SavedOpData updateDownloadResults = AgentUpdateManager.DownloadUpdate(savedOperations.First());
-
-            if (String.IsNullOrEmpty(updateDownloadResults.error))
-            {
-                do
+                foreach (var savedOp in savedOperations)
                 {
-                    switch (updateDownloadResults.operation_status)
+                    //ttl check for Supported app
+                    int ttl = new int();
+                    if (savedOp.agent_queue_ttl != string.Empty)
+                        ttl = int.Parse(savedOp.agent_queue_ttl);
+                    else
+                        ttl = 0;
+
+                    int time = Agent.Core.Utils.Time.EpochTime();
+
+                    if (ttl < time && ttl != 0 && !string.IsNullOrEmpty(savedOp.agent_queue_ttl))
                     {
-                       case Operations.OperationStatus.Pending:
-                            if (submittedInstall) break;
-
-                            Logger.Log("Agent Updater Application, preparing to upgrade RV Agent to the most recent version.");
-                            var startInfo = new ProcessStartInfo();
-                            var fileName = String.Empty;
-
-                            foreach (var item in updateDownloadResults.filedata_app_uris)
-                            {
-                                var splitted = item.file_name.Split(new[] {'.'});
-                                if (splitted[0] == "UpdateInstaller")
-                                    fileName = item.file_name;
-                            }
-
-                            if (String.IsNullOrEmpty(fileName))
-                                fileName = "UpdateInstaller.exe";
-
-                            var filePath = Path.Combine(AgentUpdateManager.AgentUpdateDirectory, fileName);
-
-                            startInfo.FileName               = filePath;
-                            startInfo.Arguments              = updateDownloadResults.filedata_app_clioptions;
-                            startInfo.UseShellExecute        = false;
-                            startInfo.RedirectStandardOutput = false;
-
-                            Operations.UpdateStatus(updateDownloadResults, Operations.OperationStatus.Processing);
-                            Process.Start(startInfo);
-                            submittedInstall = true;
-                            break;
+                        savedOp.success = "false";
+                        savedOp.error = "ttl expired.";
+                        Logger.Log("ttl expired.", LogLevel.Debug);
+                        RvSofOperation sOperation = new RvSofOperation(operation.RawOperation);
+                        InstallSendResults(savedOp, sOperation);
                     }
-                    Thread.Sleep(5000);
-                    counter--;
-                } while (counter >= 0);
+                    else
+                    {
+                        if (!savedOperations.Any())
+                        {
+                            Logger.Log("There are no operations remaining, Unable to update RV Agent: {0}",
+                                LogLevel.Warning,
+                                operation.Type);
+                            return;
+                        }
+
+                        Operations.SavedOpData updateDownloadResults =
+                            AgentUpdateManager.DownloadUpdate(savedOperations.First());
+
+                        if (String.IsNullOrEmpty(updateDownloadResults.error))
+                        {
+                            do
+                            {
+                                switch (updateDownloadResults.operation_status)
+                                {
+                                    case Operations.OperationStatus.Pending:
+                                        if (submittedInstall) break;
+
+                                        Logger.Log(
+                                            "Agent Updater Application, preparing to upgrade RV Agent to the most recent version.");
+                                        var startInfo = new ProcessStartInfo();
+                                        var fileName = String.Empty;
+
+                                        foreach (var item in updateDownloadResults.filedata_app_uris)
+                                        {
+                                            var splitted = item.file_name.Split(new[] {'.'});
+                                            if (splitted[0] == "UpdateInstaller")
+                                                fileName = item.file_name;
+                                        }
+
+                                        if (String.IsNullOrEmpty(fileName))
+                                            fileName = "UpdateInstaller.exe";
+
+                                        var filePath = Path.Combine(AgentUpdateManager.AgentUpdateDirectory, fileName);
+
+                                        startInfo.FileName = filePath;
+                                        startInfo.Arguments = updateDownloadResults.filedata_app_clioptions;
+                                        startInfo.UseShellExecute = false;
+                                        startInfo.RedirectStandardOutput = false;
+
+                                        Operations.UpdateStatus(updateDownloadResults,
+                                            Operations.OperationStatus.Processing);
+                                        Process.Start(startInfo);
+                                        submittedInstall = true;
+                                        break;
+                                }
+                                Thread.Sleep(5000);
+                                counter--;
+                            } while (counter >= 0);
+                        }
+
+                        else if (!String.IsNullOrEmpty(updateDownloadResults.error))
+                            InstallSendResults(updateDownloadResults, operation);
+                    }
+                }
             }
-            else 
-                if (!String.IsNullOrEmpty(updateDownloadResults.error))
-                     InstallSendResults(updateDownloadResults, operation);
+            catch (Exception e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+            }
+
         }
 
         private void UninstallOperation(RvSofOperation operation)
