@@ -360,6 +360,7 @@ namespace Agent.Core.ServerOperations
             systeminfo.Add("bit_type", SystemInfo.BitType);
             systeminfo.Add("computer_name", SystemInfo.ComputerName);
             systeminfo.Add("host_name", SystemInfo.Fqdn);
+            systeminfo.Add("machine_type", );
 
             return systeminfo.ToString();
         }
