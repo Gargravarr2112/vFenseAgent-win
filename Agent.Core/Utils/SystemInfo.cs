@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -532,7 +533,95 @@ namespace Agent.Core.Utils
 
             return propertie;
         }
-    
+
+        /// <summary>
+        /// Gets the processor details aka "win32_processor".
+        /// </summary>
+        /// <param name="info">
+        ///Processor Details.
+        ///AddressWidth
+        ///Architecture
+        ///Availability
+        ///Caption
+        ///ConfigManagerErrorCode
+        ///ConfigManagerUserConfig
+        ///CpuStatus
+        ///CreationClassName
+        ///CurrentClockSpeed
+        ///CurrentVoltage
+        ///DataWidth
+        ///Description
+        ///DeviceID
+        ///ErrorCleared
+        ///ErrorDescription
+        ///ExtClock
+        ///Family
+        ///InstallDate
+        ///L2CacheSize
+        ///L2CacheSpeed
+        ///L3CacheSize
+        ///L3CacheSpeed
+        ///LastErrorCode
+        ///Level
+        ///LoadPercentage
+        ///Manufacturer
+        ///MaxClockSpeed
+        ///Name
+        ///NumberOfCores
+        ///NumberOfLogicalProcessors
+        ///OtherFamilyDescription
+        ///PNPDeviceID
+        ///PowerManagementCapabilities
+        ///PowerManagementSupported
+        ///ProcessorId
+        ///ProcessorType
+        ///Revision
+        ///Role
+        ///SecondLevelAddressTranslationExtensions
+        ///SocketDesignation
+        ///Status
+        ///StatusInfo
+        ///Stepping
+        ///SystemCreationClassName
+        ///SystemName
+        ///UniqueId
+        ///UpgradeMethod
+        ///Version
+        ///VirtualizationFirmwareEnabled
+        ///VMMonitorModeExtensions
+        ///VoltageCaps
+        /// </param>
+        /// <returns>String with value from specified parameter.</returns>
+        public static string ProcessorDetails(string info)
+        {
+            string propertie = null;
+            try
+            {
+                ManagementObjectSearcher osDetails = new ManagementObjectSearcher("SELECT * FROM Win32_processor");
+                ManagementObjectCollection osDetaislCollection = osDetails.Get();
+
+                int x = 0;
+
+                foreach (ManagementObject mo in osDetaislCollection)
+                {
+                    foreach (var pro in mo.Properties)
+                    {
+                        if (pro.Name == info)
+                        {
+                            propertie = pro.Value.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                Logger.Log("Error retriving Processor info details.", LogLevel.Error);
+            }
+        
+
+            return propertie;
+        }
 
     }
 }
