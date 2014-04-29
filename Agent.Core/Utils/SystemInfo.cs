@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Net.NetworkInformation;
 using System.Net;
 using System.Management;
+using RestSharp;
 
 namespace Agent.Core.Utils
 {
@@ -271,5 +272,101 @@ namespace Agent.Core.Utils
 
             return uptime;
         }
+
+        //<summary>
+        //Gets Motherboard info, need to send in string with parameter need
+        //one of this parameter names are need.
+        //<para>
+        //Motherboard Details.
+        //AdminPasswordStatus
+        //AutomaticManagedPagefile
+        //AutomaticResetBootOption
+        //AutomaticResetCapability
+        //BootOptionOnLimit
+        //BootOptionOnWatchDog
+        //BootROMSupported
+        //BootupState
+        //Caption
+        //ChassisBootupState
+        //CreationClassName
+        //CurrentTimeZone
+        //DaylightInEffect
+        //Description
+        //DNSHostName
+        //Domain
+        //DomainRole
+        //EnableDaylightSavingsTime
+        //FrontPanelResetStatus
+        //HypervisorPresent
+        //InfraredSupported
+        //InitialLoadInfo
+        //InstallDate
+        //KeyboardPasswordStatus
+        //LastLoadInfo
+        //Manufacturer
+        //Model
+        //Name
+        //NameFormat
+        //NetworkServerModeEnabled
+        //NumberOfLogicalProcessors
+        //NumberOfProcessors
+        //OEMLogoBitmap
+        //OEMStringArray
+        //PartOfDomain
+        //PauseAfterReset
+        //PCSystemType
+        //PCSystemTypeEx
+        //PowerManagementCapabilities
+        //PowerManagementSupported
+        //PowerOnPasswordStatus
+        //PowerState
+        //PowerSupplyState
+        //PrimaryOwnerContact
+        //PrimaryOwnerName
+        //ResetCapability
+        //ResetCount
+        //ResetLimit
+        //Roles
+        //Status
+        //SupportContactDescription
+        //SystemStartupDelay
+        //SystemStartupOptions
+        //SystemStartupSetting
+        //SystemType
+        //ThermalState
+        //TotalPhysicalMemory
+        //UserName
+        //WakeUpType
+        //Workgroup
+        //</para>
+        //</summary>
+        public static string MotherboardInfo(string info)
+        {
+            string propertie = null;
+            try
+            {
+                ManagementObjectSearcher osDetails = new ManagementObjectSearcher("SELECT * FROM Win32_computersystem");
+                ManagementObjectCollection osDetaislCollection = osDetails.Get();
+                
+                foreach (ManagementObject mo in osDetaislCollection)
+                {
+                    foreach (var pro in mo.Properties)
+                    {
+                        if (pro.Name == info)
+                        {
+                            propertie = pro.Value.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                Logger.Log("Error retriving Motherboard info.", LogLevel.Error);
+            }
+
+            return propertie;
+        }
+
     }
 }
