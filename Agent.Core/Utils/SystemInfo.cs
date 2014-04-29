@@ -340,7 +340,7 @@ namespace Agent.Core.Utils
         //Workgroup
         //</para>
         //</summary>
-        public static string MotherboardInfo(string info)
+        public static string MotherboardDetails(string info)
         {
             string propertie = null;
             try
@@ -362,7 +362,108 @@ namespace Agent.Core.Utils
             }
             catch
             {
-                Logger.Log("Error retriving Motherboard info.", LogLevel.Error);
+                Logger.Log("Error retriving Motherboard info details.", LogLevel.Error);
+            }
+
+            return propertie;
+        }
+
+        //<summery>
+        //Gets the value for specific system info.
+        //takes in a string with the desired parameter.
+        //<para>
+        //Operating System Details.
+        //BootDevice
+        //BuildNumber
+        //BuildType
+        //Caption
+        //CodeSet
+        //CountryCode
+        //CreationClassName
+        //CSCreationClassName
+        //CSDVersion
+        //CSName
+        //CurrentTimeZone
+        //DataExecutionPrevention_32BitApplications
+        //DataExecutionPrevention_Available
+        //DataExecutionPrevention_Drivers
+        //DataExecutionPrevention_SupportPolicy
+        //Debug
+        //Description
+        //Distributed
+        //EncryptionLevel
+        //ForegroundApplicationBoost
+        //FreePhysicalMemory
+        //FreeSpaceInPagingFiles
+        //FreeVirtualMemory
+        //InstallDate
+        //LargeSystemCache
+        //LastBootUpTime
+        //LocalDateTime
+        //Locale
+        //Manufacturer
+        //MaxNumberOfProcesses
+        //MaxProcessMemorySize
+        //MUILanguages
+        //Name
+        //NumberOfLicensedUsers
+        //NumberOfProcesses
+        //NumberOfUsers
+        //OperatingSystemSKU
+        //Organization
+        //OSArchitecture
+        //OSLanguage
+        //OSProductSuite
+        //OSType
+        //OtherTypeDescription
+        //PAEEnabled
+        //PlusProductID
+        //PlusVersionNumber
+        //PortableOperatingSystem
+        //Primary
+        //ProductType
+        //RegisteredUser
+        //SerialNumber
+        //ServicePackMajorVersion
+        //ServicePackMinorVersion
+        //SizeStoredInPagingFiles
+        //Status
+        //SuiteMask
+        //SystemDevice
+        //SystemDirectory
+        //SystemDrive
+        //TotalSwapSpaceSize
+        //TotalVirtualMemorySize
+        //TotalVisibleMemorySize
+        //Version
+        //WindowsDirectory
+        //</para>
+        //</summery>
+        public static string SystemDetails(string info)
+        {
+            string propertie = null;
+            try
+            {
+                ManagementObjectSearcher osDetails = new ManagementObjectSearcher("SELECT * FROM Win32_operatingsystem");
+                ManagementObjectCollection osDetaislCollection = osDetails.Get();
+
+                int x = 0;
+
+                foreach (ManagementObject mo in osDetaislCollection)
+                {
+                    foreach (var pro in mo.Properties)
+                    {
+                        if (pro.Name == info)
+                        {
+                            propertie = pro.Value.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                Logger.Log("Error retriving System info details.", LogLevel.Error);
             }
 
             return propertie;
