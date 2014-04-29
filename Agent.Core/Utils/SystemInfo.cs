@@ -273,73 +273,73 @@ namespace Agent.Core.Utils
             return uptime;
         }
 
-        //<summary>
-        //Gets Motherboard info, need to send in string with parameter need
-        //one of this parameter names are need.
-        //<para>
-        //Motherboard Details.
-        //AdminPasswordStatus
-        //AutomaticManagedPagefile
-        //AutomaticResetBootOption
-        //AutomaticResetCapability
-        //BootOptionOnLimit
-        //BootOptionOnWatchDog
-        //BootROMSupported
-        //BootupState
-        //Caption
-        //ChassisBootupState
-        //CreationClassName
-        //CurrentTimeZone
-        //DaylightInEffect
-        //Description
-        //DNSHostName
-        //Domain
-        //DomainRole
-        //EnableDaylightSavingsTime
-        //FrontPanelResetStatus
-        //HypervisorPresent
-        //InfraredSupported
-        //InitialLoadInfo
-        //InstallDate
-        //KeyboardPasswordStatus
-        //LastLoadInfo
-        //Manufacturer
-        //Model
-        //Name
-        //NameFormat
-        //NetworkServerModeEnabled
-        //NumberOfLogicalProcessors
-        //NumberOfProcessors
-        //OEMLogoBitmap
-        //OEMStringArray
-        //PartOfDomain
-        //PauseAfterReset
-        //PCSystemType
-        //PCSystemTypeEx
-        //PowerManagementCapabilities
-        //PowerManagementSupported
-        //PowerOnPasswordStatus
-        //PowerState
-        //PowerSupplyState
-        //PrimaryOwnerContact
-        //PrimaryOwnerName
-        //ResetCapability
-        //ResetCount
-        //ResetLimit
-        //Roles
-        //Status
-        //SupportContactDescription
-        //SystemStartupDelay
-        //SystemStartupOptions
-        //SystemStartupSetting
-        //SystemType
-        //ThermalState
-        //TotalPhysicalMemory
-        //UserName
-        //WakeUpType
-        //Workgroup
-        //</para>
-        //</summary>
+       /// <summary>
+       /// Gets Motherboard info details aka "win32_computersystem".
+       /// </summary>
+       /// <param name="info">
+        ///Motherboard Details.
+        ///AdminPasswordStatus
+        ///AutomaticManagedPagefile
+        ///AutomaticResetBootOption
+        ///AutomaticResetCapability
+        ///BootOptionOnLimit
+        ///BootOptionOnWatchDog
+        ///BootROMSupported
+        ///BootupState
+        ///Caption
+        ///ChassisBootupState
+        ///CreationClassName
+        ///CurrentTimeZone
+        ///DaylightInEffect
+        ///Description
+        ///DNSHostName
+        ///Domain
+        ///DomainRole
+        ///EnableDaylightSavingsTime
+        ///FrontPanelResetStatus
+        ///HypervisorPresent
+        ///InfraredSupported
+        ///InitialLoadInfo
+        ///InstallDate
+        ///KeyboardPasswordStatus
+        ///LastLoadInfo
+        ///Manufacturer
+        ///Model
+        ///Name
+        ///NameFormat
+        ///NetworkServerModeEnabled
+        ///NumberOfLogicalProcessors
+        ///NumberOfProcessors
+        ///OEMLogoBitmap
+        ///OEMStringArray
+        ///PartOfDomain
+        ///PauseAfterReset
+        ///PCSystemType
+        ///PCSystemTypeEx
+        ///PowerManagementCapabilities
+        ///PowerManagementSupported
+        ///PowerOnPasswordStatus
+        ///PowerState
+        ///PowerSupplyState
+        ///PrimaryOwnerContact
+        ///PrimaryOwnerName
+        ///ResetCapability
+        ///ResetCount
+        ///ResetLimit
+        ///Roles
+        ///Status
+        ///SupportContactDescription
+        ///SystemStartupDelay
+        ///SystemStartupOptions
+        ///SystemStartupSetting
+        ///SystemType
+        ///ThermalState
+        ///TotalPhysicalMemory
+        ///UserName
+        ///WakeUpType
+        ///Workgroup
+       /// </param>
+       /// <returns>String with value from parameter.</returns>
         public static string MotherboardDetails(string info)
         {
             string propertie = null;
@@ -368,77 +368,77 @@ namespace Agent.Core.Utils
             return propertie;
         }
 
-        //<summary>
-        //Gets the value for specific system info.
-        //takes in a string with the desired parameter.
-        //<para>
-        //Operating System Details.
-        //BootDevice
-        //BuildNumber
-        //BuildType
-        //Caption
-        //CodeSet
-        //CountryCode
-        //CreationClassName
-        //CSCreationClassName
-        //CSDVersion
-        //CSName
-        //CurrentTimeZone
-        //DataExecutionPrevention_32BitApplications
-        //DataExecutionPrevention_Available
-        //DataExecutionPrevention_Drivers
-        //DataExecutionPrevention_SupportPolicy
-        //Debug
-        //Description
-        //Distributed
-        //EncryptionLevel
-        //ForegroundApplicationBoost
-        //FreePhysicalMemory
-        //FreeSpaceInPagingFiles
-        //FreeVirtualMemory
-        //InstallDate
-        //LargeSystemCache
-        //LastBootUpTime
-        //LocalDateTime
-        //Locale
-        //Manufacturer
-        //MaxNumberOfProcesses
-        //MaxProcessMemorySize
-        //MUILanguages
-        //Name
-        //NumberOfLicensedUsers
-        //NumberOfProcesses
-        //NumberOfUsers
-        //OperatingSystemSKU
-        //Organization
-        //OSArchitecture
-        //OSLanguage
-        //OSProductSuite
-        //OSType
-        //OtherTypeDescription
-        //PAEEnabled
-        //PlusProductID
-        //PlusVersionNumber
-        //PortableOperatingSystem
-        //Primary
-        //ProductType
-        //RegisteredUser
-        //SerialNumber
-        //ServicePackMajorVersion
-        //ServicePackMinorVersion
-        //SizeStoredInPagingFiles
-        //Status
-        //SuiteMask
-        //SystemDevice
-        //SystemDirectory
-        //SystemDrive
-        //TotalSwapSpaceSize
-        //TotalVirtualMemorySize
-        //TotalVisibleMemorySize
-        //Version
-        //WindowsDirectory
-        //</para>
-        //</summary>
+       /// <summary>
+       /// Gets the System info details aka "win32_operatingsystem".
+       /// </summary>
+       /// <param name="info">
+        ///Operating System Details.
+        ///BootDevice
+        ///BuildNumber
+        ///BuildType
+        ///Caption
+        ///CodeSet
+        ///CountryCode
+        ///CreationClassName
+        ///CSCreationClassName
+        ///CSDVersion
+        ///CSName
+        ///CurrentTimeZone
+        ///DataExecutionPrevention_32BitApplications
+        ///DataExecutionPrevention_Available
+        ///DataExecutionPrevention_Drivers
+        ///DataExecutionPrevention_SupportPolicy
+        ///Debug
+        ///Description
+        ///Distributed
+        ///EncryptionLevel
+        ///ForegroundApplicationBoost
+        ///FreePhysicalMemory
+        ///FreeSpaceInPagingFiles
+        ///FreeVirtualMemory
+        ///InstallDate
+        ///LargeSystemCache
+        ///LastBootUpTime
+        ///LocalDateTime
+        ///Locale
+        ///Manufacturer
+        ///MaxNumberOfProcesses
+        ///MaxProcessMemorySize
+        ///MUILanguages
+        ///Name
+        ///NumberOfLicensedUsers
+        ///NumberOfProcesses
+        ///NumberOfUsers
+        ///OperatingSystemSKU
+        ///Organization
+        ///OSArchitecture
+        ///OSLanguage
+        ///OSProductSuite
+        ///OSType
+        ///OtherTypeDescription
+        ///PAEEnabled
+        ///PlusProductID
+        ///PlusVersionNumber
+        ///PortableOperatingSystem
+        ///Primary
+        ///ProductType
+        ///RegisteredUser
+        ///SerialNumber
+        ///ServicePackMajorVersion
+        ///ServicePackMinorVersion
+        ///SizeStoredInPagingFiles
+        ///Status
+        ///SuiteMask
+        ///SystemDevice
+        ///SystemDirectory
+        ///SystemDrive
+        ///TotalSwapSpaceSize
+        ///TotalVirtualMemorySize
+        ///TotalVisibleMemorySize
+        ///Version
+        ///WindowsDirectory
+       /// </param>
+       /// <returns>String with the value.</returns>
         public static string SystemDetails(string info)
         {
             string propertie = null;
@@ -470,8 +470,7 @@ namespace Agent.Core.Utils
         }
  
         /// <summary>
-        /// Gets the value for the desired value.
-        /// use one of the following strings to request the info.
+        /// Gets the value for the desired value aka "win32_bios".
         /// </summary>
         /// <param name="info">
         ///Bios Details.
@@ -503,9 +502,7 @@ namespace Agent.Core.Utils
         ///TargetOperatingSystem
         ///Version
         /// </param>
-        /// <returns>
-        /// string with the value from the specified parameter.
-        /// </returns>
+        /// <returns>String with the value from the specified parameter.</returns>
         public static string BiosDetails(string info)
         {
             string propertie = null;
@@ -535,5 +532,7 @@ namespace Agent.Core.Utils
 
             return propertie;
         }
+    
+
     }
 }
