@@ -316,7 +316,7 @@ namespace Agent.Core.ServerOperations
         private void PluginNotFound(ISofOperation operation)
         {
             Logger.Log("Plugin {0} not found.", LogLevel.Error, operation.Plugin);
-
+            
             var e = new Exception(String.Format("Plugin {0} not found.", operation.Plugin));
             MajorFailure(operation, e);
         }

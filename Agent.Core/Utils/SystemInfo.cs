@@ -368,7 +368,7 @@ namespace Agent.Core.Utils
             return propertie;
         }
 
-        //<summery>
+        //<summary>
         //Gets the value for specific system info.
         //takes in a string with the desired parameter.
         //<para>
@@ -438,7 +438,7 @@ namespace Agent.Core.Utils
         //Version
         //WindowsDirectory
         //</para>
-        //</summery>
+        //</summary>
         public static string SystemDetails(string info)
         {
             string propertie = null;
@@ -468,6 +468,72 @@ namespace Agent.Core.Utils
 
             return propertie;
         }
+ 
+        /// <summary>
+        /// Gets the value for the desired value.
+        /// use one of the following strings to request the info.
+        /// </summary>
+        /// <param name="info">
+        ///Bios Details.
+        ///BiosCharacteristics
+        ///BIOSVersion
+        ///BuildNumber
+        ///Caption
+        ///CodeSet
+        ///CurrentLanguage
+        ///Description
+        ///IdentificationCode
+        ///InstallableLanguages
+        ///InstallDate
+        ///LanguageEdition
+        ///ListOfLanguages
+        ///Manufacturer
+        ///Name
+        ///OtherTargetOS
+        ///PrimaryBIOS
+        ///ReleaseDate
+        ///SerialNumber
+        ///SMBIOSBIOSVersion
+        ///SMBIOSMajorVersion
+        ///SMBIOSMinorVersion
+        ///SMBIOSPresent
+        ///SoftwareElementID
+        ///SoftwareElementState
+        ///Status
+        ///TargetOperatingSystem
+        ///Version
+        /// </param>
+        /// <returns>
+        /// string with the value from the specified parameter.
+        /// </returns>
+        public static string BiosDetails(string info)
+        {
+            string propertie = null;
+            try
+            {
+                ManagementObjectSearcher osDetails = new ManagementObjectSearcher("SELECT * FROM Win32_bios");
+                ManagementObjectCollection osDetaislCollection = osDetails.Get();
 
+                int x = 0;
+
+                foreach (ManagementObject mo in osDetaislCollection)
+                {
+                    foreach (var pro in mo.Properties)
+                    {
+                        if (pro.Name == info)
+                        {
+                            propertie = pro.Value.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                Logger.Log("Error retriving Bios info details.", LogLevel.Error);
+            }
+
+            return propertie;
+        }
     }
 }
