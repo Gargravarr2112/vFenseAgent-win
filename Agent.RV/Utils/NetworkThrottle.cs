@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -9,6 +8,14 @@ namespace Agent.RV.Utils
 {
     class NetworkThrottle
     {
+
+        /// <summary>
+        /// Download Bandwidth Throttle, using WebRequest, this method will download at the desired speed(kilobites/second).
+        /// </summary>
+        /// <param name="localPath">The local location where to download to.</param>
+        /// <param name="remotePath">The uri to where to download from.</param>
+        /// <param name="appName">The name of the "app" to which to be saved as on the local machine(LocalPath).</param>
+        /// <param name="bandwidth">The speed/size at which to download at, takes a byte variable, it will be kilobites/second.</param>
         static public void DownloadThrottle(string localPath, string remotePath, string appName, byte bandwidth)
         {
             int bytesProcessed = 0;
