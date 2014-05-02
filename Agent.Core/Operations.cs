@@ -79,6 +79,13 @@ namespace Agent.Core
             return text;
         }
 
+        // TODO: need to better mainstream this method and related method.
+        /// <summary>
+        /// Bridge before saving the received operation from the server to the disk to get process.
+        /// Used to work with different serialazation methods, now all work together. 
+        /// </summary>
+        /// <param name="operationJson">Json message from the server.</param>
+        /// <param name="opType">Operation to be performed.</param>
         public static void SaveOperationsToDisk(string operationJson, OperationType opType)
         {
             switch (opType)
@@ -324,6 +331,35 @@ namespace Agent.Core
             Serialize(operationJson);
         }
 
+        /// <summary>
+        /// Example of how a json from the server should look with an incoming operation.
+        /// [
+        ///    {
+        ///        "cpu_throttle": "normal", 
+        ///        "restart": "none", 
+        ///        "agent_id": "a3521251-4308-402c-9f4c-4fe357a445aa", 
+        ///        "plugin": "rv", 
+        ///        "operation_id": "6daa65599-499f-4d33-8edf-ba5653584180", 
+        ///        "operation": "install_agent_update", 
+        ///        "data": [
+        ///            {
+        ///                "name": "TopPatch Agent", 
+        ///                "uri": "https://toppatch.com/downloads/RVAgentUpdate_02_00_12.exe", 
+        ///                "uris" :[                      
+        ///                         "file_uris": "https://toppatch.com/downloads/RVAgentUpdate_02_00_12.exe",
+        ///                         "file_uris": "https://toppatch.com/downloads/RVAgentUpdate_02_00_12.exe"
+        ///                     ]
+        ///                "cli_options": "/qn UPDATE=\"true\" ",
+        ///                "id": "06676211e6b5ebd53df167cb837eefe53c75fa7127946b115bd32cc6c84f5e06"
+        ///            }
+        ///        ], 
+        ///        "net_throttle": "0"  
+        ///        "server_queue_ttl": "123456789",       
+        ///        "agent_queue_ttl" : "123456789"
+        ///    }
+        ///]
+        /// </summary>
+        /// <param name="operationJson">Message from the server.</param>
         private static void Serialize(string operationJson)
         {
             var parsed = JObject.Parse(operationJson);
