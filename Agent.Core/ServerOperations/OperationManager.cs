@@ -359,7 +359,7 @@ namespace Agent.Core.ServerOperations
             systeminfo.Add("version", SystemInfo.Version);
             systeminfo.Add("bit_type", SystemInfo.BitType);
             systeminfo.Add("computer_name", SystemInfo.ComputerName);
-            systeminfo.Add("host_name", SystemInfo.Fqdn);
+            systeminfo.Add("host_name", SystemInfo.FullyQualifiedDomainName);
 
             return systeminfo.ToString();
         }

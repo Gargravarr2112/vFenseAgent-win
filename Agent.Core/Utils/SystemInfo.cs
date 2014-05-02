@@ -12,6 +12,8 @@ namespace Agent.Core.Utils
 {
     public static class SystemInfo
     {
+
+        #region Get verious system information.
         private static string OsInfoKey(string key)
         {
             using (var rKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
@@ -130,7 +132,7 @@ namespace Agent.Core.Utils
             }
         }
 
-        public static string Fqdn
+        public static string FullyQualifiedDomainName
         {
             get
             {
@@ -183,6 +185,8 @@ namespace Agent.Core.Utils
             return Convert.ToInt32(type);
         }
 
+#endregion
+
         // http://msdn.microsoft.com/en-us/library/windows/desktop/ms684139(v=vs.85).aspx
         [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -191,6 +195,10 @@ namespace Agent.Core.Utils
             [Out] out bool wow64Process
         );
 
+        /// <summary>
+        /// Determins if system is 64/32bit.
+        /// </summary>
+        /// <returns>True for 64bit operating system.</returns>
         private static bool InternalCheckIsWow64()
         {
             // Windows XP and up. (XP 64bit is NT 5.2)
@@ -206,6 +214,10 @@ namespace Agent.Core.Utils
             return false;
         }
 
+        /// <summary>
+        /// Gets the system last boot up time.
+        /// </summary>
+        /// <returns>String with system last boot up time.</returns>
         private static string GetLastBootUptime()
         {
             string bootUpTime = null;
@@ -230,6 +242,12 @@ namespace Agent.Core.Utils
             return bootUpTime;
         }
 
+
+        /// <summary>
+        /// Convert time string format to "yyyymmddhhmmss".
+        /// </summary>
+        /// <param name="time">String of format time.</param>
+        /// <returns>DateTime structure: yyyymmddhhmmss.</returns>
         private static DateTime ConvertToDateTime(string time)
         {
             // Format: yyyymmddhhmmss
@@ -254,6 +272,11 @@ namespace Agent.Core.Utils
             return dateTime;
         }
 
+
+        /// <summary>
+        /// Generate the system uptime.
+        /// </summary>
+        /// <returns>Long second off uptime.</returns>
         public static long Uptime()
         {
             long uptime = 0;
