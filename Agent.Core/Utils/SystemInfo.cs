@@ -297,73 +297,74 @@ namespace Agent.Core.Utils
             return uptime;
         }
 
-       /// <summary>
-       /// Gets Motherboard info details aka "win32_computersystem".
-       /// </summary>
-       /// <param name="info">
+        /// <summary>
+        /// Gets Motherboard info details aka "win32_computersystem".
+        /// </summary>
+        /// <param name="info">
         ///Motherboard Details.
-        ///AdminPasswordStatus
-        ///AutomaticManagedPagefile
-        ///AutomaticResetBootOption
-        ///AutomaticResetCapability
-        ///BootOptionOnLimit
-        ///BootOptionOnWatchDog
-        ///BootROMSupported
-        ///BootupState
-        ///Caption
-        ///ChassisBootupState
-        ///CreationClassName
-        ///CurrentTimeZone
-        ///DaylightInEffect
-        ///Description
-        ///DNSHostName
-        ///Domain
-        ///DomainRole
-        ///EnableDaylightSavingsTime
-        ///FrontPanelResetStatus
-        ///HypervisorPresent
-        ///InfraredSupported
-        ///InitialLoadInfo
-        ///InstallDate
-        ///KeyboardPasswordStatus
-        ///LastLoadInfo
-        ///Manufacturer
-        ///Model
-        ///Name
-        ///NameFormat
-        ///NetworkServerModeEnabled
-        ///NumberOfLogicalProcessors
-        ///NumberOfProcessors
-        ///OEMLogoBitmap
-        ///OEMStringArray
-        ///PartOfDomain
-        ///PauseAfterReset
-        ///PCSystemType
-        ///PCSystemTypeEx
-        ///PowerManagementCapabilities
-        ///PowerManagementSupported
-        ///PowerOnPasswordStatus
-        ///PowerState
-        ///PowerSupplyState
-        ///PrimaryOwnerContact
-        ///PrimaryOwnerName
-        ///ResetCapability
-        ///ResetCount
-        ///ResetLimit
-        ///Roles
-        ///Status
-        ///SupportContactDescription
-        ///SystemStartupDelay
-        ///SystemStartupOptions
-        ///SystemStartupSetting
-        ///SystemType
-        ///ThermalState
-        ///TotalPhysicalMemory
-        ///UserName
-        ///WakeUpType
-        ///Workgroup
-       /// </param>
-       /// <returns>String with value from parameter.</returns>
+        /// 
+        /// AdminPasswordStatus - 3
+        ///AutomaticManagedPagefile - False
+        ///AutomaticResetBootOption - True
+        ///AutomaticResetCapability - True
+        ///BootOptionOnLimit -
+        ///BootOptionOnWatchDog -
+        ///BootROMSupported - True
+        ///BootupState - Normal boot
+        ///Caption - Name-PC
+        ///ChassisBootupState - 3
+        ///CreationClassName - Win32_ComputerSystem
+        ///CurrentTimeZone - -240
+        ///DaylightInEffect - True
+        ///Description - AT/AT COMPATIBLE
+        ///DNSHostName - Name-PC
+        ///Domain - WORKGROUP
+        ///DomainRole - 0
+        ///EnableDaylightSavingsTime - True
+        ///FrontPanelResetStatus - 3
+        ///HypervisorPresent - False
+        ///InfraredSupported - False
+        ///InitialLoadInfo -
+        ///InstallDate -
+        ///KeyboardPasswordStatus - 3
+        ///LastLoadInfo -
+        ///Manufacturer - EVGA INTERNATIONAL CO.,LTD
+        ///Model - E679 1.1.1
+        ///Name - Name-PC
+        ///NameFormat -
+        ///NetworkServerModeEnabled - True
+        ///NumberOfLogicalProcessors - 8
+        ///NumberOfProcessors - 1
+        ///OEMLogoBitmap -
+        ///OEMStringArray - System.String[]
+        ///PartOfDomain - False
+        ///PauseAfterReset - -1
+        ///PCSystemType - 1
+        ///PCSystemTypeEx - 1
+        ///PowerManagementCapabilities -
+        ///PowerManagementSupported -
+        ///PowerOnPasswordStatus - 3
+        ///PowerState - 0
+        ///PowerSupplyState - 3
+        ///PrimaryOwnerContact -
+        ///PrimaryOwnerName - email@gmail.com
+        ///ResetCapability - 1
+        ///ResetCount - -1
+        ///ResetLimit - -1
+        ///Roles - System.String[]
+        ///Status - OK
+        ///SupportContactDescription -
+        ///SystemStartupDelay -
+        ///SystemStartupOptions -
+        ///SystemStartupSetting -
+        ///SystemType - x64-based PC
+        ///ThermalState - 3
+        ///TotalPhysicalMemory - 17145245696
+        ///UserName - Name-PC\DOODS-PC\UserName
+        ///WakeUpType - 6
+        ///Workgroup - WORKGROUP
+        /// </param>
+        /// <returns>String with value from parameter.</returns>
         public static string MotherboardDetails(string info)
         {
             string propertie = null;
@@ -397,70 +398,71 @@ namespace Agent.Core.Utils
        /// </summary>
        /// <param name="info">
         ///Operating System Details.
-        ///BootDevice
-        ///BuildNumber
-        ///BuildType
-        ///Caption
-        ///CodeSet
-        ///CountryCode
-        ///CreationClassName
-        ///CSCreationClassName
-        ///CSDVersion
-        ///CSName
-        ///CurrentTimeZone
-        ///DataExecutionPrevention_32BitApplications
-        ///DataExecutionPrevention_Available
-        ///DataExecutionPrevention_Drivers
-        ///DataExecutionPrevention_SupportPolicy
-        ///Debug
-        ///Description
-        ///Distributed
-        ///EncryptionLevel
-        ///ForegroundApplicationBoost
-        ///FreePhysicalMemory
-        ///FreeSpaceInPagingFiles
-        ///FreeVirtualMemory
-        ///InstallDate
-        ///LargeSystemCache
-        ///LastBootUpTime
-        ///LocalDateTime
-        ///Locale
-        ///Manufacturer
-        ///MaxNumberOfProcesses
-        ///MaxProcessMemorySize
-        ///MUILanguages
-        ///Name
-        ///NumberOfLicensedUsers
-        ///NumberOfProcesses
-        ///NumberOfUsers
-        ///OperatingSystemSKU
-        ///Organization
-        ///OSArchitecture
-        ///OSLanguage
-        ///OSProductSuite
-        ///OSType
-        ///OtherTypeDescription
-        ///PAEEnabled
-        ///PlusProductID
-        ///PlusVersionNumber
-        ///PortableOperatingSystem
-        ///Primary
-        ///ProductType
-        ///RegisteredUser
-        ///SerialNumber
-        ///ServicePackMajorVersion
-        ///ServicePackMinorVersion
-        ///SizeStoredInPagingFiles
-        ///Status
-        ///SuiteMask
-        ///SystemDevice
-        ///SystemDirectory
-        ///SystemDrive
-        ///TotalSwapSpaceSize
-        ///TotalVirtualMemorySize
-        ///TotalVisibleMemorySize
-        ///Version
-        ///WindowsDirectory
+        /// 
+        /// BootDevice - \Device\HarddiskVolume3
+        /// BuildNumber - 9600
+        /// BuildType - Multiprocessor Free
+        /// Caption - Microsoft Windows 8.1 Pro
+        /// CodeSet - 1252
+        /// CountryCode - 1
+        /// CreationClassName - Win32_OperatingSystem
+        /// CSCreationClassName - Win32_ComputerSystem
+        /// CSDVersion -
+        /// CSName - Name-PC
+        /// CurrentTimeZone - -240
+        /// DataExecutionPrevention_32BitApplications - True
+        /// DataExecutionPrevention_Available - True
+        /// DataExecutionPrevention_Drivers - True
+        /// DataExecutionPrevention_SupportPolicy - 2
+        /// Debug - False
+        /// Description -
+        /// Distributed - False
+        /// EncryptionLevel - 256
+        /// ForegroundApplicationBoost - 2
+        /// FreePhysicalMemory - 6216788
+        /// FreeSpaceInPagingFiles - 238576
+        /// FreeVirtualMemory - 4432440
+        /// InstallDate - 20131112234328.000000-300
+        /// LargeSystemCache -
+        /// LastBootUpTime - 20140502123847.491494-240
+        /// LocalDateTime - 20140502170907.553000-240
+        /// Locale - 0409
+        /// Manufacturer - Microsoft Corporation
+        /// MaxNumberOfProcesses - 4294967295
+        /// MaxProcessMemorySize - 137438953344
+        /// MUILanguages - System.String[]
+        /// Name - Microsoft Windows 8.1 Pro|C:\WINDOWS|\Device\Harddisk1\Partition2
+        /// NumberOfLicensedUsers -
+        /// NumberOfProcesses - 115
+        /// NumberOfUsers - 2
+        /// OperatingSystemSKU - 48
+        /// Organization -
+        /// OSArchitecture - 64-bit
+        /// OSLanguage - 1033
+        /// OSProductSuite - 256
+        /// OSType - 18
+        /// OtherTypeDescription -
+        /// PAEEnabled -
+        /// PlusProductID -
+        /// PlusVersionNumber -
+        /// PortableOperatingSystem - False
+        /// Primary - True
+        /// ProductType - 1
+        /// RegisteredUser - email@gmail.com
+        /// SerialNumber - 12653-22520-01254-AAOEM
+        /// ServicePackMajorVersion - 0
+        /// ServicePackMinorVersion - 0
+        /// SizeStoredInPagingFiles - 1081344
+        /// Status - OK
+        /// SuiteMask - 272
+        /// SystemDevice - \Device\HarddiskVolume4
+        /// SystemDirectory - C:\WINDOWS\system32
+        /// SystemDrive - C:
+        /// TotalSwapSpaceSize -
+        /// TotalVirtualMemorySize - 17824748
+        /// TotalVisibleMemorySize - 16743404
+        /// Version - 6.3.9600
+        /// WindowsDirectory - C:\WINDOWS
        /// </param>
        /// <returns>String with the value.</returns>
         public static string SystemDetails(string info)
@@ -498,33 +500,34 @@ namespace Agent.Core.Utils
         /// </summary>
         /// <param name="info">
         ///Bios Details.
-        ///BiosCharacteristics
-        ///BIOSVersion
-        ///BuildNumber
-        ///Caption
-        ///CodeSet
-        ///CurrentLanguage
-        ///Description
-        ///IdentificationCode
-        ///InstallableLanguages
-        ///InstallDate
-        ///LanguageEdition
-        ///ListOfLanguages
-        ///Manufacturer
-        ///Name
-        ///OtherTargetOS
-        ///PrimaryBIOS
-        ///ReleaseDate
-        ///SerialNumber
-        ///SMBIOSBIOSVersion
-        ///SMBIOSMajorVersion
-        ///SMBIOSMinorVersion
-        ///SMBIOSPresent
-        ///SoftwareElementID
-        ///SoftwareElementState
-        ///Status
-        ///TargetOperatingSystem
-        ///Version
+        /// 
+        /// BiosCharacteristics - System.UInt16[]
+        /// BIOSVersion - System.String[]
+        /// BuildNumber -
+        /// Caption - BIOS Date: 03/01/13 16:41:21 Ver: 04.06.05
+        /// CodeSet -
+        /// CurrentLanguage - en|US|iso8859-1
+        /// Description - BIOS Date: 03/01/13 16:41:21 Ver: 04.06.05
+        /// IdentificationCode -
+        /// InstallableLanguages - 1
+        /// InstallDate -
+        /// LanguageEdition -
+        /// ListOfLanguages - System.String[]
+        /// Manufacturer - American Megatrends Inc.
+        /// Name - BIOS Date: 03/01/13 16:41:21 Ver: 04.06.05
+        /// OtherTargetOS -
+        /// PrimaryBIOS - True
+        /// ReleaseDate - 20130301000000.000000+000
+        /// SerialNumber - To Be Filled By O.E.M.
+        /// SMBIOSBIOSVersion - 4.6.5
+        /// SMBIOSMajorVersion - 2
+        /// SMBIOSMinorVersion - 7
+        /// SMBIOSPresent - True
+        /// SoftwareElementID - BIOS Date: 03/01/13 16:41:21 Ver: 04.06.05
+        /// SoftwareElementState - 3
+        /// Status - OK
+        /// TargetOperatingSystem - 0
+        /// Version - ALASKA - 1072009
         /// </param>
         /// <returns>String with the value from the specified parameter.</returns>
         public static string BiosDetails(string info)
@@ -562,57 +565,59 @@ namespace Agent.Core.Utils
         /// </summary>
         /// <param name="info">
         ///Processor Details.
-        ///AddressWidth
-        ///Architecture
-        ///Availability
-        ///Caption
-        ///ConfigManagerErrorCode
-        ///ConfigManagerUserConfig
-        ///CpuStatus
-        ///CreationClassName
-        ///CurrentClockSpeed
-        ///CurrentVoltage
-        ///DataWidth
-        ///Description
-        ///DeviceID
-        ///ErrorCleared
-        ///ErrorDescription
-        ///ExtClock
-        ///Family
-        ///InstallDate
-        ///L2CacheSize
-        ///L2CacheSpeed
-        ///L3CacheSize
-        ///L3CacheSpeed
-        ///LastErrorCode
-        ///Level
-        ///LoadPercentage
-        ///Manufacturer
-        ///MaxClockSpeed
-        ///Name
-        ///NumberOfCores
-        ///NumberOfLogicalProcessors
-        ///OtherFamilyDescription
-        ///PNPDeviceID
-        ///PowerManagementCapabilities
-        ///PowerManagementSupported
-        ///ProcessorId
-        ///ProcessorType
-        ///Revision
-        ///Role
-        ///SecondLevelAddressTranslationExtensions
-        ///SocketDesignation
-        ///Status
-        ///StatusInfo
-        ///Stepping
-        ///SystemCreationClassName
-        ///SystemName
-        ///UniqueId
-        ///UpgradeMethod
-        ///Version
-        ///VirtualizationFirmwareEnabled
-        ///VMMonitorModeExtensions
-        ///VoltageCaps
+        ///
+        /// AddressWidth - 64
+        /// Architecture - 9
+        /// Availability - 3
+        /// Caption - Intel64 Family 6 Model 42 Stepping 7
+        /// ConfigManagerErrorCode -
+        /// ConfigManagerUserConfig -
+        /// CpuStatus - 1
+        /// CreationClassName - Win32_Processor
+        /// CurrentClockSpeed - 3501
+        /// CurrentVoltage -
+        /// DataWidth - 64
+        /// Description - Intel64 Family 6 Model 42 Stepping 7
+        /// DeviceID - CPU0
+        /// ErrorCleared -
+        /// ErrorDescription -
+        /// ExtClock - 100
+        /// Family - 198
+        /// InstallDate -
+        /// L2CacheSize - 1024
+        /// L2CacheSpeed -
+        /// L3CacheSize - 8192
+        /// L3CacheSpeed - 0
+        /// LastErrorCode -
+        /// Level - 6
+        /// LoadPercentage -
+        /// Manufacturer - GenuineIntel
+        /// MaxClockSpeed - 3501
+        /// Name - Intel(R) Core(TM) i7-2700K CPU @ 3.50GHz
+        /// NumberOfCores - 4
+        /// NumberOfLogicalProcessors - 8
+        /// OtherFamilyDescription -
+        /// PNPDeviceID -
+        /// PowerManagementCapabilities -
+        /// PowerManagementSupported - False
+        /// ProcessorId - BFEBFBFF000206A7
+        /// ProcessorType - 3
+        /// Revision - 10759
+        /// Role - CPU
+        /// SecondLevelAddressTranslationExtensions - True
+        /// SocketDesignation - SOCKET 0
+        /// Status - OK
+        /// StatusInfo - 3
+        /// Stepping -
+        /// SystemCreationClassName - Win32_ComputerSystem
+        /// SystemName - Name-PC
+        /// UniqueId -
+        /// UpgradeMethod - 36
+        /// Version -
+        /// VirtualizationFirmwareEnabled - True
+        /// VMMonitorModeExtensions - True
+        /// VoltageCaps - 3
+        /// 
         /// </param>
         /// <returns>String with value from specified parameter.</returns>
         public static string ProcessorDetails(string info)
