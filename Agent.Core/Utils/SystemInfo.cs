@@ -14,124 +14,12 @@ namespace Agent.Core.Utils
     {
 
         #region Get verious system information.
-        //private static string OsInfoKey(string key)
-        //{
-        //    using (var rKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
-        //    {
-        //        return ((rKey == null) || (rKey.GetValue(key) == null)) ? String.Empty : rKey.GetValue(key).ToString();
-        //    }
-        //}
-
+        
         public static string Code
         {
             get { return "windows"; }
         }
-
-        //public static string Name
-        //{
-        //    get 
-        //    {
-        //        try
-        //        {
-        //            return OsInfoKey("ProductName");
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            Logger.Log("Exception: {0}", LogLevel.Error, e.Message);
-        //            if (e.InnerException != null)
-        //            {
-        //                Logger.Log("Inner exception: {0}", LogLevel.Error, e.InnerException.Message);
-        //            }
-        //            Logger.Log("Could not get os string.", LogLevel.Error);
-        //            return Settings.EmptyValue;
-        //        }
-        //    }
-        //}
-
-        //public static string ServicePack
-        //{
-        //    get
-        //    {
-        //        try
-        //        {
-        //            OperatingSystem os = Environment.OSVersion;
-        //            var sp = os.ServicePack;
-        //            return sp;
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            Logger.Log("Exception: {0}", LogLevel.Error, e.Message);
-        //            if (e.InnerException != null)
-        //            {
-        //                Logger.Log("Inner exception: {0}", LogLevel.Error, e.InnerException.Message);
-        //            }
-        //            Logger.Log("Could not get os string.", LogLevel.Error);
-        //            return Settings.EmptyValue;
-        //        }
-        //    }
-        //}
-
-        //public static string Version
-        //{
-        //    get 
-        //    {
-        //        try
-        //        {
-        //            var os = Environment.OSVersion;
-        //            var version = String.Format(@"{0}.{1}.{2}", os.Version.Major, os.Version.Minor, os.Version.Build);
-        //            return version;
-        //        }
-        //        catch (InvalidOperationException e)
-        //        {
-        //            Logger.Log("Exception: {0}", LogLevel.Error, e.Message);
-        //            if (e.InnerException != null)
-        //            {
-        //                Logger.Log("Inner exception: {0}", LogLevel.Error, e.InnerException.Message);
-        //            }
-        //            Logger.Log("Could not get OS version details.", LogLevel.Error);
-        //            return Settings.EmptyValue;
-        //        }
-        //    }
-        //}
-
-        //public static int BitType
-        //{
-        //    get 
-        //    {
-        //        try
-        //        {
-        //            return Bits();
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            Logger.Log("Exception: {0}", LogLevel.Error, e.Message);
-        //            if (e.InnerException != null)
-        //            {
-        //                Logger.Log("Inner exception: {0}", LogLevel.Error, e.InnerException.Message);
-        //            }
-        //            Logger.Log("Could not get bit type.", LogLevel.Error);
-        //            return 0;
-        //        }
-        //    }
-        //}
-
-        //public static string ComputerName
-        //{
-        //    get
-        //    {
-        //        try
-        //        {
-        //            return Environment.MachineName;
-        //        }
-        //        catch(InvalidOperationException e)
-        //        {
-        //            Logger.Log("Could not get Machine/Computer Name.", LogLevel.Error);
-        //            Logger.LogException(e);
-        //            return Settings.EmptyValue;
-        //        }
-        //    }
-        //}
-
+        
         public static string FullyQualifiedDomainName
         {
             get
@@ -177,14 +65,7 @@ namespace Agent.Core.Utils
                 return is64BitProcess || InternalCheckIsWow64();
             }
         }
-
-        //private static int Bits()
-        //{
-
-        //    var type = (IsWindows64Bit) ? "64" : "32";
-        //    return Convert.ToInt32(type);
-        //}
-
+        
 #endregion
 
         // http://msdn.microsoft.com/en-us/library/windows/desktop/ms684139(v=vs.85).aspx
@@ -213,41 +94,12 @@ namespace Agent.Core.Utils
             }
             return false;
         }
-
+        
         /// <summary>
-        /// Gets the system last boot up time.
+        /// Converts the systems last up time format into a yyyymmddhhmmss format.
         /// </summary>
-        /// <returns>String with system last boot up time.</returns>
-        private static string GetLastBootUptime()
-        {
-            string bootUpTime = null;
-
-            try
-            {
-                var searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_OperatingSystem");
-
-                foreach (ManagementObject queryObj in searcher.Get())
-                {
-                    if (queryObj["LastBootUpTime"] == null) continue;
-                    bootUpTime = queryObj["LastBootUpTime"].ToString();
-                    break;
-                }
-            }
-            catch (ManagementException e)
-            {
-                Logger.Log("Could not find the last boot up time.", LogLevel.Error);
-                Logger.LogException(e);
-            }
-
-            return bootUpTime;
-        }
-
-
-        /// <summary>
-        /// Convert time string format to "yyyymmddhhmmss".
-        /// </summary>
-        /// <param name="time">String of format time.</param>
-        /// <returns>DateTime structure: yyyymmddhhmmss.</returns>
+        /// <param name="time">System last up time.</param>
+        /// <returns>DateTime variable structured yyyymmddhhmmss.</returns>
         private static DateTime ConvertToDateTime(string time)
         {
             // Format: yyyymmddhhmmss
@@ -276,14 +128,14 @@ namespace Agent.Core.Utils
         /// <summary>
         /// Generate the system uptime.
         /// </summary>
-        /// <returns>Long second off uptime.</returns>
+        /// <returns>Long, seconds of uptime.</returns>
         public static long Uptime()
         {
             long uptime = 0;
 
             try
             {
-                var boot = GetLastBootUptime();
+                var boot = SystemDetails("LastBootUpTime");
                 var bootTime = ConvertToDateTime(boot);
                 var ts = DateTime.Now - bootTime;
                 uptime = Convert.ToInt64(ts.TotalSeconds);

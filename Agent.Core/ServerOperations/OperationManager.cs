@@ -356,7 +356,7 @@ namespace Agent.Core.ServerOperations
 
             systeminfo.Add("os_code", SystemInfo.Code);
             systeminfo.Add("os_string", osNamePlusServicePack);
-            systeminfo.Add("version", int.Parse(SystemInfo.SystemDetails("Version")));
+            systeminfo.Add("version", SystemInfo.SystemDetails("Version"));
             systeminfo.Add("bit_type", SystemInfo.ProcessorDetails("AddressWidth"));
             systeminfo.Add("computer_name", SystemInfo.SystemDetails("CSName"));
             systeminfo.Add("host_name", SystemInfo.FullyQualifiedDomainName);
