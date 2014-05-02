@@ -14,123 +14,123 @@ namespace Agent.Core.Utils
     {
 
         #region Get verious system information.
-        private static string OsInfoKey(string key)
-        {
-            using (var rKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
-            {
-                return ((rKey == null) || (rKey.GetValue(key) == null)) ? String.Empty : rKey.GetValue(key).ToString();
-            }
-        }
+        //private static string OsInfoKey(string key)
+        //{
+        //    using (var rKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
+        //    {
+        //        return ((rKey == null) || (rKey.GetValue(key) == null)) ? String.Empty : rKey.GetValue(key).ToString();
+        //    }
+        //}
 
         public static string Code
         {
             get { return "windows"; }
         }
 
-        public static string Name
-        {
-            get 
-            {
-                try
-                {
-                    return OsInfoKey("ProductName");
-                }
-                catch (Exception e)
-                {
-                    Logger.Log("Exception: {0}", LogLevel.Error, e.Message);
-                    if (e.InnerException != null)
-                    {
-                        Logger.Log("Inner exception: {0}", LogLevel.Error, e.InnerException.Message);
-                    }
-                    Logger.Log("Could not get os string.", LogLevel.Error);
-                    return Settings.EmptyValue;
-                }
-            }
-        }
+        //public static string Name
+        //{
+        //    get 
+        //    {
+        //        try
+        //        {
+        //            return OsInfoKey("ProductName");
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Logger.Log("Exception: {0}", LogLevel.Error, e.Message);
+        //            if (e.InnerException != null)
+        //            {
+        //                Logger.Log("Inner exception: {0}", LogLevel.Error, e.InnerException.Message);
+        //            }
+        //            Logger.Log("Could not get os string.", LogLevel.Error);
+        //            return Settings.EmptyValue;
+        //        }
+        //    }
+        //}
 
-        public static string ServicePack
-        {
-            get
-            {
-                try
-                {
-                    OperatingSystem os = Environment.OSVersion;
-                    var sp = os.ServicePack;
-                    return sp;
-                }
-                catch (Exception e)
-                {
-                    Logger.Log("Exception: {0}", LogLevel.Error, e.Message);
-                    if (e.InnerException != null)
-                    {
-                        Logger.Log("Inner exception: {0}", LogLevel.Error, e.InnerException.Message);
-                    }
-                    Logger.Log("Could not get os string.", LogLevel.Error);
-                    return Settings.EmptyValue;
-                }
-            }
-        }
+        //public static string ServicePack
+        //{
+        //    get
+        //    {
+        //        try
+        //        {
+        //            OperatingSystem os = Environment.OSVersion;
+        //            var sp = os.ServicePack;
+        //            return sp;
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Logger.Log("Exception: {0}", LogLevel.Error, e.Message);
+        //            if (e.InnerException != null)
+        //            {
+        //                Logger.Log("Inner exception: {0}", LogLevel.Error, e.InnerException.Message);
+        //            }
+        //            Logger.Log("Could not get os string.", LogLevel.Error);
+        //            return Settings.EmptyValue;
+        //        }
+        //    }
+        //}
 
-        public static string Version
-        {
-            get 
-            {
-                try
-                {
-                    var os = Environment.OSVersion;
-                    var version = String.Format(@"{0}.{1}.{2}", os.Version.Major, os.Version.Minor, os.Version.Build);
-                    return version;
-                }
-                catch (InvalidOperationException e)
-                {
-                    Logger.Log("Exception: {0}", LogLevel.Error, e.Message);
-                    if (e.InnerException != null)
-                    {
-                        Logger.Log("Inner exception: {0}", LogLevel.Error, e.InnerException.Message);
-                    }
-                    Logger.Log("Could not get OS version details.", LogLevel.Error);
-                    return Settings.EmptyValue;
-                }
-            }
-        }
+        //public static string Version
+        //{
+        //    get 
+        //    {
+        //        try
+        //        {
+        //            var os = Environment.OSVersion;
+        //            var version = String.Format(@"{0}.{1}.{2}", os.Version.Major, os.Version.Minor, os.Version.Build);
+        //            return version;
+        //        }
+        //        catch (InvalidOperationException e)
+        //        {
+        //            Logger.Log("Exception: {0}", LogLevel.Error, e.Message);
+        //            if (e.InnerException != null)
+        //            {
+        //                Logger.Log("Inner exception: {0}", LogLevel.Error, e.InnerException.Message);
+        //            }
+        //            Logger.Log("Could not get OS version details.", LogLevel.Error);
+        //            return Settings.EmptyValue;
+        //        }
+        //    }
+        //}
 
-        public static int BitType
-        {
-            get 
-            {
-                try
-                {
-                    return Bits();
-                }
-                catch (Exception e)
-                {
-                    Logger.Log("Exception: {0}", LogLevel.Error, e.Message);
-                    if (e.InnerException != null)
-                    {
-                        Logger.Log("Inner exception: {0}", LogLevel.Error, e.InnerException.Message);
-                    }
-                    Logger.Log("Could not get bit type.", LogLevel.Error);
-                    return 0;
-                }
-            }
-        }
+        //public static int BitType
+        //{
+        //    get 
+        //    {
+        //        try
+        //        {
+        //            return Bits();
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Logger.Log("Exception: {0}", LogLevel.Error, e.Message);
+        //            if (e.InnerException != null)
+        //            {
+        //                Logger.Log("Inner exception: {0}", LogLevel.Error, e.InnerException.Message);
+        //            }
+        //            Logger.Log("Could not get bit type.", LogLevel.Error);
+        //            return 0;
+        //        }
+        //    }
+        //}
 
-        public static string ComputerName
-        {
-            get
-            {
-                try
-                {
-                    return Environment.MachineName;
-                }
-                catch(InvalidOperationException e)
-                {
-                    Logger.Log("Could not get Machine/Computer Name.", LogLevel.Error);
-                    Logger.LogException(e);
-                    return Settings.EmptyValue;
-                }
-            }
-        }
+        //public static string ComputerName
+        //{
+        //    get
+        //    {
+        //        try
+        //        {
+        //            return Environment.MachineName;
+        //        }
+        //        catch(InvalidOperationException e)
+        //        {
+        //            Logger.Log("Could not get Machine/Computer Name.", LogLevel.Error);
+        //            Logger.LogException(e);
+        //            return Settings.EmptyValue;
+        //        }
+        //    }
+        //}
 
         public static string FullyQualifiedDomainName
         {
@@ -178,12 +178,12 @@ namespace Agent.Core.Utils
             }
         }
 
-        private static int Bits()
-        {
+        //private static int Bits()
+        //{
 
-            var type = (IsWindows64Bit) ? "64" : "32";
-            return Convert.ToInt32(type);
-        }
+        //    var type = (IsWindows64Bit) ? "64" : "32";
+        //    return Convert.ToInt32(type);
+        //}
 
 #endregion
 
@@ -407,7 +407,7 @@ namespace Agent.Core.Utils
         /// CountryCode - 1
         /// CreationClassName - Win32_OperatingSystem
         /// CSCreationClassName - Win32_ComputerSystem
-        /// CSDVersion -
+        /// CSDVersion - Service Pack
         /// CSName - Name-PC
         /// CurrentTimeZone - -240
         /// DataExecutionPrevention_32BitApplications - True

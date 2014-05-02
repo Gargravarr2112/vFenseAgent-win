@@ -352,14 +352,15 @@ namespace Agent.Core.ServerOperations
         {
             var systeminfo = new JObject();
 
-            var osNamePlusServicePack = SystemInfo.Name + " " + SystemInfo.ServicePack;
+            var osNamePlusServicePack = SystemInfo.SystemDetails("Caption") + " " + SystemInfo.SystemDetails("CSDVersion");
 
             systeminfo.Add("os_code", SystemInfo.Code);
             systeminfo.Add("os_string", osNamePlusServicePack);
-            systeminfo.Add("version", SystemInfo.Version);
-            systeminfo.Add("bit_type", SystemInfo.BitType);
-            systeminfo.Add("computer_name", SystemInfo.ComputerName);
+            systeminfo.Add("version", int.Parse(SystemInfo.SystemDetails("Version")));
+            systeminfo.Add("bit_type", SystemInfo.ProcessorDetails("AddressWidth"));
+            systeminfo.Add("computer_name", SystemInfo.SystemDetails("CSName"));
             systeminfo.Add("host_name", SystemInfo.FullyQualifiedDomainName);
+            systeminfo.Add("machine_type", SystemInfo.MotherboardDetails("Manufacturer"));
 
             return systeminfo.ToString();
         }
