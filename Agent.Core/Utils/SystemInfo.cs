@@ -1,5 +1,7 @@
 ﻿using System;
 using System.CodeDom;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
+using System.Text;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -503,5 +505,105 @@ namespace Agent.Core.Utils
             return propertie;
         }
 
+        /// <summary>
+        /// Retrieves disk drives(HD) info ont he computer, as per "win32_diskdrive".
+        /// It will generate a string with all the info avalable for each disk.
+        /// Each info requested will be separed by "|".
+        /// </summary>
+        /// <param name="info">
+        /// Disk Drive Details.
+        /// Per Disk
+        /// 
+        /// Availability -
+        /// BytesPerSector - 512
+        /// Capabilities - System.UInt16[]
+        /// CapabilityDescriptions - System.String[]
+        /// Caption - Samsung SSD 840 PRO Series
+        /// CompressionMethod -
+        /// ConfigManagerErrorCode - 0
+        /// ConfigManagerUserConfig - False
+        /// CreationClassName - Win32_DiskDrive
+        /// DefaultBlockSize -
+        /// Description - Disk drive
+        /// DeviceID - \\.\PHYSICALDRIVE3
+        /// ErrorCleared -
+        /// ErrorDescription -
+        /// ErrorMethodology -
+        /// FirmwareRevision - DXM05B0Q
+        /// Index - 3
+        /// InstallDate -
+        /// InterfaceType - IDE
+        /// LastErrorCode -
+        /// Manufacturer - (Standard disk drives)
+        /// MaxBlockSize -
+        /// MaxMediaSize -
+        /// MediaLoaded - True
+        /// MediaType - Fixed hard disk media
+        /// MinBlockSize -
+        /// Model - Samsung SSD 840 PRO Series
+        /// Name - \\.\PHYSICALDRIVE3
+        /// NeedsCleaning -
+        /// NumberOfMediaSupported -
+        /// Partitions - 1
+        /// PNPDeviceID - SCSI\DISK&VEN_SAMSUNG&PROD_SSD_840_PRO_SERI\7&ECD9645&0&0000 
+        /// PowerManagementCapabilities -
+        /// PowerManagementSupported -
+        /// SCSIBus - 0
+        /// SCSILogicalUnit - 0
+        /// SCSIPort - 3
+        /// SCSITargetId - 0
+        /// SectorsPerTrack - 63
+        /// SerialNumber - S1ATNEAD528912Z
+        /// Signature - 1440165922
+        /// Size - 256052966400
+        /// Status - OK
+        /// StatusInfo -
+        /// SystemCreationClassName - Win32_ComputerSystem
+        /// SystemName - Name-PC
+        /// TotalCylinders - 31130
+        /// TotalHeads - 255
+        /// TotalSectors - 500103450
+        /// TotalTracks - 7938150
+        /// TracksPerCylinder - 255
+        /// </param>
+        /// <param name="size">Set to true if need to add size per disk to the string.</param>
+        /// <returns>
+        /// String with each disk info requested, seperated by "|".
+        /// If size set to "true", string will include disk size per disk.
+        ///</returns>
+        public static string DiskDriveDetails(string info, bool size = false)
+        {
+            StringBuilder buildstring = new StringBuilder();
+            string properties = null;
+            try
+            {
+                ManagementObjectSearcher osDetails = new ManagementObjectSearcher("SELECT * FROM Win32_diskdrive");
+                ManagementObjectCollection osDetaislCollection = osDetails.Get();
+                
+                foreach (ManagementObject mo in osDetaislCollection)
+                {
+                    foreach (var pro in mo.Properties)
+                    {
+                        if (pro.Name == info)
+                        {
+                            buildstring.Append(pro.Value.ToString()).Append("|");
+                            //if request for size if send true, it will get the size for available HD
+                            if (size)
+                            {
+                                if (pro.Name == "Size")
+                                    buildstring.Append(pro.Value.ToString()).Append("|");
+                            }
+                        }
+                    }
+                }
+                properties = buildstring.ToString();
+            }
+            catch
+            {
+                Logger.Log("Error while gathering Disk Drive Details.", LogLevel.Error);
+            }
+            
+            return properties;
+        }
     }
 }
