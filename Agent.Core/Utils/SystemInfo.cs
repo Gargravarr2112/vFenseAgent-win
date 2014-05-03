@@ -605,5 +605,90 @@ namespace Agent.Core.Utils
             
             return properties;
         }
+
+        /// <summary>
+        /// Retrives Physical Memory Details(RAM).
+        /// It will generate a string with all info from all available bank.
+        /// Per stick of ram(bank), installed on computer.
+        /// String detail info will be seperated by "|".
+        /// </summary>
+        /// <param name="info">
+        /// Physical Memory Details(RAM).
+        /// Per bank installed.
+        /// 
+        /// BankLabel - BANK 0
+        /// Capacity - 4294967296
+        /// Caption - Physical Memory
+        /// CreationClassName - Win32_PhysicalMemory
+        /// DataWidth - 64
+        /// Description - Physical Memory
+        /// DeviceLocator - ChannelA-DIMM0
+        /// FormFactor - 8
+        /// HotSwappable -
+        /// InstallDate -
+        /// InterleaveDataDepth - 2
+        /// InterleavePosition - 1
+        /// Manufacturer - 04CD
+        /// MemoryType - 0
+        /// Model -
+        /// Name - Physical Memory
+        /// OtherIdentifyingInfo -
+        /// PartNumber - F3-17000CL9-4GBXM
+        /// PositionInRow -
+        /// PoweredOn -
+        /// Removable -
+        /// Replaceable -
+        /// SerialNumber - 00000000
+        /// SKU -
+        /// Speed - 2133
+        /// Status -
+        /// Tag - Physical Memory 0
+        /// TotalWidth - 64
+        /// TypeDetail - 128
+        /// Version -
+        /// </param>
+        /// <param name="size">Set to true if need to add bank size per bank to string.</param>
+        /// <returns>
+        /// String with required details.
+        /// If size == true, bank size will be include in the string.
+        /// String details will be seperated by "|".
+        /// </returns>
+        public static string PhysicalMemoryDetails(string info, bool size = false)
+        {
+
+            StringBuilder buildstring = new StringBuilder();
+            string properties = null;
+            try
+            {
+                ManagementObjectSearcher osDetails = new ManagementObjectSearcher("SELECT * FROM Win32_PhysicalMemory");
+                ManagementObjectCollection osDetaislCollection = osDetails.Get();
+
+                foreach (ManagementObject mo in osDetaislCollection)
+                {
+                    foreach (var pro in mo.Properties)
+                    {
+                        if (pro.Name == info)
+                        {
+                            buildstring.Append(pro.Value.ToString()).Append("|");
+                            //if request for size if send true, it will get the size for each bank.
+                            if (size)
+                            {
+                                if (pro.Name == "Capacity")
+                                    buildstring.Append(pro.Value.ToString()).Append("|");
+                            }
+                        }
+                    }
+                }
+                properties = buildstring.ToString();
+            }
+            catch
+            {
+                Logger.Log("Error while gathering Physical Memory Details.", LogLevel.Error);
+            }
+
+            return properties;  
+
+        }
+
     }
 }
