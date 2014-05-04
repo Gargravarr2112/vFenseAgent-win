@@ -241,7 +241,7 @@ namespace Agent.Core.Utils
             }
             catch
             {
-                Logger.Log("Error retriving Motherboard info details.", LogLevel.Error);
+                Logger.Log("Error retriving Motherboard info details, parameter-{0}.", LogLevel.Error, info);
             }
 
             return propertie;
@@ -343,7 +343,7 @@ namespace Agent.Core.Utils
             }
             catch
             {
-                Logger.Log("Error retriving System info details.", LogLevel.Error);
+                Logger.Log("Error retriving System info details, parameter-{0}.", LogLevel.Error, info);
             }
 
             return propertie;
@@ -408,7 +408,7 @@ namespace Agent.Core.Utils
             }
             catch
             {
-                Logger.Log("Error retriving Bios info details.", LogLevel.Error);
+                Logger.Log("Error retriving Bios info details, parameter-{0}.", LogLevel.Error, info);
             }
 
             return propertie;
@@ -498,7 +498,7 @@ namespace Agent.Core.Utils
             }
             catch
             {
-                Logger.Log("Error retriving Processor info details.", LogLevel.Error);
+                Logger.Log("Error retriving Processor info details, parameter-{0}.", LogLevel.Error, info);
             }
         
 
@@ -600,7 +600,7 @@ namespace Agent.Core.Utils
             }
             catch
             {
-                Logger.Log("Error while gathering Disk Drive Details.", LogLevel.Error);
+                Logger.Log("Error while gathering Disk Drive Details., parameter-{0}", LogLevel.Error, info);
             }
             
             return properties;
@@ -683,7 +683,7 @@ namespace Agent.Core.Utils
             }
             catch
             {
-                Logger.Log("Error while gathering Physical Memory Details.", LogLevel.Error);
+                Logger.Log("Error while gathering Physical Memory Details, parameter-{0}.", LogLevel.Error, info);
             }
 
             return properties;  
