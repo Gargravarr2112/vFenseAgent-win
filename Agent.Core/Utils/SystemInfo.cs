@@ -165,6 +165,10 @@ namespace Agent.Core.Utils
             return harddriveinfo;
         }
 
+        /// <summary>
+        /// Gets the total amount of RAM memory on the system.
+        /// </summary>
+        /// <returns>Returns a long variable with total amount of ram on the system.</returns>
         public static long GetMemory()
         {
             string allMemory = PhysicalMemoryDetails("Capacity");
