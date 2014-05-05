@@ -167,7 +167,7 @@ namespace Agent.Core.Utils
 
         public static long GetMemory()
         {
-            string allMemory = PhysicalMemoryDetails("Size");
+            string allMemory = PhysicalMemoryDetails("Capacity");
             string[] MemBank = allMemory.Split('|');
             long memory = 0;
 
@@ -186,6 +186,7 @@ namespace Agent.Core.Utils
                     }
                 }
             }
+            memory = (memory/1024);
 
             return memory;
         }
