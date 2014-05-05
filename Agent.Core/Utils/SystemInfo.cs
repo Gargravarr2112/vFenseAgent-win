@@ -103,6 +103,16 @@ namespace Agent.Core.Utils
         {
             var videoInfo = new JObject();
 
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+
             return videoInfo;
         }
 
@@ -455,7 +465,6 @@ namespace Agent.Core.Utils
                 ManagementObjectSearcher osDetails = new ManagementObjectSearcher("SELECT * FROM Win32_operatingsystem");
                 ManagementObjectCollection osDetaislCollection = osDetails.Get();
 
-                int x = 0;
 
                 foreach (ManagementObject mo in osDetaislCollection)
                 {
@@ -520,7 +529,6 @@ namespace Agent.Core.Utils
                 ManagementObjectSearcher osDetails = new ManagementObjectSearcher("SELECT * FROM Win32_bios");
                 ManagementObjectCollection osDetaislCollection = osDetails.Get();
 
-                int x = 0;
 
                 foreach (ManagementObject mo in osDetaislCollection)
                 {
@@ -609,9 +617,7 @@ namespace Agent.Core.Utils
             {
                 ManagementObjectSearcher osDetails = new ManagementObjectSearcher("SELECT * FROM Win32_processor");
                 ManagementObjectCollection osDetaislCollection = osDetails.Get();
-
-                int x = 0;
-
+                
                 foreach (ManagementObject mo in osDetaislCollection)
                 {
                     foreach (var pro in mo.Properties)
@@ -629,6 +635,102 @@ namespace Agent.Core.Utils
                 Logger.Log("Error retriving Processor info details, parameter-{0}.", LogLevel.Error, info);
             }
         
+
+            return propertie;
+        }
+
+        /// <summary>
+        /// Gets the video detaisl as per the win32_videocontroller.
+        /// </summary>
+        /// <param name="info">
+        /// Video Controller properties.
+        /// 
+        /// AcceleratorCapabilities -
+        /// AdapterCompatibility - Advanced Micro Devices, Inc.
+        /// AdapterDACType - Internal DAC(400MHz)
+        /// AdapterRAM - 3221225472
+        /// Availability - 3
+        /// CapabilityDescriptions -
+        /// Caption - AMD Radeon HD 7900 Series
+        /// ColorTableEntries -
+        /// ConfigManagerErrorCode - 0
+        /// ConfigManagerUserConfig - False
+        /// CreationClassName - Win32_VideoController
+        /// CurrentBitsPerPixel - 32
+        /// CurrentHorizontalResolution - 1920
+        /// CurrentNumberOfColors - 4294967296
+        /// CurrentNumberOfColumns - 0
+        /// CurrentNumberOfRows - 0
+        /// CurrentRefreshRate - 60
+        /// CurrentScanMode - 4
+        /// CurrentVerticalResolution - 1080
+        /// Description - AMD Radeon HD 7900 Series
+        /// DeviceID - VideoController1
+        /// DeviceSpecificPens -
+        /// DitherType - 0
+        /// DriverDate - 20140417000000.000000-000
+        /// DriverVersion - 14.100.0.0
+        /// ErrorCleared -
+        /// ErrorDescription -
+        /// ICMIntent -
+        /// ICMMethod -
+        /// InfFilename - oem73.inf
+        /// InfSection - ati2mtag_R575
+        /// InstallDate -
+        /// InstalledDisplayDrivers - aticfx64.dll,aticfx64.dll,aticfx64.dll,aticfx32,x32,aticfx32,atiumd64.dll,atidxx64.dll,atidxx64.dll,atiumdag,atidxx32,atidxtiumdva,atiumd6a.cap,atitmm64.dll
+        /// LastErrorCode -
+        /// MaxMemorySupported -
+        /// MaxNumberControlled -
+        /// MaxRefreshRate - 60
+        /// MinRefreshRate - 60
+        /// Monochrome - False
+        /// Name - AMD Radeon HD 7900 Series
+        /// NumberOfColorPlanes -
+        /// NumberOfVideoPages -
+        /// PNPDeviceID - PCI\VEN_1002&DEV_6798&SUBSYS_044C1043&REV_00\4&3CF2B21&0&000
+        /// PowerManagementCapabilities -
+        /// PowerManagementSupported -
+        /// ProtocolSupported -
+        /// ReservedSystemPaletteEntries -
+        /// SpecificationVersion -
+        /// Status - OK
+        /// StatusInfo -
+        /// SystemCreationClassName - Win32_ComputerSystem
+        /// SystemName - Name-PC
+        /// SystemPaletteEntries -
+        /// TimeOfLastReset -
+        /// VideoArchitecture - 5
+        /// VideoMemoryType - 2
+        /// VideoMode -
+        /// VideoModeDescription - 1920 x 1080 x 4294967296 colors
+        /// VideoProcessor - AMD Radeon Graphics Processor (0x6798)
+        /// </param>
+        /// <returns>Return a string with value from the asked properie.</returns>
+        public static string VideoDetails(string info)
+        {
+            string propertie = null;
+            try
+            {
+                ManagementObjectSearcher osDetails = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
+                ManagementObjectCollection osDetaislCollection = osDetails.Get();
+
+
+                foreach (ManagementObject mo in osDetaislCollection)
+                {
+                    foreach (var pro in mo.Properties)
+                    {
+                        if (pro.Name == info)
+                        {
+                            propertie = pro.Value.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                Logger.Log("Error retriving Video info details, parameter-{0}.", LogLevel.Error, info);
+            }
 
             return propertie;
         }
