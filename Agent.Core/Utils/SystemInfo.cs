@@ -99,13 +99,19 @@ namespace Agent.Core.Utils
             return cpuInfo;
         }
 
+        /// <summary>
+        /// Gets the required video(display) information for the server.
+        /// </summary>
+        /// <returns>Returns a JObject with the required information.</returns>
         public static JObject GetVideoInfo()
         {
             var videoInfo = new JObject();
 
             try
             {
-
+                videoInfo["name"] = VideoDetails("Caption");
+                videoInfo["speed_mhz"] = VideoDetails("AdapterDACType");
+                videoInfo["ram_kb"] = VideoDetails("AdapterRAM");
             }
             catch (Exception)
             {
@@ -119,8 +125,34 @@ namespace Agent.Core.Utils
         public static JObject GetNetwork()
         {
             var networkInfo = new JObject();
+            var controller = new JObject();
+            try
+            {
+                foreach (var net in NetworkInterface.GetAllNetworkInterfaces())
+                {
+                    if (net.OperationalStatus == OperationalStatus.Up &&
+                        (net.NetworkInterfaceType == NetworkInterfaceType.Ethernet
+                         || net.NetworkInterfaceType == NetworkInterfaceType.Wireless80211))
+                    {
+                        //Obtain IP for the particular Interface
+                        foreach (var ip in net.GetIPProperties().UnicastAddresses)
+                        {
+                            if (ip.Address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork) continue;
+                            controller.Add("ip_address", ip.Address.ToString());
+                            controller.Add("mac", net.GetPhysicalAddress().ToString());
+                            controller.Add("name", net.Name);
+                            break;
+                        }
 
-            return networkInfo;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return controller;
         }
 
         /// <summary>
