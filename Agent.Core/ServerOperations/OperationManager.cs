@@ -379,7 +379,8 @@ namespace Agent.Core.ServerOperations
                 hardwareinfo["cpu"] = cpu;
                 hardwareinfo["display"] = display;
                 hardwareinfo["network"] = network;
-                hardwareinfo["harddrive"] = harddrive;
+                hardwareinfo["storage"] = harddrive;
+                hardwareinfo["memory"] = SystemInfo.GetMemory();
             }
             catch (Exception)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom;
+using System.Globalization;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using Microsoft.Win32;
@@ -69,6 +70,10 @@ namespace Agent.Core.Utils
             }
         }
 
+        /// <summary>
+        /// Gets the info required by the server for the CPU.
+        /// </summary>
+        /// <returns>Returns JObject with the CPU info.</returns>
         public static JObject GetCpuInfo()
         {
             var cpuInfo = new JObject();
@@ -108,12 +113,83 @@ namespace Agent.Core.Utils
             return networkInfo;
         }
 
+        /// <summary>
+        /// Gets the HD information requeried by the server.
+        /// </summary>
+        /// <returns>Returns JObect with the HD info.</returns>
         public static JObject GetHardDrive()
         {
             var harddriveinfo = new JObject();
 
+            try
+            {
+                var drivesarray = Environment.GetLogicalDrives();
+
+                foreach (var drive in drivesarray)
+                {
+                    var di = new System.IO.DriveInfo(drive);
+                    if (!di.IsReady) continue;
+                    if ((di.DriveType != System.IO.DriveType.Fixed) && (di.DriveType != System.IO.DriveType.Removable))
+                        continue;
+                    long tmpHdSize;
+                    long tmpHdFree;
+
+                    var name = ((di.VolumeLabel == null) || (di.VolumeLabel.Equals(String.Empty))) ? di.Name : di.VolumeLabel;
+                    name = name.Replace("\\", "");
+                    var Size = di.TotalSize.ToString(CultureInfo.InvariantCulture);
+                    var InterfaceType = di.DriveFormat;
+                    var FreeSpace = di.TotalFreeSpace.ToString(CultureInfo.InvariantCulture);
+
+                    var converted = Int64.TryParse(Size, out tmpHdSize);
+                    converted = Int64.TryParse(FreeSpace, out tmpHdFree);
+
+
+                    if (converted)
+                    {
+                        tmpHdSize = tmpHdSize / 1024; //Convert to KB from Bytes
+                        tmpHdFree = tmpHdFree / 1024;
+                    }
+
+                    harddriveinfo["name"] = name;
+                    harddriveinfo["file_system"] = InterfaceType;
+                    harddriveinfo["file_kb"] = tmpHdSize.ToString(CultureInfo.InvariantCulture);
+                    harddriveinfo["free_size_kb"] = tmpHdFree.ToString(CultureInfo.InvariantCulture);
+                }
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+
             return harddriveinfo;
         }
+
+        public static long GetMemory()
+        {
+            string allMemory = PhysicalMemoryDetails("Size");
+            string[] MemBank = allMemory.Split('|');
+            long memory = 0;
+
+            foreach (string bank in MemBank)
+            {
+                if (!string.IsNullOrEmpty(bank))
+                {
+                    try
+                    {
+                        long x = long.Parse(bank);
+                        memory = memory + x;
+                    }
+                    catch (Exception)
+                    {
+                        
+                    }
+                }
+            }
+
+            return memory;
+        }
+
 
 #endregion
 
