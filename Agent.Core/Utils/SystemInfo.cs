@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Net.NetworkInformation;
 using System.Net;
 using System.Management;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace Agent.Core.Utils
@@ -67,7 +68,53 @@ namespace Agent.Core.Utils
                 return is64BitProcess || InternalCheckIsWow64();
             }
         }
-        
+
+        public static JObject GetCpuInfo()
+        {
+            var cpuInfo = new JObject();
+            try
+            {
+                cpuInfo["cpu_id"] = ProcessorDetails("DeviceID");
+                cpuInfo["name"] = ProcessorDetails("Name");
+                cpuInfo["bit_type"] = ProcessorDetails("DataWidth");
+                cpuInfo["speed_mhz"] = ProcessorDetails("MaxClockSpeed");
+                cpuInfo["cores"] = ProcessorDetails("NumberOfCores");
+                //get check for l2 and l3 cache, and get the highest level
+                if (string.IsNullOrEmpty(ProcessorDetails("L3CacheSize")))
+                    cpuInfo["cache_kb"] = ProcessorDetails("L3CacheSize");
+                else 
+                    cpuInfo["cache_kb"] = ProcessorDetails("L2CacheSize");
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return cpuInfo;
+        }
+
+        public static string GetVideoInfo()
+        {
+            var videoInfo = new JObject();
+
+            return videoInfo.ToString();
+        }
+
+        public static string GetNetwork()
+        {
+            var networkInfo = new JObject();
+
+            return networkInfo.ToString();
+        }
+
+        public static string GetHardDrive()
+        {
+            var harddriveinfo = new JObject();
+
+            return harddriveinfo.ToString();
+        }
+
 #endregion
 
         // http://msdn.microsoft.com/en-us/library/windows/desktop/ms684139(v=vs.85).aspx

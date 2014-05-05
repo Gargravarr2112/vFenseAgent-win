@@ -4,6 +4,7 @@ using System.Threading;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Agent.Core.Utils;
+using RestSharp;
 
 namespace Agent.Core.ServerOperations
 {
@@ -278,7 +279,7 @@ namespace Agent.Core.ServerOperations
             json[OperationKey.Customer] = Settings.Customer;
             json[OperationKey.Rebooted] = Tools.IsBootUp();
             json[OperationKey.SystemInfo] = JObject.Parse(GetSystemInfo());
-            json[OperationKey.HardwareInfo] = JObject.Parse(SystemInfo.Hardware);
+            json[OperationKey.HardwareInfo] = JObject.Parse(GetHardwareInfo());
             
             var plugins = new JObject();
             
@@ -363,6 +364,30 @@ namespace Agent.Core.ServerOperations
             systeminfo.Add("machine_type", SystemInfo.MotherboardDetails("Manufacturer"));
 
             return systeminfo.ToString();
+        }
+
+        private static string GetHardwareInfo()
+        {
+            var hardwareinfo = new JObject();
+
+            try
+            {
+                var cpu = new JArray(SystemInfo.GetCpuInfo());
+                var display = new JArray(SystemInfo.GetVideoInfo());
+                var network = new JArray(SystemInfo.GetNetwork());
+                var harddrive = new JArray(SystemInfo.GetNetwork());
+                hardwareinfo["cpu"] = cpu;
+                hardwareinfo["display"] = display;
+                hardwareinfo["network"] = network;
+                hardwareinfo["harddrive"] = harddrive;
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+
+            return hardwareinfo.ToString();
         }
 
         private bool AddToOperationQueue(string operation)
