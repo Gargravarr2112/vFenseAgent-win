@@ -375,7 +375,7 @@ namespace Agent.Core.ServerOperations
                 var cpu = new JArray(SystemInfo.GetCpuInfo());
                 var display = new JArray(SystemInfo.GetVideoInfo());
                 var network = new JArray(SystemInfo.GetNetwork());
-                var harddrive = new JArray(SystemInfo.GetNetwork());
+                var harddrive = new JArray(SystemInfo.GetHardDrive());
                 hardwareinfo["cpu"] = cpu;
                 hardwareinfo["display"] = display;
                 hardwareinfo["network"] = network;

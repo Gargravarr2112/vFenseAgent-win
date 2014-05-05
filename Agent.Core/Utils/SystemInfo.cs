@@ -94,25 +94,25 @@ namespace Agent.Core.Utils
             return cpuInfo;
         }
 
-        public static string GetVideoInfo()
+        public static JObject GetVideoInfo()
         {
             var videoInfo = new JObject();
 
-            return videoInfo.ToString();
+            return videoInfo;
         }
 
-        public static string GetNetwork()
+        public static JObject GetNetwork()
         {
             var networkInfo = new JObject();
 
-            return networkInfo.ToString();
+            return networkInfo;
         }
 
-        public static string GetHardDrive()
+        public static JObject GetHardDrive()
         {
             var harddriveinfo = new JObject();
 
-            return harddriveinfo.ToString();
+            return harddriveinfo;
         }
 
 #endregion
