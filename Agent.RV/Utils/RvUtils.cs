@@ -10,9 +10,9 @@ namespace Agent.RV.Utils
     public static class RvUtils
     {
         /// <summary>
-        ///     This controls the automatic restarting on Windows 8 if Critical system updates are installed.
+        /// This controls the automatic restarting on Windows 8 if Critical system updates are installed.
         /// </summary>
-        /// <param name="enable"></param>
+        /// <param name="enable">Used to enable auto restart, default = true.</param>
         public static void Windows8AutoRestart(bool enable = true)
         {
             const string win8AutoRestartKey = "Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU";
@@ -87,46 +87,10 @@ namespace Agent.RV.Utils
             }
         }
 
-        public static void ThrottleCpu(CpuThrottleValue throttleValue)
-        {
-            var priority = ProcessPriorityClass.Normal;
-
-            switch (throttleValue)
-            {
-                case CpuThrottleValue.Idle:
-                    priority = ProcessPriorityClass.Idle;
-                    break;
-                case CpuThrottleValue.Normal:
-                    priority = ProcessPriorityClass.Normal;
-                    break;
-                case CpuThrottleValue.AboveNormal:
-                    priority = ProcessPriorityClass.AboveNormal;
-                    break;
-                case CpuThrottleValue.BelowNormal:
-                    priority = ProcessPriorityClass.BelowNormal;
-                    break;
-                case CpuThrottleValue.High:
-                    priority = ProcessPriorityClass.High;
-                    break;
-                default:
-                    priority = ProcessPriorityClass.Normal;
-                    break;
-            }
-
-            foreach (Process proc in Process.GetProcesses())
-            {
-                if (proc.ProcessName.Equals("TrustedInstaller"))
-                {
-                    Logger.Log("Found TrustedInstaller running.", LogLevel.Debug);
-                    Logger.Log("Priority Before Change: {0}", LogLevel.Debug, proc.PriorityClass);
-                    proc.PriorityClass = priority;
-                    Logger.Log("Priority After Change: {0}", LogLevel.Debug, proc.PriorityClass);
-                    return;
-                }
-            }
-            Logger.Log("Could not find the TrustedInstaller service/process running.", LogLevel.Error);
-        }
-
+        /// <summary>
+        /// Used to send restart command to the system.
+        /// </summary>
+        /// <param name="secondsToShutdown">Seconds to wait till restart, default 60 seconds.</param>
         public static void RestartSystem(int secondsToShutdown = 60)
         {
             /*
@@ -145,7 +109,7 @@ namespace Agent.RV.Utils
             Process.Start(processInfo);
         }
 
-        // Create an MD5 hash digest of a file
+        #region methods to generate HASH file tags.
         public static string Md5HashFile(string fn)
         {
             try
@@ -188,6 +152,7 @@ namespace Agent.RV.Utils
                 return String.Empty;
             }
         }
+        #endregion
 
     }
 }
