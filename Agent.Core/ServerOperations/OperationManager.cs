@@ -472,7 +472,7 @@ namespace Agent.Core.ServerOperations
             systeminfo.Add("bit_type", SystemInfo.ProcessorDetails("AddressWidth"));
             systeminfo.Add("computer_name", SystemInfo.SystemDetails("CSName"));
             systeminfo.Add("host_name", SystemInfo.FullyQualifiedDomainName);
-            systeminfo.Add("machine_type", SystemInfo.MotherboardDetails("Manufacturer"));
+            systeminfo.Add("machine_type", SystemInfo.GetMachineType());
 
             return systeminfo.ToString();
         }

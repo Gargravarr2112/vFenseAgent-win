@@ -52,6 +52,60 @@ namespace Agent.Core.Utils
                 }
             } 
         }
+
+        /// <summary>
+        /// Determines if the machine is running on a virtual machine.
+        /// Uses a switch case to determine the type, default is physical.
+        /// May add more vitual machine as needed.
+        /// Current vitural machine name may be changed to match input from system.
+        /// </summary>
+        /// <returns>Returns a string with machine or physical.</returns>
+        public static string GetMachineType()
+        {
+            string type = null;
+            string model = MotherboardDetails("Model");
+
+            switch (model)
+            {
+                case "VMware Virtual Platform":
+                    type = ("Virtual: " + model);
+                    break;
+                    
+                case "VirtualBox":
+                    type = ("Virtual: " + model);
+                    break;
+
+                case "KVM":
+                    type = ("Virtual: " + model);
+                    break;
+
+                case "Bochs":
+                    type = ("Virtual: " + model);
+                    break;
+
+                case "Microsoft VirtualPC":
+                    type = ("Virtual: " + model);
+                    break;
+
+                case "Virtuozzo":
+                    type = ("Virtual: " + model);
+                    break;
+
+                case "Xen":
+                    type = ("Virtual: " + model);
+                    break;
+
+                case "Qemu":
+                    type = ("Virtual: " + model);
+                    break;
+
+                default:
+                    type = "Physical";
+                    break;
+            }
+
+            return type;
+        }
         
         /// <summary>
         /// Gets, if OS is 64bit or 32bit
@@ -239,6 +293,7 @@ namespace Agent.Core.Utils
 
             return memory;
         }
+
 
 
 #endregion
