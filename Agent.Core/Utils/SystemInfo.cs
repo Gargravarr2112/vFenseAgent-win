@@ -18,11 +18,11 @@ namespace Agent.Core.Utils
     {
 
         #region Get verious system information.
-        
+
+        //TODO: Setting the os code to windows manually, need to make it smarted and detect it on its own.
         /// <summary>
         /// Sets the OS code to windows.
         /// </summary>
-        //TODO: Setting the os code to windows manually, need to make it smarted and detect it on its own.
         public static string Code
         {
             get { return "windows"; }
