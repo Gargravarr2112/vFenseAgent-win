@@ -19,6 +19,10 @@ namespace Agent.Core.Utils
 
         #region Get verious system information.
         
+        /// <summary>
+        /// Sets the OS code to windows.
+        /// </summary>
+        //TODO: Setting the os code to windows manually, need to make it smarted and detect it on its own.
         public static string Code
         {
             get { return "windows"; }
@@ -48,16 +52,10 @@ namespace Agent.Core.Utils
                 }
             } 
         }
-
-        public static string Hardware
-        {
-            get
-            {
-                var specs = new HardwareSpecs();
-                return specs.GetAllHardwareSpecs();
-            }
-        }
-
+        
+        /// <summary>
+        /// Gets, if OS is 64bit or 32bit
+        /// </summary>
         public static bool IsWindows64Bit
         {
             get
@@ -122,6 +120,11 @@ namespace Agent.Core.Utils
             return videoInfo;
         }
 
+        /// <summary>
+        /// Gets the network information as per the requiremtns of the server.
+        /// 
+        /// </summary>
+        /// <returns>Returns JObject with network info in it.</returns>
         public static JObject GetNetwork()
         {
             var networkInfo = new JObject();
