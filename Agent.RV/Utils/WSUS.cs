@@ -2,17 +2,25 @@
 
 namespace Agent.RV.Utils
 {
+
+    /// <summary>
+    /// Class checks if WSUS is enable on the system.
+    /// Check various properties and registry keys on the system that determine different status of WSUS.
+    /// Info available at: https://github.com/toppatch/vFenseAgent-win/wiki/Registry-keys-for-configuring-Automatic-Updates-&-WSUS
+    /// </summary>
     public static class WSUS
     {
-
+        //Registry key where WSUS properties are resgitered.
         private const string WinUpdate = @"Software\Policies\Microsoft\Windows\WindowsUpdate";
         private const string InternetCom = @"SYSTEM\Internet\Communication Management\Internet Communication";
         private const string AutoUpdate = @"Software\Policies\Microsoft\Windows\WindowsUpdate\AU";
-
-
+        
         //WSUS Server URL
         private static string _wsusServer = "";
 
+        /// <summary>
+        /// Gets the WSUS server link.
+        /// </summary>
         public static string GetServerWSUS
         {
             get
@@ -21,6 +29,30 @@ namespace Agent.RV.Utils
             }
         }
 
+        /// <summary>
+        /// Check is WSUS is enable on the system.
+        /// Check using:
+        /// HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate
+        /// summary:
+        /// Entry name					Data type	Values
+        /// 
+        /// DisableWindowsUpdateAccess	Reg_DWORD	1 = Disables access to Windows Update.
+        /// 										0 = Enables access to Windows Update
+        /// 										
+        /// WUServer					Reg_SZ		HTTP(S) URL of the WSUS server that is
+        /// 										used by Automatic Updates and API 
+        /// 										callers (by default). This policy is 
+        /// 										paired with WUStatusServer, and both 
+        /// 										keys must be set to the same value to be valid.
+        /// 										
+        /// WUStatusServer				Reg_SZ		The HTTP(S) URL of the server to which 
+        /// 										reporting information is sent for client 
+        /// 										computers that use the WSUS server that is 
+        /// 										configured by the WUServer key. This policy 
+        /// 										is paired with WUServer, and both keys must 
+        /// 										be set to the same value to be valid.
+        /// </summary>
+        /// <returns>Returns bool for WSUS enable or disable.</returns>
         public static bool IsWSUSEnabled()
         {
             bool WSUSKeyON = false;
@@ -80,6 +112,30 @@ namespace Agent.RV.Utils
             }
         }
 
+        /// <summary>
+        /// Check is the access to the Windows Updates are allowed.
+        /// Using the registry key values in:
+        /// HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate
+        /// 
+        /// Entry name					Data type	Values
+        /// 
+        /// DisableWindowsUpdateAccess	Reg_DWORD	1 = Disables access to Windows Update.
+        /// 										0 = Enables access to Windows Update
+        /// 										
+        /// WUServer					Reg_SZ		HTTP(S) URL of the WSUS server that is
+        /// 										used by Automatic Updates and API 
+        /// 										callers (by default). This policy is 
+        /// 										paired with WUStatusServer, and both 
+        /// 										keys must be set to the same value to be valid.
+        /// 										
+        /// WUStatusServer				Reg_SZ		The HTTP(S) URL of the server to which 
+        /// 										reporting information is sent for client 
+        /// 										computers that use the WSUS server that is 
+        /// 										configured by the WUServer key. This policy 
+        /// 										is paired with WUServer, and both keys must 
+        /// 										be set to the same value to be valid.
+        /// </summary>
+        /// <returns>Returns bool for access to the Windows Update access</returns>
         public static bool IsWindowsUpdateAccessDisabled()
         {
             //"Software\Policies\Microsoft\Windows\WindowsUpdate"
@@ -106,8 +162,36 @@ namespace Agent.RV.Utils
             if (rkwinupdate != null) rkwinupdate.Close();
             return false;
         }
-
-        //If enabled, blocks access to "http://windowsupdate.microsoft.com"
+        
+        /// <summary>
+        /// Check if the internet communication to Windows Updates is disable.
+        /// If enabled, blocks access to "http://windowsupdate.microsoft.com".
+        /// Using registry in the registry key location:
+        /// HKEY_LOCAL_MACHINE\SYSTEM\Internet Communication Management\Internet Communication
+        /// example:
+        /// 
+        /// Entry name					Data type	Corresponding Group 	Values
+        /// 										Policy Setting			
+        /// 
+        /// DisableWindowsUpdateAccess	Reg_DWORD	Turn off access to		1 = Enabled. All Windows Update 
+        /// 										all Windows Update		features are removed. This includes 
+        /// 										features				blocking access to the Windows Update 
+        /// 																website at http://windowsupdate.microsoft.com, 
+        /// 																from the Windows Update hyperlink on the Start 
+        /// 																menu, and also on the Tools menu in Internet 
+        /// 																Explorer. Windows automatic updating is also 
+        /// 																disabled; you will neither be notified about 
+        /// 																nor will you receive critical updates from 
+        /// 																Windows Update. This setting also prevents 
+        /// 																Device Manager from automatically installing 
+        /// 																driver updates from the Windows Update website.		
+        /// 																
+        /// 																0 = Disabled or not configured. Users will be 
+        /// 																able to access the Windows Update website and 
+        /// 																enable automatic updating to receive notifications 
+        /// 																and critical updates from Windows Update..
+        /// </summary>
+        /// <returns>Returns bool.</returns>
         public static bool IsInternetCommWinUpdateAccessDisabled()
         {
             //"SYSTEM\Internet\Communication Management\Internet Communication"
@@ -141,7 +225,34 @@ namespace Agent.RV.Utils
             return false;
         }
 
-        //Returns the Automatic Update option that was setup.
+        /// <summary>
+        /// Checks the Registry keys for Automatic Update configuration options.
+        /// HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate\AU
+        /// 
+        /// Entry name		Data type	Values
+        /// 
+        /// AUOptions		Reg_DWORD	2 = Notify before download.
+        /// 							3 = Automatically download 
+        /// 							    and notify of installation.
+        /// 							4 = Automatically download 
+        /// 							    and schedule installation. 
+        /// 							    Only valid if values exist 
+        /// 							    for ScheduledInstallDay 
+        /// 							    and ScheduledInstallTime.
+        /// 							5 = Automatic Updates is 
+        /// 							    required and users can configure it.
+        /// 
+        /// NoAutoUpdate	Reg_DWORD	0 = Enable Automatic Updates.
+        /// 							1 = Disable Automatic Updates.
+        /// 							
+        /// UseWUServer		Reg_DWORD	1 = The computer gets its updates from a WSUS server.
+        /// 							0 = The computer gets its updates from Microsoft Update.
+        /// 							The WUServer value is not respected unless this key is set.
+        /// </summary>
+        /// <returns>
+        /// Returns the option setup on the system.
+        /// Using Enum AutomaticUpdateStatus.
+        /// </returns>
         public static AutomaticUpdateStatus GetAutomaticUpdatesOptions()
         {
             //Software\Policies\Microsoft\Windows\WindowsUpdate\AU
@@ -184,6 +295,33 @@ namespace Agent.RV.Utils
             return AutomaticUpdateStatus.Error;
         }
 
+        /// <summary>
+        /// Check if the WSUS Automatic update are enabled.
+        /// Gets registry Value "NoAutoUpdate".
+        /// HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate\AU
+        /// key values:
+        /// 
+        /// Entry name		Data type	Values
+        /// 
+        /// AUOptions		Reg_DWORD	2 = Notify before download.
+        /// 							3 = Automatically download 
+        /// 							    and notify of installation.
+        /// 							4 = Automatically download 
+        /// 							    and schedule installation. 
+        /// 							    Only valid if values exist 
+        /// 							    for ScheduledInstallDay 
+        /// 							    and ScheduledInstallTime.
+        /// 							5 = Automatic Updates is 
+        /// 							    required and users can configure it.
+        /// 
+        /// NoAutoUpdate	Reg_DWORD	0 = Enable Automatic Updates.
+        /// 							1 = Disable Automatic Updates.
+        /// 							
+        /// UseWUServer		Reg_DWORD	1 = The computer gets its updates from a WSUS server.
+        /// 							0 = The computer gets its updates from Microsoft Update.
+        /// 							The WUServer value is not respected unless this key is set.
+        /// </summary>
+        /// <returns></returns>
         public static bool IsAutomaticUpdatesEnabled()
         {
             //Software\Policies\Microsoft\Windows\WindowsUpdate\AU
@@ -216,6 +354,9 @@ namespace Agent.RV.Utils
             return false;
         }
 
+        /// <summary>
+        /// Enum to use with the Automatic update options.
+        /// </summary>
         public enum AutomaticUpdateStatus
         {
             Error = 0,
