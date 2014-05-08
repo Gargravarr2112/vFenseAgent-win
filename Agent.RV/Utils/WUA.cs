@@ -44,7 +44,7 @@ namespace Agent.RV.Utils
             }
             catch (Exception e)
             {
-                Logger.Log("Unable to disable Windows Automatic Updates. Error: {0}", LogLevel.Debug, e.Message);
+                Logger.Log("Unable to disable Windows Automatic Updates. Error: {0}", LogLevel.Info, e.Message);
                 return false;
             }
 
@@ -76,7 +76,7 @@ namespace Agent.RV.Utils
                         if (currentVersion.Equals(latestVersion))
                         {
                             Logger.Log("WUA is up to date. Current version: {0}, Minimun required version: {1}.",
-                                       LogLevel.Debug,
+                                       LogLevel.Info,
                                        currentVersion, latestVersion);
                             return false;
                         }
@@ -91,7 +91,7 @@ namespace Agent.RV.Utils
                             Logger.Log("WUA is outdated. Current version: {0}, Minimun required version: {1}.", LogLevel.Error, currentVersion, latestVersion);
                             return true;
                         }
-                        Logger.Log("WUA is up to date. Current version: {0}, Minimun required version: {1}.", LogLevel.Debug, currentVersion, latestVersion);
+                        Logger.Log("WUA is up to date. Current version: {0}, Minimun required version: {1}.", LogLevel.Info, currentVersion, latestVersion);
                     }
                 }
                 return false;
@@ -158,7 +158,7 @@ namespace Agent.RV.Utils
             chain.ChainPolicy.VerificationFlags = X509VerificationFlags.IgnoreNotTimeValid;
 
             bool result = chain.Build(sig);
-            Logger.Log("Cab file verified? : {0}.", LogLevel.Debug, result);
+            Logger.Log("Cab file verified? : {0}.", LogLevel.Info, result);
             return result;
         }
 

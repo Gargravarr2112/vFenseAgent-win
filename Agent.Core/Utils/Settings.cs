@@ -52,9 +52,9 @@ namespace Agent.Core.Utils
 
             var localproxy = new WebProxy();
             localproxy.Address = new Uri("http://" + _proxyaddress + ":" + _proxyport);
-            Logger.Log("Using proxy for communication.", Utils.LogLevel.Debug);
-            Logger.Log("Proxy Address: {0}", Utils.LogLevel.Debug, _proxyaddress);
-            Logger.Log("Proxy Port: {0}", Utils.LogLevel.Debug, _proxyport);
+            Logger.Log("Using proxy for communication.", Utils.LogLevel.Info);
+            Logger.Log("Proxy Address: {0}", Utils.LogLevel.Info, _proxyaddress);
+            Logger.Log("Proxy Port: {0}", Utils.LogLevel.Info, _proxyport);
             Proxy = localproxy;
         }
 

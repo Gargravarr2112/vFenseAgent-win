@@ -60,7 +60,7 @@ namespace Agent.RV.SupportedApps
 
                     app.Status = "Installed";
 
-                    Logger.Log(app.Name, LogLevel.Debug);
+                    Logger.Log(app.Name, LogLevel.Info);
 
                     installedApps.Add(app);
                 }

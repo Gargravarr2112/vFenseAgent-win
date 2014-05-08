@@ -55,7 +55,7 @@ namespace Agent.RV.Utils
                         }
                     }
 
-                    Logger.Log("Enabled Windows 8 Auto Restart on Critical Updates.", LogLevel.Debug);
+                    Logger.Log("Enabled Windows 8 Auto Restart on Critical Updates.", LogLevel.Info);
                 }
                 else
                 {
@@ -82,7 +82,7 @@ namespace Agent.RV.Utils
                         }
                     }
 
-                    Logger.Log("Disabled Windows 8 Auto Restart on Critical Updates.", LogLevel.Debug);
+                    Logger.Log("Disabled Windows 8 Auto Restart on Critical Updates.", LogLevel.Info);
                 }
             }
         }

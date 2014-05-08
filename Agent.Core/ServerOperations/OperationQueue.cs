@@ -59,13 +59,13 @@ namespace Agent.Core.ServerOperations
         public void Pause()
         {
             _operationInProgress = true;
-            Logger.Log("Queue paused.", LogLevel.Debug);
+            Logger.Log("Queue paused.", LogLevel.Warning);
         }
 
         public void Done()
         {
             _operationInProgress = false;
-            Logger.Log("Queue resuming.", LogLevel.Debug);
+            Logger.Log("Queue resuming.", LogLevel.Info);
         }
     }
 }

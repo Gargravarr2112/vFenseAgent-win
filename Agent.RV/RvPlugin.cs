@@ -175,12 +175,12 @@ namespace Agent.RV
             //If some operations are left over, do not send UpdatesApplications.
             if (Operations.OperationsRemaining()) return null;
 
-            Logger.Log("Preparing initial data.", LogLevel.Debug);
+            Logger.Log("Preparing initial data.", LogLevel.Info);
 
             operation.Type = RvOperationValue.UpdatesAndApplications;
             operation.Applications = NewUpdatesAndApplications();
             operation.RawResult = RvFormatter.Applications(operation);
-            Logger.Log("Done.", LogLevel.Debug);
+            Logger.Log("Done.", LogLevel.Info);
             return operation;
         }
 

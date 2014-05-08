@@ -12,7 +12,7 @@ namespace Agent.RV.Utils
         /// 
         /// Defaults to 43,200,000 milliseconds (== 12 hours).
         /// </summary>
-        /// <param name="interval"></param>
+        /// <param name="interval">New time for update interval, default 43,200,000.</param>
         public UpdateChecker(double interval = 43200000)
         {
             _interval = interval;

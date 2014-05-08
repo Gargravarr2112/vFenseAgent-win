@@ -182,9 +182,9 @@ namespace Agent.RV.WindowsApps
                    //Recursive Call if there are more bundles inside this bundle.
                    if (insideBundle.BundledUpdates.Count > 0)
                    {
-                       Logger.Log("    Found bundles inside {0}", LogLevel.Debug, insideBundle.Title);
+                       Logger.Log("    Found bundles inside {0}", LogLevel.Info, insideBundle.Title);
                        var totalBundles = BundleRecursion(insideBundle, updateData);
-                       Logger.Log("          - Loading {0} bundles for {1}", LogLevel.Debug, totalBundles.Count, insideBundle.Title);
+                       Logger.Log("          - Loading {0} bundles for {1}", LogLevel.Info, totalBundles.Count, insideBundle.Title);
                        foreach (IUpdate item in totalBundles)
                        {
                            Logger.Log("Adding {0}", LogLevel.Info, item.Title);
@@ -574,7 +574,7 @@ namespace Agent.RV.WindowsApps
             update.reboot_required = false.ToString().ToLower();
             update.error           = e.Message;
             update.success         = false.ToString().ToLower();
-            Logger.Log("Update Failed: {0}", LogLevel.Debug, update.filedata_app_name);
+            Logger.Log("Update Failed: {0}", LogLevel.Error, update.filedata_app_name);
             return update;
         }
         

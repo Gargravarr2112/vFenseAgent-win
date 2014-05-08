@@ -116,7 +116,7 @@ namespace Agent.Core.ServerOperations
         /// <param name="serverMessage">The JSON-base SOF message sent from the server</param>
         private void ProcessOperation(string serverMessage)
         {
-            Logger.Log("Process operation: {0}", LogLevel.Debug, serverMessage);
+            Logger.Log("Process operation: {0}", LogLevel.Info, serverMessage);
             ISofOperation operation = new SofOperation(serverMessage);
             
             try

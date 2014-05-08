@@ -170,7 +170,7 @@ namespace Agent.RV.Uninstaller
         private static MSIprop RunUninstallAppNative(MSIprop UnApp, string guid)
         {
             UnApp.UninstallPass = false;
-            Logger.Log("Unable to Uninstall {0}.", LogLevel.Debug, UnApp.AppName);
+            Logger.Log("Unable to Uninstall {0}.", LogLevel.Warning, UnApp.AppName);
             UnApp.Error = UnApp.Error + "This application is not of type MSI, can't be uninstalled." +
                                         " Its possible that the application uses a proprietary uninstaller." +
                                         " Please consult vendor for additional information on how to remove this application.";
