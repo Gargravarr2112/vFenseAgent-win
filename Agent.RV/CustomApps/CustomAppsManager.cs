@@ -25,6 +25,13 @@ namespace Agent.RV.CustomApps
             return results;
         }
 
+        /// <summary>
+        /// Gets an Operation send from the server for installing a CustomeApp.
+        /// Determines what type of install it is(exe, msi, msp).
+        /// And sends it to the appropriate method to prepair it for install. 
+        /// </summary>
+        /// <param name="customApp">Json Operatoin from the server.</param>
+        /// <returns>Returns updated Operation with the results.</returns>
         public static Operations.SavedOpData InstallCustomAppsOperation(Operations.SavedOpData customApp)
         {
                 try
@@ -54,7 +61,7 @@ namespace Agent.RV.CustomApps
                             break;
 
                         default:
-                            Logger.Log("{0} is not a supported file format.", LogLevel.Error, extension);
+                            Logger.Log("{0} is not a supported file format.", LogLevel.Warning, extension);
                             throw new Exception(String.Format("{0} is not a supported file format.", extension));
                      }
 
@@ -66,7 +73,7 @@ namespace Agent.RV.CustomApps
                             customApp.error           = String.Format("Failed to install {0}. {1}. Exit code: {2}.", customApp.filedata_app_name, installResult.ExitCodeMessage, installResult.ExitCode);
                             customApp.reboot_required = installResult.Restart.ToString().ToLower();
 
-                            Logger.Log("Custom App Failed to Install: {0}", LogLevel.Info, customApp.filedata_app_name + ", Error: " + customApp.error);
+                            Logger.Log("Custom App Failed to Install: {0}", LogLevel.Warning, customApp.filedata_app_name + ", Error: " + customApp.error);
                             return customApp;
                         }
 
@@ -89,6 +96,13 @@ namespace Agent.RV.CustomApps
                 }
         }
 
+        /// <summary>
+        /// Prepairs the app to be installed from Windows exe.
+        /// Requires exe path and cli(command line option).
+        /// </summary>
+        /// <param name="exePath">Exe path for the locatoin of the installer.</param>
+        /// <param name="cliOptions">Command line option.</param>
+        /// <returns>InstallResults - populated.</returns>
         private static InstallResult ExeInstall(string exePath, string cliOptions)
         {
             var processInfo = new ProcessStartInfo();
@@ -103,6 +117,13 @@ namespace Agent.RV.CustomApps
             return result;
         }
 
+        /// <summary>
+        /// Prepairs the app to be installed from Windows MSI installer.
+        /// Requires MSI path and cli(command line option).
+        /// </summary>
+        /// <param name="msiPath">MSI path for the location of the installer.</param>
+        /// <param name="cliOptions">Command line option.</param>
+        /// <returns>InstallResults - populated.</returns>
         private static InstallResult MsiInstall(string msiPath, string cliOptions)
         {
             var processInfo = new ProcessStartInfo();
@@ -117,6 +138,13 @@ namespace Agent.RV.CustomApps
             return result;
         }
 
+        /// <summary>
+        /// Prepairs the app to be installed from Windows MSP.
+        /// Requires MSP path and cli(command line option).
+        /// </summary>
+        /// <param name="mspPath">String path for the locatoin of the installer.</param>
+        /// <param name="cliOptions">Command Line Option.</param>
+        /// <returns>InstallResults - populated.</returns>
         private static InstallResult MspInstall(string mspPath, string cliOptions)
         {
             var processInfo = new ProcessStartInfo();
@@ -131,6 +159,12 @@ namespace Agent.RV.CustomApps
             return result;
         }
 
+        /// <summary>
+        /// Runs the Install, for the specified options.
+        /// Required info as per Windows command prompt execution methods.
+        /// </summary>
+        /// <param name="processInfo">Parameters to with the required info to run the install.</param>
+        /// <returns></returns>
         private static InstallResult RunProcess(ProcessStartInfo processInfo)
         {
             var result = new InstallResult();
