@@ -433,9 +433,13 @@ namespace Agent.Core.ServerOperations
             json.Add("apps_to_delete", new JArray());
             json.Add("apps_to_add", new JArray());
             json.Add("reboot_required", false.ToString().ToLower());
-            json.Add("data", "{\r\n  \"name\": \"\",\r\n  \"description\": \"\",\r\n  \"kb\": \"\",\r\n  \"vendor_severity\": \"\",\r\n  \"rv_severity\": \"\",\r\n  \"support_url\": \"\",\r\n  \"release_date\": 0.0,\r\n  \"vendor_id\": \"\",\r\n  \"vendor_name\": \"\",\r\n  \"repo\": \"\",\r\n  \"version\": \"\",\r\n  \"file_data\": []\r\n}");
+            //TODO need to change string into jsonobject, crashing agent sever communication
+            json.Add("data", emptyData());      //"{\r\n  \"name\": \"\",\r\n  \"description\": \"\",\r\n  \"kb\": \"\",\r\n " +
+                                                //" \"vendor_severity\": \"\",\r\n  \"rv_severity\": \"\",\r\n  \"support_url\": \"\",\r\n  " +
+                                                //"\"release_date\": 0.0,\r\n  \"vendor_id\": \"\",\r\n  \"vendor_name\": \"\",\r\n  \"repo\": \"\",\r\n  " +
+                                                //"\"version\": \"\",\r\n  \"file_data\": []\r\n}");
             
-            var results = SendResults(json.ToString(), operation.Api); //TODO: THIS DOESNT WORK, I BELIEVE ITS DUE TO APP_ID NOT BEING POPULATED.. DISCUSS WITH ALLEN, WE NEED TO BE ABLE TO SEND ERROR AT OPERATION_ID LEVEL!.
+            var results = SendResults(json.ToString(), operation.Api);
 
             double temp;
             var isHttpCode = double.TryParse(results, out temp);
@@ -445,6 +449,28 @@ namespace Agent.Core.ServerOperations
                 Logger.Log("Received response from server after sending Failure results operation: {0} ", LogLevel.Warning, results);
             }
 
+            
+        }
+
+        //TODO need to fix, was a quick work around for a agent server communication error
+        private static JObject emptyData()
+        {
+            var data = new JObject();
+            
+            data.Add("name", "");
+            data.Add("description", "");
+            data.Add("kb", "");
+            data.Add("vendor_severity", "");
+            data.Add("rv_serverity", "");
+            data.Add("support_url", "");
+            data.Add("release_date", "");
+            data.Add("vendor_id", "");
+            data.Add("vendor_name", "");
+            data.Add("repo", "");
+            data.Add("version", "");
+            data.Add("file_data", "");
+
+            return data;
         }
 
         /// <summary>

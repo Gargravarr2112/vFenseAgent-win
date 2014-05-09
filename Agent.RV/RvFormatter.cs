@@ -131,7 +131,7 @@ namespace Agent.RV
 
             json.Add("apps_to_delete", appsToDeleteArray);
             json.Add("apps_to_add", appsToAddArray);
-            json.Add("data", data.ToString());
+            json.Add("data", data);
 
             return json.ToString();
         }
@@ -213,7 +213,7 @@ namespace Agent.RV
 
             json.Add("apps_to_delete", appsToDeleteArray);
             json.Add("apps_to_add", appsToAddArray);
-            json.Add("data", data.ToString());
+            json.Add("data", data);
 
             return json.ToString();
         }
