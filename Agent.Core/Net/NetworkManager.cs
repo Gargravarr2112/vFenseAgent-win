@@ -209,8 +209,9 @@ namespace Agent.Core.Net
               
                 //Submit Message and retrieve response
                 var response = _client.Execute(_request);
+
                 //log server msg
-                Logger.Log(response.ToString(), LogLevel.Debug);
+                Logger.Log("RAW server messsage: {0}", LogLevel.Debug, response.Content.ToString());
 
                 //Process response from server
                 switch (response.ResponseStatus)
@@ -226,8 +227,6 @@ namespace Agent.Core.Net
                                 var jsonObject = JObject.Parse(response.Content);
                                 var operationType = jsonObject["rv_status_code"].ToString();
                                 var data = jsonObject["data"].ToString();
-                                //log of the msg from server
-                                Logger.Log(jsonObject.ToString(), LogLevel.Debug);
                                 
                                 switch (operationType)
                                 {
