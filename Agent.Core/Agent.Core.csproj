@@ -117,7 +117,6 @@
     <Compile Include="Utils\RegistryReader.cs" />
     <Compile Include="Utils\ServiceManager.cs" />
     <Compile Include="Utils\Settings.cs" />
-    <Compile Include="Utils\HardwareSpecs.cs" />
     <Compile Include="Utils\WindowsAntiSpyware.cs" />
     <Compile Include="Utils\SystemInfo.cs" />
     <Compile Include="Utils\Tools.cs" />

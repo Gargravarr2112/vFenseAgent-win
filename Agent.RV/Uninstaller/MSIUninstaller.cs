@@ -5,10 +5,19 @@ using Microsoft.Win32;
 
 namespace Agent.RV.Uninstaller
 {
+
+    /// <summary>
+    /// Class design to attemp to uninstall app from the computer.
+    /// Uses Microsoft MSI.
+    /// </summary>
     public static class MSIUninstaller
     {
 
-        //check for the app on the computer, if installed, gets the uninstall string
+        /// <summary>
+        /// Checks for the given APP.
+        /// </summary>
+        /// <param name="appName">Name of APP to uninstall, as per name on the registry.</param>
+        /// <returns>Returns MSIprop holding basic info from the uninstall attempt.</returns>
         public static MSIprop UnistallApp(string appName)
         {
             var UnApp = new MSIprop();
@@ -78,7 +87,11 @@ namespace Agent.RV.Uninstaller
             return UnApp;
         }
 
-        //split the uninstall string and send it to run the uninstall
+        /// <summary>
+        /// Splits the unistall string and send it to run the install process.
+        /// </summary>
+        /// <param name="UnApp">Variable of type MSIprop.</param>
+        /// <returns>Returns updated MSIprop from the process performed.</returns>
         private static MSIprop UninstallPrep(MSIprop UnApp)
         {
             UnApp.Argument = string.Empty;
@@ -123,7 +136,12 @@ namespace Agent.RV.Uninstaller
             return UnApp;
         }
 
-        //run the uninstall string, silent & hidden
+        /// <summary>
+        /// Runs the uninstall string, silent & hidden process.
+        /// </summary>
+        /// <param name="UnApp">Variable of type MSIprop.</param>
+        /// <param name="guid">The argument used to run MSI.</param>
+        /// <returns>Returns updated MSIprop from the process performed.</returns>
         private static MSIprop RunUninstallMSI(MSIprop UnApp, string guid)
         {
             try
@@ -152,7 +170,7 @@ namespace Agent.RV.Uninstaller
         private static MSIprop RunUninstallAppNative(MSIprop UnApp, string guid)
         {
             UnApp.UninstallPass = false;
-            Logger.Log("Unable to Uninstall {0}.", LogLevel.Debug, UnApp.AppName);
+            Logger.Log("Unable to Uninstall {0}.", LogLevel.Warning, UnApp.AppName);
             UnApp.Error = UnApp.Error + "This application is not of type MSI, can't be uninstalled." +
                                         " Its possible that the application uses a proprietary uninstaller." +
                                         " Please consult vendor for additional information on how to remove this application.";
@@ -170,7 +188,12 @@ namespace Agent.RV.Uninstaller
             return UnApp;
         }
 
-        //Runs to check if the app still in the registry keys, attemps to uninstall again 
+        /// <summary>
+        /// Runs to check if the app still in the registry keys, attemps to uninstall again.
+        /// Runs 3 additional uninstalls if app still present on the systems registry.
+        /// </summary>
+        /// <param name="UnApp">Variable of type MSIprop.</param>
+        /// <returns>Returns updated MSIprop from the process performed.</returns>
         private static MSIprop DoubleCheck(MSIprop UnApp)
         {
             UnApp.Tries = 0;
@@ -252,7 +275,12 @@ namespace Agent.RV.Uninstaller
             return UnApp;
         }
 
-        //MSI run, modded for executing a second time
+        /// <summary>
+        /// MSI run for uninstall app, modded for excuting a second time.
+        /// </summary>
+        /// <param name="UnApp">Variable of type MSIprop.</param>
+        /// <param name="guid">The argument used to run MSI.</param>
+        /// <returns>Returns updated MSIprop from the process performed.</returns>
         private static MSIprop SecondMSITry(MSIprop UnApp, string guid)
         {
             try
@@ -271,7 +299,12 @@ namespace Agent.RV.Uninstaller
             }
         }
 
-        //MSI run using /I as the execute argument 
+        /// <summary>
+        /// MSI run for uninstall app, modded using /I.
+        /// </summary>
+        /// <param name="UnApp">Variable of type MSIprop.</param>
+        /// <param name="guid">The argument used to run MSI.</param>
+        /// <returns>Returns updated MSIprop from the process performed.</returns>
         private static MSIprop TryNoneExecuteMSI(MSIprop UnApp, string guid)
         {
             try
@@ -292,6 +325,10 @@ namespace Agent.RV.Uninstaller
             }
         }
 
+        /// <summary>
+        /// Variable type use to store information and process uninstalls.
+        /// Contains constant string for the registry locations.
+        /// </summary>
         public struct MSIprop
         {
             public bool AppFound;

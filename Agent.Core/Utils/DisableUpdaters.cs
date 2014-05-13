@@ -14,40 +14,40 @@ namespace Agent.Core.Utils
         {
             switch (FlashUpdater(false)) {
                 case 0:
-                    Logger.Log("Flash Updater: DISABLED OK", LogLevel.Debug);
+                    Logger.Log("Flash Updater: DISABLED OK", LogLevel.Info);
                     break;
                 case 1:
-                    Logger.Log("Flash Updater: FLASH NOT FOUND", LogLevel.Debug);
+                    Logger.Log("Flash Updater: FLASH NOT FOUND", LogLevel.Info);
                     break;
                 case 2:
-                    Logger.Log("Flash Updater: OS NOT SUPPORTED", LogLevel.Debug);
+                    Logger.Log("Flash Updater: OS NOT SUPPORTED", LogLevel.Info);
                     break;
                 case 3:
-                    Logger.Log("Flash Updater: VERSION NOT SUPPORTED", LogLevel.Debug);
+                    Logger.Log("Flash Updater: VERSION NOT SUPPORTED", LogLevel.Info);
                     break;
             }
 
             switch (JavaUpdater(false)) {
                 case 0:
-                    Logger.Log("Java Updater: DISABLED OK", LogLevel.Debug);
+                    Logger.Log("Java Updater: DISABLED OK", LogLevel.Info);
                     break;
                 case 1:
-                    Logger.Log("Java Updater: JAVA NOT FOUND", LogLevel.Debug);
+                    Logger.Log("Java Updater: JAVA NOT FOUND", LogLevel.Info);
                     break;
                 case 2:
-                    Logger.Log("Java Updater: VERSION NOT SUPPORTED", LogLevel.Debug);
+                    Logger.Log("Java Updater: VERSION NOT SUPPORTED", LogLevel.Info);
                     break;
                 case 3:
-                    Logger.Log("Java Updater: UNABLE TO DISABLE, UNKNOWN ERROR.", LogLevel.Debug);
+                    Logger.Log("Java Updater: UNABLE TO DISABLE, UNKNOWN ERROR.", LogLevel.Info);
                     break;
             }
 
             switch (AcrobatUpdater(false)) {
                 case 0:
-                    Logger.Log("Acrobat Updater: DISABLED OK", LogLevel.Debug);
+                    Logger.Log("Acrobat Updater: DISABLED OK", LogLevel.Info);
                     break;
                 case 1:
-                    Logger.Log("Acrobat Updater: ACROBAT NOT FOUND", LogLevel.Debug);
+                    Logger.Log("Acrobat Updater: ACROBAT NOT FOUND", LogLevel.Info);
                     break;
             }
 

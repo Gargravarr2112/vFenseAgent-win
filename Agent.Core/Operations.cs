@@ -262,7 +262,7 @@ namespace Agent.Core
             }
             catch (Exception)
             {
-                Logger.Log("Unable to retrieve Creation time of file..", LogLevel.Debug);
+                Logger.Log("Unable to retrieve Creation time of file..", LogLevel.Error);
             }
 
             return null;
@@ -283,7 +283,7 @@ namespace Agent.Core
             }
             catch (Exception)
             {
-                Logger.Log("Unable to delete Operation File, not found.", LogLevel.Debug);
+                Logger.Log("Unable to delete Operation File, not found.", LogLevel.Error);
             }
         }
 

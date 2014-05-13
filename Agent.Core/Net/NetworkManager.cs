@@ -140,7 +140,7 @@ namespace Agent.Core.Net
 
             if (AttemptReLogin(60000))
             {
-                Logger.Log("Communication Established OK.", LogLevel.Debug);
+                Logger.Log("Communication Established OK.", LogLevel.Info);
                 _timer.Enabled = true;
             }
         }
@@ -209,7 +209,9 @@ namespace Agent.Core.Net
               
                 //Submit Message and retrieve response
                 var response = _client.Execute(_request);
-                
+
+                //log server msg
+                Logger.Log("RAW server messsage: {0}", LogLevel.Debug, response.Content.ToString());
 
                 //Process response from server
                 switch (response.ResponseStatus)
@@ -225,7 +227,7 @@ namespace Agent.Core.Net
                                 var jsonObject = JObject.Parse(response.Content);
                                 var operationType = jsonObject["rv_status_code"].ToString();
                                 var data = jsonObject["data"].ToString();
-
+                                
                                 switch (operationType)
                                 {
                                     case "3001": //New Agent
@@ -240,7 +242,7 @@ namespace Agent.Core.Net
                                             return response.StatusCode.ToString();
                                         }
 
-                                        Logger.Log("Agent Checked in with server OK, Retrieved queue for Agent: {0}", LogLevel.Debug, data);
+                                        Logger.Log("Agent Checked in with server OK, Retrieved queue for Agent: {0}", LogLevel.Info, data);
                                         Logger.Log("Preparing to process operation data received from RV Server...");
                                         OnIncomingOperation(response.Content);
                                         break;
@@ -251,7 +253,7 @@ namespace Agent.Core.Net
                                         break;
 
                                     default:
-                                        Logger.Log("Incoming message from server: {0}", LogLevel.Debug, response.Content);
+                                        Logger.Log("Incoming message from server: {0}", LogLevel.Info, response.Content);
                                         OnIncomingOperation(response.Content);
                                         return response.StatusCode.ToString();
                                 }
@@ -259,7 +261,7 @@ namespace Agent.Core.Net
                             catch (Exception e)
                             {
                                 Logger.Log("Received exception when parsing status code from server data, {0}", LogLevel.Error, e.Message);
-                                Logger.Log("Displaying content received from server:   {0}", LogLevel.Debug, response.Content);
+                                Logger.Log("Displaying content received from server:   {0}", LogLevel.Info, response.Content);
                                 return response.StatusCode.ToString();
                             }
                         }

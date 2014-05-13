@@ -4,6 +4,7 @@ using System.Threading;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Agent.Core.Utils;
+using RestSharp;
 
 namespace Agent.Core.ServerOperations
 {
@@ -115,7 +116,7 @@ namespace Agent.Core.ServerOperations
         /// <param name="serverMessage">The JSON-base SOF message sent from the server</param>
         private void ProcessOperation(string serverMessage)
         {
-            Logger.Log("Process operation: {0}", LogLevel.Debug, serverMessage);
+            Logger.Log("Process operation: {0}", LogLevel.Info, serverMessage);
             ISofOperation operation = new SofOperation(serverMessage);
             
             try
@@ -270,6 +271,104 @@ namespace Agent.Core.ServerOperations
             ProcessOperation(operation.ToJson());
         }
 
+        /// <summary>
+        /// Gets the systems information and formats it as to the servers requiremtns.
+        /// Uses current operation for details.
+        /// Example:
+        /// {
+        ///   "operation": "new_agent",
+        ///   "customer_name": "default",
+        ///   "rebooted": "no",
+        ///   "system_info": {
+        ///     "os_code": "windows",
+        ///     "os_string": "Windows 7 Professional N",
+        ///     "version": "6.1.7601",
+        ///     "bit_type": "64",
+        ///     "computer_name": "DISCIPLINE-1",
+        ///     "host_name": "discipline-1",
+        ///   }
+        ///   "hardware": {
+        ///     "cpu": [
+        ///       {
+        ///         "cpu_id": 1,
+        ///         "name": "Intel(R) Core(TM) i7-3630QM CPU @ 2.40GHz",
+        ///         "bit_type": 64,
+        ///         "speed_mhz": 2401,
+        ///         "cores": 4,
+        ///         "cache_kb": 1024
+        ///       }
+        ///     ],
+        ///     "memory": 25165824,
+        ///     "display": [
+        ///       {
+        ///         "name": "NVIDIA GeForce GTX 660M  ",
+        ///         "speed_mhz": "GeForce GTX 660M",
+        ///         "ram_kb": 0
+        ///       }
+        ///     ],
+        ///     "nic": [
+        ///       {
+        ///         "name": "Local Area Connection",
+        ///         "ip_address": "10.0.0.2",
+        ///         "mac": "3085A925BFD6"
+        ///       }
+        ///       {
+        ///         "name": "VMware Network Adapter VMnet1",
+        ///         "ip_address": "192.168.110.1",
+        ///         "mac": "005056C00001"
+        ///       },
+        ///       {
+        ///         "name": "VMware Network Adapter VMnet8",
+        ///         "ip_address": "192.168.252.1",
+        ///         "mac": "005056C00008"
+        ///       }
+        ///     ],
+        ///     "storage": [
+        ///       {
+        ///         "free_size_kb": 155600024,
+        ///         "name": "C:",
+        ///         "size_kb": 499872764,
+        ///         "file_system": "NTFS"
+        ///       }
+        ///     ]
+        ///   }
+        /// },
+        ///   "plugins": {
+        ///     "monitor": {
+        ///       "data": {
+        ///         "memory": {
+        ///           "used_percent": 55.66,
+        ///           "free_percent": 44.34,
+        ///           "used": 13980004,
+        ///           "free": 11138036
+        ///         },
+        ///         "file_system": [
+        ///           {
+        ///             "used_percent": 68.87,
+        ///             "free_percent": 31.13,
+        ///             "used": 352535285760,
+        ///             "free": 159334424576,
+        ///             "name": "C:\\",
+        ///             "mount": "C:\\"
+        ///           }
+        ///         ],
+        ///         "cpu": {
+        ///           "idle": 99,
+        ///           "user": 0,
+        ///           "system": 1
+        ///         }
+        ///       }
+        ///     },
+        ///     "ra": {
+        ///       "public_key": "pubic_key_here",
+        ///     },
+        ///     "rv": {
+        ///       "data": [all apps in here]
+        ///     }
+        /// }
+        /// </summary>
+        /// <param name="operation">Current operations that the agent is working on.</param>
+        /// <returns>Returns the JObect with the gathered information and formated for the servers requiremnts.</returns>
         private static string InitialDataFormatter(ISofOperation operation)
         {
             var json = new JObject();
@@ -278,7 +377,7 @@ namespace Agent.Core.ServerOperations
             json[OperationKey.Customer] = Settings.Customer;
             json[OperationKey.Rebooted] = Tools.IsBootUp();
             json[OperationKey.SystemInfo] = JObject.Parse(GetSystemInfo());
-            json[OperationKey.HardwareInfo] = JObject.Parse(SystemInfo.Hardware);
+            json[OperationKey.HardwareInfo] = JObject.Parse(GetHardwareInfo());
             
             var plugins = new JObject();
             
@@ -316,7 +415,7 @@ namespace Agent.Core.ServerOperations
         private void PluginNotFound(ISofOperation operation)
         {
             Logger.Log("Plugin {0} not found.", LogLevel.Error, operation.Plugin);
-
+            
             var e = new Exception(String.Format("Plugin {0} not found.", operation.Plugin));
             MajorFailure(operation, e);
         }
@@ -334,9 +433,13 @@ namespace Agent.Core.ServerOperations
             json.Add("apps_to_delete", new JArray());
             json.Add("apps_to_add", new JArray());
             json.Add("reboot_required", false.ToString().ToLower());
-            json.Add("data", "{\r\n  \"name\": \"\",\r\n  \"description\": \"\",\r\n  \"kb\": \"\",\r\n  \"vendor_severity\": \"\",\r\n  \"rv_severity\": \"\",\r\n  \"support_url\": \"\",\r\n  \"release_date\": 0.0,\r\n  \"vendor_id\": \"\",\r\n  \"vendor_name\": \"\",\r\n  \"repo\": \"\",\r\n  \"version\": \"\",\r\n  \"file_data\": []\r\n}");
+            //TODO need to change string into jsonobject, crashing agent sever communication
+            json.Add("data", emptyData());      //"{\r\n  \"name\": \"\",\r\n  \"description\": \"\",\r\n  \"kb\": \"\",\r\n " +
+                                                //" \"vendor_severity\": \"\",\r\n  \"rv_severity\": \"\",\r\n  \"support_url\": \"\",\r\n  " +
+                                                //"\"release_date\": 0.0,\r\n  \"vendor_id\": \"\",\r\n  \"vendor_name\": \"\",\r\n  \"repo\": \"\",\r\n  " +
+                                                //"\"version\": \"\",\r\n  \"file_data\": []\r\n}");
             
-            var results = SendResults(json.ToString(), operation.Api); //TODO: THIS DOESNT WORK, I BELIEVE ITS DUE TO APP_ID NOT BEING POPULATED.. DISCUSS WITH ALLEN, WE NEED TO BE ABLE TO SEND ERROR AT OPERATION_ID LEVEL!.
+            var results = SendResults(json.ToString(), operation.Api);
 
             double temp;
             var isHttpCode = double.TryParse(results, out temp);
@@ -346,22 +449,124 @@ namespace Agent.Core.ServerOperations
                 Logger.Log("Received response from server after sending Failure results operation: {0} ", LogLevel.Warning, results);
             }
 
+            
         }
 
+        //TODO need to fix, was a quick work around for a agent server communication error
+        private static JObject emptyData()
+        {
+            var data = new JObject();
+            
+            data.Add("name", "");
+            data.Add("description", "");
+            data.Add("kb", "");
+            data.Add("vendor_severity", "");
+            data.Add("rv_serverity", "");
+            data.Add("support_url", "");
+            data.Add("release_date", "");
+            data.Add("vendor_id", "");
+            data.Add("vendor_name", "");
+            data.Add("repo", "");
+            data.Add("version", "");
+            data.Add("file_data", "");
+
+            return data;
+        }
+
+        /// <summary>
+        /// Gets the Sysntem information as per the server requirements.
+        /// example of format:
+        ///  {
+        ///     "os_code": "windows",
+        ///     "os_string": "Windows 7 Professional N",
+        ///     "version": "6.1.7601",
+        ///     "bit_type": "64",
+        ///     "computer_name": "DISCIPLINE-1",
+        ///     "host_name": "discipline-1",
+        ///   }
+        /// </summary>
+        /// <returns>Returns JObject with the acured info for the server.</returns>
         private static string GetSystemInfo()
         {
             var systeminfo = new JObject();
 
-            var osNamePlusServicePack = SystemInfo.Name + " " + SystemInfo.ServicePack;
+            var osNamePlusServicePack = SystemInfo.SystemDetails("Caption") + " " + SystemInfo.SystemDetails("CSDVersion");
 
             systeminfo.Add("os_code", SystemInfo.Code);
             systeminfo.Add("os_string", osNamePlusServicePack);
-            systeminfo.Add("version", SystemInfo.Version);
-            systeminfo.Add("bit_type", SystemInfo.BitType);
-            systeminfo.Add("computer_name", SystemInfo.ComputerName);
-            systeminfo.Add("host_name", SystemInfo.Fqdn);
+            systeminfo.Add("version", SystemInfo.SystemDetails("Version"));
+            systeminfo.Add("bit_type", SystemInfo.ProcessorDetails("AddressWidth"));
+            systeminfo.Add("computer_name", SystemInfo.SystemDetails("CSName"));
+            systeminfo.Add("host_name", SystemInfo.FullyQualifiedDomainName);
+            systeminfo.Add("machine_type", SystemInfo.GetMachineType());
 
             return systeminfo.ToString();
+        }
+
+        /// <summary>
+        /// Gets the initial data for the server.
+        /// Formated as per the requiremtns of the server.
+        /// example:
+        ///  "cpu": [
+        ///       {
+        ///         "cpu_id": 1,
+        ///         "name": "Intel(R) Core(TM) i7-3630QM CPU @ 2.40GHz",
+        ///         "bit_type": 64,
+        ///         "speed_mhz": 2401,
+        ///         "cores": 4,
+        ///         "cache_kb": 1024
+        ///       }
+        ///     ],
+        ///     "memory": 25165824,
+        ///     "display": [
+        ///       {
+        ///         "name": "NVIDIA GeForce GTX 660M  ",
+        ///         "speed_mhz": "GeForce GTX 660M",
+        ///         "ram_kb": 0
+        ///       }
+        ///     ],
+        ///     "nic": [
+        ///       {
+        ///         "name": "Local Area Connection",
+        ///         "ip_address": "10.0.0.2",
+        ///         "mac": "3085A925BFD6"
+        ///       }
+        ///       {
+        ///         "name": "VMware Network Adapter VMnet1",
+        ///         "ip_address": "192.168.110.1",
+        ///         "mac": "005056C00001"
+        ///       },
+        ///       {
+        ///         "name": "VMware Network Adapter VMnet8",
+        ///         "ip_address": "192.168.252.1",
+        ///         "mac": "005056C00008"
+        ///       }
+        ///     ],
+        /// </summary>
+        /// <returns>Returns a JObject with the data in it.</returns>
+        private static string GetHardwareInfo()
+        {
+            var hardwareinfo = new JObject();
+
+            try
+            {
+                var cpu = new JArray(SystemInfo.GetCpuInfo());
+                var display = new JArray(SystemInfo.GetVideoInfo());
+                var network = new JArray(SystemInfo.GetNetwork());
+                var harddrive = new JArray(SystemInfo.GetHardDrive());
+                hardwareinfo["cpu"] = cpu;
+                hardwareinfo["display"] = display;
+                hardwareinfo["network"] = network;
+                hardwareinfo["storage"] = harddrive;
+                hardwareinfo["memory"] = SystemInfo.GetMemory();
+            }
+            catch (Exception)
+            {
+                Logger.Log("Failed while getting Hardware Info.", LogLevel.Critical);
+                throw;
+            }
+
+            return hardwareinfo.ToString();
         }
 
         private bool AddToOperationQueue(string operation)
@@ -410,7 +615,7 @@ namespace Agent.Core.ServerOperations
             {
                 try
                 {
-                    Thread.Sleep(7200000); //2 hour
+                    Thread.Sleep(2700000); //45 minutes
                     //TODO: Implement checking of local operations folder to see if some operations are not being handled with.
 
                     var tempOperations = Operations.LoadOpDirectory();

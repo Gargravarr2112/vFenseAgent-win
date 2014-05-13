@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Threading;
 using Agent.Core;
 using Agent.Core.Data.Model;
 using Agent.Core.Utils;
@@ -96,7 +97,16 @@ namespace Agent.RV
                                 if (downloaded) break;
 
                                 Logger.Log("Attempting to download {1} from {0} with file size of {2}.", LogLevel.Info, relayserver, file.FileName, file.FileSize);
-                                client.DownloadFile(uriSingle, filepath);
+
+                                byte NetThrottle = byte.Parse(update.net_throttle);
+                                if (NetThrottle > 0 || NetThrottle == null)
+                                {
+                                    Agent.RV.Utils.NetworkThrottle.DownloadThrottle(filepath, uriSingle, file.FileName, NetThrottle);
+                                }
+                                else
+                                {
+                                    client.DownloadFile(uriSingle, filepath);
+                                }
 
                                 if (File.Exists(filepath))
                                 {
@@ -162,6 +172,7 @@ namespace Agent.RV
             return update;
         }
 
+        
         public enum UpdateDirectories
         {
             SupportedAppDir,
@@ -169,4 +180,5 @@ namespace Agent.RV
             OSUpdateDir
         }
     }
+
 }

@@ -11,11 +11,12 @@ namespace Agent.RV.Utils
 {
     public static class WindowsRestore
     {
+
         /// <summary>
-        ///     Determines whether to perform a system restore or send data back to the server. It use WMI.
+        /// Determines whether to perform a system restore or send data back to the server. It use WMI.
         /// </summary>
-        /// <param name="operation"></param>
-        /// <returns></returns>
+        /// <param name="operation">Variable of type RvSofOperation</param>
+        /// <returns>Returns updated RvSofOperation after processing.</returns>
         public static RvSofOperation Restore(RvSofOperation operation)
         {
             var results = new RVsofResult();

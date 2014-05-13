@@ -58,6 +58,7 @@
     <Compile Include="SupportedApps\SupportedAppsManager.cs" />
     <Compile Include="Uninstaller\MSIUninstaller.cs" />
     <Compile Include="Uninstaller\WindowsUninstaller.cs" />
+    <Compile Include="Utils\NetworkThrottle.cs" />
     <Compile Include="Utils\UpdateChecker.cs" />
     <Compile Include="RvPlugin.cs" />
     <Compile Include="RvSofOperation.cs" />

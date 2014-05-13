@@ -2,9 +2,16 @@
 
 namespace Agent.Core.Utils
 {
+    /// <summary>
+    /// System Time Zone and/or current epoch time.
+    /// </summary>
     public static class Time
     {
 
+        /// <summary>
+        /// Uses the system time to get the timezone set on the system.
+        /// </summary>
+        /// <returns>Return "MyTimeZone" variable, with strings for: utc offset, timezone.</returns>
         public static MyTimeZone GetMyTimeZone()
         {
             var timezone = new MyTimeZone();
@@ -142,6 +149,10 @@ namespace Agent.Core.Utils
             return timezone;
         }
 
+        /// <summary>
+        /// Gets current epoch time.
+        /// </summary>
+        /// <returns>Int with current ephoc time.</returns>
         public static int EpochTime()
         {
             TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
