@@ -615,7 +615,7 @@ namespace Agent.Core.ServerOperations
             {
                 try
                 {
-                    Thread.Sleep(7200000); //2 hour
+                    Thread.Sleep(2700000); //45 minutes
                     //TODO: Implement checking of local operations folder to see if some operations are not being handled with.
 
                     var tempOperations = Operations.LoadOpDirectory();
