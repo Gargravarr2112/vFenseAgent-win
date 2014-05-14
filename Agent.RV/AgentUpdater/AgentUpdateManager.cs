@@ -245,6 +245,12 @@ namespace Agent.RV.AgentUpdater
             return "false";
         }
 
+        /// <summary>
+        /// Generates server list with the new agent update date.
+        /// It requires the new agent update version #.
+        /// </summary>
+        /// <param name="availableVersion">New agent version number #, #.#.#, default to false.</param>
+        /// <returns>Returns list<application> with the agent update data.</application></returns>
         public static List<Application> AgentPatchUdateData(string availableVersion = "false")
         {
             var patchData = new List<Application>();
@@ -311,12 +317,15 @@ namespace Agent.RV.AgentUpdater
 
                             try
                             {
-                                patch.Name = tag_name.Value.ToString();
+                                patch.Name = "vFenseAgent";
                                 patch.VendorName = "vFense";
                                 patch.ReleaseDate = publishDate;
                                 patch.Description = body.Value.ToString();
                                 patch.Version = release;
                                 patch.VendorId = id.Value.ToString();
+                                patch.VendorSeverity = "Important";
+                                patch.Status = "available";
+                                patch.SupportUrl = @"https://github.com/toppatch/vFenseAgent-win/issues";
 
                                 try
                                 {
