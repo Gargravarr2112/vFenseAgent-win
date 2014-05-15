@@ -192,6 +192,10 @@ namespace Agent.RV
             return operation;
         }
 
+        /// <summary>
+        /// Installs all OS updates send to the agent.
+        /// </summary>
+        /// <param name="operation">Server Operation with install details.</param>
         private void InstallWindowsUpdate(RvSofOperation operation)
         {
             var savedOperations = Operations.LoadOpDirectory().Where(p => p.operation == OperationValue.InstallWindowsUpdate).ToList();
@@ -220,7 +224,7 @@ namespace Agent.RV
                     update.success = "false";
                     update.error = "ttl expired.";
                     Logger.Log("ttl expired.", LogLevel.Debug);
-                    RvSofOperation sOperation = new RvSofOperation(operation.RawOperation);
+                    RvSofOperation sOperation = (operation);
                     InstallSendResults(update, sOperation);
                 }
                 else
@@ -330,6 +334,10 @@ namespace Agent.RV
             }
         }
 
+        /// <summary>
+        /// Runs and installs Custom applications send from the server.
+        /// </summary>
+        /// <param name="operation">Operation json from the server with the details.</param>
         private void InstallCustomApplication(RvSofOperation operation)
         {
             var registry = new RegistryReader();
@@ -359,7 +367,7 @@ namespace Agent.RV
                     update.success = "false";
                     update.error = "ttl expired.";
                     Logger.Log("ttl expired.", LogLevel.Debug);
-                    RvSofOperation sOperation = new RvSofOperation(operation.RawOperation);
+                    RvSofOperation sOperation = (operation);
                     InstallSendResults(update, sOperation);
                 }
                 else
@@ -468,6 +476,10 @@ namespace Agent.RV
 
         }
 
+        /// <summary>
+        /// Installs the supported apps from the server.
+        /// </summary>
+        /// <param name="operation">Operation json with the details.</param>
         private void InstallSupportedApplication(RvSofOperation operation)
         {
             var registry         = new RegistryReader();
@@ -497,7 +509,7 @@ namespace Agent.RV
                     update.success = "false";
                     update.error = "ttl expired.";
                     Logger.Log("ttl expired.", LogLevel.Debug);
-                    RvSofOperation sOperation = new RvSofOperation(operation.RawOperation);
+                    RvSofOperation sOperation = (operation);
                     InstallSendResults(update, sOperation);
                 }
                 else
@@ -605,6 +617,10 @@ namespace Agent.RV
 
         }
 
+        /// <summary>
+        /// Prepairs the agent to download ans run the agent update package.
+        /// </summary>
+        /// <param name="operation">Operation json with the details.</param>
         private void InstallAgentUpdate(RvSofOperation operation)
         {
             var submittedInstall   = false;
@@ -628,7 +644,7 @@ namespace Agent.RV
                         savedOp.success = "false";
                         savedOp.error = "ttl expired.";
                         Logger.Log("ttl expired.", LogLevel.Debug);
-                        RvSofOperation sOperation = new RvSofOperation(operation.RawOperation);
+                        RvSofOperation sOperation = (operation);
                         InstallSendResults(savedOp, sOperation);
                     }
                     else
@@ -698,6 +714,10 @@ namespace Agent.RV
 
         }
 
+        /// <summary>
+        /// Runs uninstall process for the send apps.
+        /// </summary>
+        /// <param name="operation">Operation json with the details from the server.</param>
         private void UninstallOperation(RvSofOperation operation)
         {
             var registry = new RegistryReader();
@@ -726,7 +746,7 @@ namespace Agent.RV
                     localOp.success = "false";
                     localOp.error = "ttl expired.";
                     Logger.Log("ttl expired.", LogLevel.Debug);
-                    RvSofOperation sOperation = new RvSofOperation(operation.RawOperation);
+                    RvSofOperation sOperation = (operation);
                     InstallSendResults(localOp, sOperation);
                 }
                 else
@@ -886,6 +906,10 @@ namespace Agent.RV
             }
         }
 
+        /// <summary>
+        /// Prototype for uninstalling the agent from the computer.
+        /// </summary>
+        /// <param name="agentName">The name of the agent installed, default name given.</param>
         private void UninstallRvAgentOperation(string agentName = "TopPatch Agent")
         {
             var msiUninstall = new MSIUninstaller.MSIprop();
