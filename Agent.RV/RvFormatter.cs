@@ -3,8 +3,17 @@ using Newtonsoft.Json.Linq;
 
 namespace Agent.RV
 {
+    /// <summary>
+    /// Formats the json data to be send to the server.
+    /// </summary>
     public static class RvFormatter
     {
+
+        /// <summary>
+        /// Fortmats the json containing all the updates on the system.
+        /// </summary>
+        /// <param name="operation">Operation type RvSofOperation, containing all the updates available in the system.</param>
+        /// <returns>Returns string of the json.</returns>
         public static string Applications(RvSofOperation operation)
         {
             // If there are no updates, then an empty list (JArray) will be returned.
@@ -54,6 +63,11 @@ namespace Agent.RV
             return json.ToString();
         }
 
+        /// <summary>
+        /// Formats the json data from an install into the server json required.
+        /// </summary>
+        /// <param name="operation">Operatoin type RVsofResults, conataining all the data gahter during the install process.</param>
+        /// <returns>Returns string of the json.</returns>
         public static string Install(RVsofResult operation)
         {
             var json = new JObject();
@@ -136,6 +150,11 @@ namespace Agent.RV
             return json.ToString();
         }
 
+        /// <summary>
+        /// Formats the json data for an angent update operatoin. 
+        /// </summary>
+        /// <param name="operation">Operatoin type RVsofResults, containing all the data gathers during the install process.</param>
+        /// <returns>Returns string of the json.</returns>
         public static string AgentUpdate(RVsofResult operation)
         {
             var json = new JObject();
