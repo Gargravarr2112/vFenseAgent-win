@@ -28,6 +28,10 @@ namespace Agent.RV.SupportedApps
             return results;
         }
 
+        /// <summary>
+        /// Searches the registry to get a list of installed apps on the computer.
+        /// </summary>
+        /// <returns>Returns a list of "Application".</returns>
         public static List<Application> GetInstalledApplications()
         {
             //Retrieve installed application details:
@@ -74,6 +78,12 @@ namespace Agent.RV.SupportedApps
             return installedApps;
         }
 
+        /// <summary>
+        /// Gets the initial json send from server.
+        /// Seperates the opertaion depending on which supported app is been installed.
+        /// </summary>
+        /// <param name="supportedApp">Json file from server.</param>
+        /// <returns>Return SavedOpData populated with results.</returns>
         public static Operations.SavedOpData InstallSupportedAppsOperation(Operations.SavedOpData supportedApp)
         {
             var installResult = new InstallResult();
@@ -90,36 +100,43 @@ namespace Agent.RV.SupportedApps
                     supportedApp.filedata_app_name.ToLowerInvariant().Contains("acrobat"))
                     installResult = ProcessReader(supportedApp);
 
-                    //Supported App Failed to Install.
-                    if (!installResult.Success)
-                    {
-                        supportedApp.success         = false.ToString().ToLower();
-                        supportedApp.error           = String.Format("Failed: {0}", installResult.ExitCodeMessage);
-                        supportedApp.reboot_required = false.ToString().ToLower();
+                //Supported App Failed to Install.
+                if (!installResult.Success)
+                {
+                    supportedApp.success = false.ToString().ToLower();
+                    supportedApp.error = String.Format("Failed: {0}", installResult.ExitCodeMessage);
+                    supportedApp.reboot_required = false.ToString().ToLower();
 
-                        Logger.Log("Supported ThirdParty App Failed to Install, Exit code {0}: {1}", LogLevel.Info, installResult.ExitCode, supportedApp.filedata_app_name + ", Error: " + supportedApp.error);
-                        return supportedApp;
-                    }
-
-                    //Supported App Installed OK
-                    supportedApp.success         = true.ToString().ToLower();
-                    supportedApp.error           = string.Empty;
-                    supportedApp.reboot_required = installResult.Restart.ToString().ToLower();
-
-                    Logger.Log("Supported ThirdParty App Installed Successfully: {0}", LogLevel.Info, supportedApp.filedata_app_name);
+                    Logger.Log("Supported ThirdParty App Failed to Install, Exit code {0}: {1}", LogLevel.Info, installResult.ExitCode, supportedApp.filedata_app_name + ", Error: " + supportedApp.error);
                     return supportedApp;
-                
+                }
+
+                //Supported App Installed OK
+                supportedApp.success = true.ToString().ToLower();
+                supportedApp.error = string.Empty;
+                supportedApp.reboot_required = installResult.Restart.ToString().ToLower();
+
+                Logger.Log("Supported ThirdParty App Installed Successfully: {0}", LogLevel.Info, supportedApp.filedata_app_name);
+                return supportedApp;
+
             }
             catch (Exception e)
             {
-                supportedApp.success         = false.ToString().ToLower();
-                supportedApp.error           = String.Format("Failed to install Supported ThirdParty App, Exception error: {0}", e.Message);
+                supportedApp.success = false.ToString().ToLower();
+                supportedApp.error = String.Format("Failed to install Supported ThirdParty App, Exception error: {0}", e.Message);
 
                 Logger.Log("Supported ThirdParty App failed to Install: {0}", LogLevel.Info, supportedApp.filedata_app_name + ", Error: " + supportedApp.error);
                 return supportedApp;
             }
         }
 
+        /// <summary>
+        /// Process Flash.
+        /// Gets the required parameters from the json and send it over, depending on use.
+        /// Processit depeing on file type.
+        /// </summary>
+        /// <param name="flashdata">SavedOpdata json type.</param>
+        /// <returns></returns>
         private static InstallResult ProcessFlash(Operations.SavedOpData flashdata)
         {
             var appDirectory = Path.Combine(Settings.SupportedAppDirectory, flashdata.filedata_app_id);
@@ -218,6 +235,13 @@ namespace Agent.RV.SupportedApps
             return installResult;
         }
 
+        /// <summary>
+        /// Process for Java
+        /// Gets the required paramters from the json and sends if over, depending on use.
+        /// Processes it depending on file type.
+        /// </summary>
+        /// <param name="javadata">SavedOpdata json type.</param>
+        /// <returns>Returns results formatted --> InstallResult.</returns>
         private static InstallResult ProcessJava(Operations.SavedOpData javadata)
         {
             var appDirectory = Path.Combine(Settings.SupportedAppDirectory, javadata.filedata_app_id);
@@ -252,8 +276,8 @@ namespace Agent.RV.SupportedApps
             //Process result
             switch (installResult.ExitCode)
             {
-                case 1035: case 1305: case 1311: case 1324: case 1327: case 1335: case 1600: case 1601: 
-                case 1606: case 1624: case 1643: case 1722: case 1744: case 1788: case 2352: case 2753: 
+                case 1035: case 1305: case 1311: case 1324: case 1327: case 1335: case 1600: case 1601:
+                case 1606: case 1624: case 1643: case 1722: case 1744: case 1788: case 2352: case 2753:
                 case 2755:
                     //Java version(s): 6.0, 7.0
                     //Platform(s): Windows 8, Windows 7, Vista, Windows XP
@@ -282,6 +306,13 @@ namespace Agent.RV.SupportedApps
             return installResult;
         }
 
+        /// <summary>
+        /// Process for Adobe Reader
+        /// Gets the required parameters from json and sends it over depending on use.
+        /// Processes it depending on file type.
+        /// </summary>
+        /// <param name="readerdata">SavedOpdata json type.</param>
+        /// <returns>Returns results formatted --> InstallResult.</returns>
         private static InstallResult ProcessReader(Operations.SavedOpData readerdata)
         {
             var appDirectory = Path.Combine(Settings.SupportedAppDirectory, readerdata.filedata_app_id);
@@ -368,6 +399,12 @@ namespace Agent.RV.SupportedApps
             return installResult;
         }
 
+        /// <summary>
+        /// Prepairs windows installer using exe file.
+        /// </summary>
+        /// <param name="exePath">Path to the file.</param>
+        /// <param name="cliOptions">Command Line arguments.</param>
+        /// <returns>Returns results formatted --> InstallResult.</returns>
         private static InstallResult ExeInstall(string exePath, string cliOptions)
         {
             var processInfo = new ProcessStartInfo();
@@ -382,6 +419,12 @@ namespace Agent.RV.SupportedApps
             return result;
         }
 
+        /// <summary>
+        /// Prepairs windows to install using MSI.
+        /// </summary>
+        /// <param name="msiPath">Path to the file.</param>
+        /// <param name="cliOptions">Command Line arguments.</param>
+        /// <returns>Returns results formatted --> InstallResult.</returns>
         private static InstallResult MsiInstall(string msiPath, string cliOptions)
         {
             var processInfo = new ProcessStartInfo();
@@ -396,6 +439,12 @@ namespace Agent.RV.SupportedApps
             return result;
         }
 
+        /// <summary>
+        /// Prepairs windows to install using MSP.
+        /// </summary>
+        /// <param name="mspPath">File path.</param>
+        /// <param name="cliOptions">Command Line arguments.</param>
+        /// <returns>Returns results formatted --> InstallResult.</returns>
         private static InstallResult MspInstall(string mspPath, string cliOptions)
         {
             var processInfo = new ProcessStartInfo();
@@ -410,12 +459,17 @@ namespace Agent.RV.SupportedApps
             return result;
         }
 
+        /// <summary>
+        /// Runs the install process using windows command line tools.
+        /// </summary>
+        /// <param name="processInfo">ProcessStartInfo, formatted as required.</param>
+        /// <returns>Returns results formatted --> InstallResult.</returns>
         private static InstallResult RunProcess(ProcessStartInfo processInfo)
         {
             var result = new InstallResult();
 
             // The following WindowsUninstaller.WindowsExitCode used below might be Windows specific. 
-            // Third party apps might not use same code. Good luck!
+            // Third party apps might not use same code.
             try
             {
                 using (var process = Process.Start(processInfo))
