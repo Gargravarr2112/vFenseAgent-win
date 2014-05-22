@@ -1,6 +1,7 @@
 ﻿
 
 using System;
+using System.IO;
 using System.Threading;
 
 namespace initial_setup
@@ -9,8 +10,10 @@ namespace initial_setup
     {
         static void Main()
         {
-            DoPatcher.DoDownload();
-            DoPatcher.MoveFiles();
+            DoPatcher initsetup = new DoPatcher();
+
+            //DoPatcher.DoDownload();
+            //DoPatcher.MoveFiles();
             Console.Beep();
             Console.Beep();
             Console.WriteLine("Finished with Initial setup.");

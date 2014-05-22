@@ -9,9 +9,10 @@ namespace initial_setup
     class DoPatcher
     {
 
-        private static StringCollection files = new StringCollection();
+        private StringCollection files = new StringCollection();
 
-        private static string defaultPath = Path.Combine(Environment.CurrentDirectory, @"Agent.Console\bin\Debug");
+        private string mainPath = String.Empty;
+        private string defaultPath = Path.Combine(Environment.CurrentDirectory, @"Agent.Console\bin\Debug");
 
         private const string AgentCore = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/Agent.Core.dll";
         private const string AgentRv = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/Agent.RV.dll";
@@ -75,9 +76,17 @@ namespace initial_setup
         //***etc files***
         private const string tunnel = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/tunnel";
         private const string ptunnel = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/tunnel.pub";
-        public static void DoDownload()
+
+
+        public DoPatcher()
         {
-            
+            string path = Directory.GetCurrentDirectory();
+            mainPath = path;
+        }
+
+        public void DoDownload()
+        {
+
             if (!Directory.Exists(defaultPath))
                 Directory.CreateDirectory(defaultPath);
 
@@ -115,7 +124,7 @@ namespace initial_setup
 
         }
 
-        public static StringCollection GetFileStrings()
+        public StringCollection GetFileStrings()
         {
             files.Clear();
 
@@ -133,7 +142,8 @@ namespace initial_setup
 
             return files;
         }
-        public static StringCollection GetFileStrings(string x)
+
+        public StringCollection GetFileStrings(string x)
         {
             files.Clear();
 
@@ -152,7 +162,7 @@ namespace initial_setup
             return files;
         }
 
-        public static void MoveFiles()
+        public void MoveFiles()
         {
             var binDir = Path.Combine(defaultPath, "bin");
             var installPath = Path.Combine(defaultPath, "core");
@@ -176,6 +186,7 @@ namespace initial_setup
                 Directory.CreateDirectory(content);
 
             var files = GetFileStrings();
+
             #region moving the files
             foreach (var file in files)
             {
@@ -550,7 +561,7 @@ namespace initial_setup
                     }
                     catch
                     {
-                        
+
                     }
                 }
                 Directory.Delete(installPath);
@@ -569,7 +580,7 @@ namespace initial_setup
                     }
                     catch
                     {
-                        
+
                     }
                 }
                 Directory.Delete(download);
@@ -586,7 +597,7 @@ namespace initial_setup
                     }
                     catch
                     {
-                        
+
                     }
                 }
             }
