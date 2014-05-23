@@ -42,6 +42,36 @@ namespace Agent.Core.ServerOperations
 
         public static string CoreCheckIn()
         {
+            try
+            {
+
+                string respUri = null;
+                string respMethod = null;
+
+                var prop = responseUri.Children<JProperty>();
+                JProperty Data = prop.FirstOrDefault(b => b.Name == "check_in");
+
+                JProperty uri = null;
+                JProperty method = null;
+
+                foreach (JToken x in monData.Children())
+                {
+                    var xdata = x.Children<JProperty>();
+                    uri = xdata.FirstOrDefault(b => b.Name == "response_uri");
+                    method = xdata.FirstOrDefault(b => b.Name == "request_method");
+                }
+                respUri = uri.Value.ToString();
+                respMethod = method.Value.ToString();
+
+                if (!string.IsNullOrEmpty(respUri) && !string.IsNullOrEmpty(respMethod))
+                    return (respUri + Delimeter + respMethod);
+
+            }
+            catch
+            {
+                return "/rvl/v1/" + Settings.AgentId + "/core/checkin" + Delimeter + HttpMethods.Get;
+            }
+
             return "/rvl/v1/" + Settings.AgentId + "/core/checkin" + Delimeter + HttpMethods.Get;
         } //GET
 
@@ -97,16 +127,16 @@ namespace Agent.Core.ServerOperations
                 string respMethod = null;
                
                     var prop = responseUri.Children<JProperty>();
-                    JProperty monData = prop.FirstOrDefault(b => b.Name == "monitor_data");
+                    JProperty Data = prop.FirstOrDefault(b => b.Name == "monitor_data");
 
                     JProperty uri = null;
                     JProperty method = null;
 
                     foreach (JToken x in monData.Children())
                     {
-                        var data = x.Children<JProperty>();
-                        uri = data.FirstOrDefault(b => b.Name == "response_uri");
-                        method = data.FirstOrDefault(b => b.Name == "request_method");
+                        var xdata = x.Children<JProperty>();
+                        uri = xdata.FirstOrDefault(b => b.Name == "response_uri");
+                        method = xdata.FirstOrDefault(b => b.Name == "request_method");
                     }
                     respUri = uri.Value.ToString();
                     respMethod = method.Value.ToString();
