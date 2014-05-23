@@ -90,6 +90,36 @@ namespace Agent.Core.ServerOperations
         //MONITOR
         public static string MonData()
         {
+            try
+            {
+               
+                string respUri = null;
+                string respMethod = null;
+               
+                    var prop = responseUri.Children<JProperty>();
+                    JProperty monData = prop.FirstOrDefault(b => b.Name == "monitor_data");
+
+                    JProperty uri = null;
+                    JProperty method = null;
+
+                    foreach (JToken x in monData.Children())
+                    {
+                        var data = x.Children<JProperty>();
+                        uri = data.FirstOrDefault(b => b.Name == "response_uri");
+                        method = data.FirstOrDefault(b => b.Name == "request_method");
+                    }
+                    respUri = uri.Value.ToString();
+                    respMethod = method.Value.ToString();
+
+                    if (!string.IsNullOrEmpty(respUri) && !string.IsNullOrEmpty(respMethod))
+                        return (respUri + Delimeter + respMethod);
+                
+            }
+            catch
+            {
+                return "/rvl/v1/" + Settings.AgentId + "/monitoring/monitordata" + Delimeter + HttpMethods.Post;
+            }
+
             return "/rvl/v1/" + Settings.AgentId + "/monitoring/monitordata" + Delimeter + HttpMethods.Post;
         } //POST
 
@@ -99,152 +129,22 @@ namespace Agent.Core.ServerOperations
         /// <param name="jmsg">Json messega from the sever containing response uris.</param>
         public static void RefreshUris(ISofOperation jmsg)
         {
-            string json = jmsg.RawOperation;
-            JObject parjson = JObject.Parse(json);
-            responseUri = parjson["data"];
+            try
+            {
+                string json = jmsg.RawOperation;
+                JObject parjson = JObject.Parse(json);
+                responseUri = parjson["data"];
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Error while processing \"refresh_uri\".", LogLevel.Error);
+                Logger.Log(e.Message);
+            }
         }
 
 
     }
-
-    #region response uris properties
-    public class CheckIn
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class InstallSupportedApps
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class Startup
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class AvailableAgentUpdate
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class Updatesapplications
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class Reboot
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class InstallOsApps
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class InstallAgentUpdate
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class UninstallAgent
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class Logout
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class Ra
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class Shutdown
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class NewAgent
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class Login
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class InstallCustomApps
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class MonitorData
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class Uninstall
-    {
-        public string response_uri { get; set; }
-        public string request_method { get; set; }
-    }
-
-    public class Data
-    {
-        public CheckIn check_in { get; set; }
-        public InstallSupportedApps install_supported_apps { get; set; }
-        public Startup startup { get; set; }
-        public AvailableAgentUpdate available_agent_update { get; set; }
-        public Updatesapplications updatesapplications { get; set; }
-        public Reboot reboot { get; set; }
-        public InstallOsApps install_os_apps { get; set; }
-        public InstallAgentUpdate install_agent_update { get; set; }
-        public UninstallAgent uninstall_agent { get; set; }
-        public Logout logout { get; set; }
-        public Ra ra { get; set; }
-        public Shutdown shutdown { get; set; }
-        public NewAgent new_agent { get; set; }
-        public Login login { get; set; }
-        public InstallCustomApps install_custom_apps { get; set; }
-        public MonitorData monitor_data { get; set; }
-        public Uninstall uninstall { get; set; }
-    }
-
-    public class RootObject
-    {
-        public int count { get; set; }
-        public string uri { get; set; }
-        public int rv_status_code { get; set; }
-        public string http_method { get; set; }
-        public int http_status { get; set; }
-        public string message { get; set; }
-        public Data data { get; set; }
-        public string operation { get; set; }
-    }
-    #endregion
-
-
+    
 
     public class OperationValue
     {
