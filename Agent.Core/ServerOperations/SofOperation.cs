@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Agent.Core.Utils;
 
@@ -14,6 +16,10 @@ namespace Agent.Core.ServerOperations
 
     public static class ApiCalls
     {
+
+        private static JToken responseUri = null;
+
+
         private const string Delimeter = "|||";
 
         //LOGIN/LOGOUT
@@ -22,24 +28,221 @@ namespace Agent.Core.ServerOperations
 
         //CORE API CALLS
         public const string CoreNewAgent = "/rvl/v1/core/newagent" + Delimeter + HttpMethods.Post; //POST
-        public static string CoreReboot() { return "/rvl/v1/" + Settings.AgentId + "/core/reboot" + Delimeter + HttpMethods.Put; } //PUT
-        public static string CoreRebootResults() { return "/rvl/v1/" + Settings.AgentId + "/core/results/reboot" + Delimeter + HttpMethods.Put; } //PUT 
-        public static string CoreCheckIn() { return "/rvl/v1/" + Settings.AgentId + "/core/checkin" + Delimeter + HttpMethods.Get; } //GET
-        public static string CoreStartUp() { return "/rvl/v1/" + Settings.AgentId + "/core/startup" + Delimeter + HttpMethods.Put; } //PUT
+
+
+        public static string CoreReboot()
+        {
+            return "/rvl/v1/" + Settings.AgentId + "/core/reboot" + Delimeter + HttpMethods.Put;
+        } //PUT
+
+        public static string CoreRebootResults()
+        {
+            return "/rvl/v1/" + Settings.AgentId + "/core/results/reboot" + Delimeter + HttpMethods.Put;
+        } //PUT 
+
+        public static string CoreCheckIn()
+        {
+            return "/rvl/v1/" + Settings.AgentId + "/core/checkin" + Delimeter + HttpMethods.Get;
+        } //GET
+
+        public static string CoreStartUp()
+        {
+            return "/rvl/v1/" + Settings.AgentId + "/core/startup" + Delimeter + HttpMethods.Put;
+        } //PUT
 
 
         //RV
-        public static string RvInstallWinUpdateResults() { return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/os" + Delimeter + HttpMethods.Put; }      //PUT
-        public static string RvInstallCustomAppsResults() { return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/custom" + Delimeter + HttpMethods.Put; }  //PUT
-        public static string RvInstallSupportedAppsResults() { return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/supported" + Delimeter + HttpMethods.Put; }  //PUT
-        public static string RvInstallAgentUpdateResults() { return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/agent" + Delimeter + HttpMethods.Put; }     //PUT
-        public static string RvRebootResults() { return "/rvl/v1/" + Settings.AgentId + "/core/results/reboot" + Delimeter + HttpMethods.Put; } //PUT 
-        public static string RvUpdatesApplications() { return "/rvl/v1/" + Settings.AgentId + "/rv/updatesapplications" + Delimeter + HttpMethods.Put; } //PUT 
-        public static string RvUninstallOperation() { return "/rvl/v1/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put; } //PUT 
+        public static string RvInstallWinUpdateResults()
+        {
+            return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/os" + Delimeter + HttpMethods.Put;
+        }      //PUT
+
+        public static string RvInstallCustomAppsResults()
+        {
+            return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/custom" + Delimeter + HttpMethods.Put;
+        }  //PUT
+
+        public static string RvInstallSupportedAppsResults()
+        {
+            return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/supported" + Delimeter + HttpMethods.Put;
+        }  //PUT
+
+        public static string RvInstallAgentUpdateResults()
+        {
+            return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/agent" + Delimeter + HttpMethods.Put;
+        }     //PUT
+
+        public static string RvRebootResults()
+        {
+            return "/rvl/v1/" + Settings.AgentId + "/core/results/reboot" + Delimeter + HttpMethods.Put;
+        } //PUT 
+
+        public static string RvUpdatesApplications()
+        {
+            return "/rvl/v1/" + Settings.AgentId + "/rv/updatesapplications" + Delimeter + HttpMethods.Put;
+        } //PUT 
+
+        public static string RvUninstallOperation()
+        {
+            return "/rvl/v1/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
+        } //PUT 
 
         //MONITOR
-        public static string MonData() { return "/rvl/v1/" + Settings.AgentId + "/monitoring/monitordata" + Delimeter + HttpMethods.Post; } //POST
+        public static string MonData()
+        {
+            return "/rvl/v1/" + Settings.AgentId + "/monitoring/monitordata" + Delimeter + HttpMethods.Post;
+        } //POST
+
+        /// <summary>
+        /// Converts the json message from the server for response uri into a jtoken.
+        /// </summary>
+        /// <param name="jmsg">Json messega from the sever containing response uris.</param>
+        public static void RefreshUris(ISofOperation jmsg)
+        {
+            string json = jmsg.RawOperation;
+            JObject parjson = JObject.Parse(json);
+            responseUri = parjson["data"];
+        }
+
+
     }
+
+    #region response uris properties
+    public class CheckIn
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class InstallSupportedApps
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class Startup
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class AvailableAgentUpdate
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class Updatesapplications
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class Reboot
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class InstallOsApps
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class InstallAgentUpdate
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class UninstallAgent
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class Logout
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class Ra
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class Shutdown
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class NewAgent
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class Login
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class InstallCustomApps
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class MonitorData
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class Uninstall
+    {
+        public string response_uri { get; set; }
+        public string request_method { get; set; }
+    }
+
+    public class Data
+    {
+        public CheckIn check_in { get; set; }
+        public InstallSupportedApps install_supported_apps { get; set; }
+        public Startup startup { get; set; }
+        public AvailableAgentUpdate available_agent_update { get; set; }
+        public Updatesapplications updatesapplications { get; set; }
+        public Reboot reboot { get; set; }
+        public InstallOsApps install_os_apps { get; set; }
+        public InstallAgentUpdate install_agent_update { get; set; }
+        public UninstallAgent uninstall_agent { get; set; }
+        public Logout logout { get; set; }
+        public Ra ra { get; set; }
+        public Shutdown shutdown { get; set; }
+        public NewAgent new_agent { get; set; }
+        public Login login { get; set; }
+        public InstallCustomApps install_custom_apps { get; set; }
+        public MonitorData monitor_data { get; set; }
+        public Uninstall uninstall { get; set; }
+    }
+
+    public class RootObject
+    {
+        public int count { get; set; }
+        public string uri { get; set; }
+        public int rv_status_code { get; set; }
+        public string http_method { get; set; }
+        public int http_status { get; set; }
+        public string message { get; set; }
+        public Data data { get; set; }
+        public string operation { get; set; }
+    }
+    #endregion
 
 
 
@@ -65,6 +268,7 @@ namespace Agent.Core.ServerOperations
         public const string InstallAgentUpdate   = "install_agent_update";
         public const string Uninstall            = "uninstall";
         public const string AgentUninstall       = "uninstall_agent";
+        public const string RefreshUris          = "refresh_response_uris";
     }
 
     public class OperationKey

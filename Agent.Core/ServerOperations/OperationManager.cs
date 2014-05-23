@@ -166,6 +166,10 @@ namespace Agent.Core.ServerOperations
                     case OperationValue.Shutdown:
                         Tools.SystemShutdown();
                         break;
+
+                    case OperationValue.RefreshUris:
+                        ApiCalls.RefreshUris(operation);
+                        break;
                         
                     case OperationValue.ReverseTunnel:
                         //TODO: WILL COME SOON
