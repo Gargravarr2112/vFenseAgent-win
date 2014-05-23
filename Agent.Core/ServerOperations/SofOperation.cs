@@ -28,17 +28,12 @@ namespace Agent.Core.ServerOperations
 
         //CORE API CALLS
         public const string CoreNewAgent = "/rvl/v1/core/newagent" + Delimeter + HttpMethods.Post; //POST
-
-
-        public static string CoreReboot()
-        {
-            return "/rvl/v1/" + Settings.AgentId + "/core/reboot" + Delimeter + HttpMethods.Put;
-        } //PUT
-
+        
+     
         public static string CoreRebootResults()
         {
             return "/rvl/v1/" + Settings.AgentId + "/core/results/reboot" + Delimeter + HttpMethods.Put;
-        } //PUT 
+        }
 
         public static string CoreCheckIn()
         {
@@ -54,7 +49,7 @@ namespace Agent.Core.ServerOperations
                 JProperty uri = null;
                 JProperty method = null;
 
-                foreach (JToken x in monData.Children())
+                foreach (JToken x in Data.Children())
                 {
                     var xdata = x.Children<JProperty>();
                     uri = xdata.FirstOrDefault(b => b.Name == "response_uri");
@@ -73,49 +68,49 @@ namespace Agent.Core.ServerOperations
             }
 
             return "/rvl/v1/" + Settings.AgentId + "/core/checkin" + Delimeter + HttpMethods.Get;
-        } //GET
+        }
 
         public static string CoreStartUp()
         {
             return "/rvl/v1/" + Settings.AgentId + "/core/startup" + Delimeter + HttpMethods.Put;
-        } //PUT
+        }
 
 
         //RV
         public static string RvInstallWinUpdateResults()
         {
             return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/os" + Delimeter + HttpMethods.Put;
-        }      //PUT
+        }
 
         public static string RvInstallCustomAppsResults()
         {
             return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/custom" + Delimeter + HttpMethods.Put;
-        }  //PUT
+        }
 
         public static string RvInstallSupportedAppsResults()
         {
             return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/supported" + Delimeter + HttpMethods.Put;
-        }  //PUT
+        } 
 
         public static string RvInstallAgentUpdateResults()
         {
             return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/agent" + Delimeter + HttpMethods.Put;
-        }     //PUT
+        } 
 
         public static string RvRebootResults()
         {
             return "/rvl/v1/" + Settings.AgentId + "/core/results/reboot" + Delimeter + HttpMethods.Put;
-        } //PUT 
+        }
 
         public static string RvUpdatesApplications()
         {
             return "/rvl/v1/" + Settings.AgentId + "/rv/updatesapplications" + Delimeter + HttpMethods.Put;
-        } //PUT 
+        } 
 
         public static string RvUninstallOperation()
         {
             return "/rvl/v1/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
-        } //PUT 
+        } 
 
         //MONITOR
         public static string MonData()
@@ -132,7 +127,7 @@ namespace Agent.Core.ServerOperations
                     JProperty uri = null;
                     JProperty method = null;
 
-                    foreach (JToken x in monData.Children())
+                    foreach (JToken x in Data.Children())
                     {
                         var xdata = x.Children<JProperty>();
                         uri = xdata.FirstOrDefault(b => b.Name == "response_uri");
@@ -151,7 +146,7 @@ namespace Agent.Core.ServerOperations
             }
 
             return "/rvl/v1/" + Settings.AgentId + "/monitoring/monitordata" + Delimeter + HttpMethods.Post;
-        } //POST
+        } 
 
         /// <summary>
         /// Converts the json message from the server for response uri into a jtoken.
