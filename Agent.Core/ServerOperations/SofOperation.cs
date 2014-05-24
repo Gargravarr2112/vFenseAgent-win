@@ -290,6 +290,36 @@ namespace Agent.Core.ServerOperations
 
         public static string RvUninstallOperation()
         {
+            try
+            {
+
+                string respUri = null;
+                string respMethod = null;
+
+                var prop = responseUri.Children<JProperty>();
+                JProperty Data = prop.FirstOrDefault(b => b.Name == "uninstall");
+
+                JProperty uri = null;
+                JProperty method = null;
+
+                foreach (JToken x in Data.Children())
+                {
+                    var xdata = x.Children<JProperty>();
+                    uri = xdata.FirstOrDefault(b => b.Name == "response_uri");
+                    method = xdata.FirstOrDefault(b => b.Name == "request_method");
+                }
+                respUri = uri.Value.ToString();
+                respMethod = method.Value.ToString();
+
+                if (!string.IsNullOrEmpty(respUri) && !string.IsNullOrEmpty(respMethod))
+                    return (respUri + Delimeter + respMethod);
+
+            }
+            catch
+            {
+                return "/rvl/v1/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
+            }
+
             return "/rvl/v1/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
         } 
 
