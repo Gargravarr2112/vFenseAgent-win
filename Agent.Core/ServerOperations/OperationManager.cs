@@ -134,7 +134,7 @@ namespace Agent.Core.ServerOperations
                     case OperationValue.NewAgent:
                         Logger.Info("IN NEW AGENT");
                         operation.Type = OperationValue.NewAgent;
-                        operation.Api = ApiCalls.CoreNewAgent;
+                        operation.Api = ApiCalls.CoreNewAgent();
                         operation = PluginsInitialDataOperation(operation);
                         operation.RawResult = InitialDataFormatter(operation);
                         Logger.Info("BEFORE save and send");
@@ -264,7 +264,7 @@ namespace Agent.Core.ServerOperations
                 else
                 {
                     operation.Type = OperationValue.NewAgent;
-                    operation.Api = ApiCalls.CoreNewAgent;
+                    operation.Api = ApiCalls.CoreNewAgent();
                 }
             }
             catch
