@@ -441,6 +441,7 @@ namespace Agent.Core.ServerOperations
                     }
                     catch
                     {
+                        a++;
                         Thread.Sleep(5000);
                     }
                         
