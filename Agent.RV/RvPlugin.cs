@@ -1133,6 +1133,10 @@ namespace Agent.RV
             applications.AddRange(WindowsUpdates.GetAvailableUpdates());
             applications.AddRange(WindowsUpdates.GetInstalledUpdates());
             applications.AddRange(SupportedAppsManager.GetInstalledApplications());
+            //check for agent updates, if available will add to the list
+            string agentavailable = Agent.RV.AgentUpdater.AgentUpdateManager.IsAgentUpdateAvailable();
+            if(agentavailable != "false")
+                applications.AddRange(Agent.RV.AgentUpdater.AgentUpdateManager.AgentPatchUdateData(agentavailable));
 
             return applications;
         }

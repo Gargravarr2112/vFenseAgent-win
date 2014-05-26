@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using Agent.Core;
 using Agent.Core.Data.Model;
 using Agent.Core.Utils;
+using Agent.RV.Data;
 using Agent.RV.Utils;
+using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
+using RestSharp;
 
 namespace Agent.RV.AgentUpdater
 {
@@ -150,7 +155,250 @@ namespace Agent.RV.AgentUpdater
 
             return update;
         }
+
+        /// <summary>
+        /// Checks if there is an available update from the github repo.
+        /// Using RestRquest connection to obtain the json array.
+        /// https://api.github.com/repos/toppatch/vFenseAgent-win/releases
+        /// </summary>
+        /// <returns>Returns a string with either the new version available or false.</returns>
+        public static string IsAgentUpdateAvailable()
+        {
+            try
+            {
+                #region connects to GitHub and gets the json(jsonrest)
+                RestRequest request = new RestRequest("https://api.github.com/repos/toppatch/vFenseAgent-win/releases");
+
+                RestClient client = new RestClient();
+
+                var responst = client.Execute(request);
+
+                var jsonrest = JArray.Parse(responst.Content);
+                #endregion
+
+                int major = 0;
+                int minor = 0;
+                int patch = 0;
+                int currentmajor = 0;
+                int currentminor = 0;
+                int currentpatch = 0;
+
+                #region get the installed version and set the values to the appropriate variables 
+
+                try
+                {
+                    string currentversion = CurrentInstalledVersion();
+                    string[] cv = currentversion.Split('.');
+                    currentmajor = int.Parse(cv[0]);
+                    currentminor = int.Parse(cv[1]);
+                    currentpatch = int.Parse(cv[2]);
+                }
+                catch
+                {
+                    Logger.Log("Error while parsing current installed version.");
+                }
+
+                #endregion
+
+                foreach (JToken x in jsonrest.Children())
+                {
+                    var prop = x.Children<JProperty>();
+                    JProperty tag_name = prop.FirstOrDefault(b => b.Name == "tag_name");
+
+                    try
+                    {
+                        string versionstring = tag_name.Value.ToString();
+                        string version = versionstring.Replace("v", string.Empty);
+                        string[] split = version.Split('.');
+                        try
+                        {
+                            major = int.Parse(split[0]);
+                            minor = int.Parse(split[1]);
+                            patch = int.Parse(split[2]);
+                        }
+                        catch
+                        {
+                            Logger.Log("Error while parsing the patch details.", LogLevel.Warning);
+                        }
+
+                        if (currentmajor < major)
+                            return version;
+                        if (currentminor < minor && currentmajor <= major)
+                            return version;
+                        if (currentpatch < patch && currentminor <= minor && currentmajor <= major)
+                            return version;
+
+                    }
+                    catch
+                    {
+                        Logger.Log("Error while converting version number.", LogLevel.Warning);
+                    }
+                }
+
+                return "false";
+            }
+            catch
+            {
+                Logger.Log("Fail while trying to obtain agent update available.", LogLevel.Error);
+            }
+
+            return "false";
+        }
+
+        /// <summary>
+        /// Generates server list with the new agent update date.
+        /// It requires the new agent update version #.
+        /// </summary>
+        /// <param name="availableVersion">New agent version number #, #.#.#, default to false.</param>
+        /// <returns>Returns list<application> with the agent update data.</application></returns>
+        public static List<Application> AgentPatchUdateData(string availableVersion = "false")
+        {
+            var patchData = new List<Application>();
+
+            try
+            {
+                #region connects to GitHub and gets the json(jsonRest)
+                RestRequest request = new RestRequest("https://api.github.com/repos/toppatch/vFenseAgent-win/releases");
+
+                RestClient client = new RestClient();
+
+                var responst = client.Execute(request);
+
+                var jsonrest = JArray.Parse(responst.Content);
+                #endregion
+
+                var patch = new Application();
+
+                try
+                {
+                    foreach (JToken x in jsonrest.Children())
+                    {
+                        var prop = x.Children<JProperty>();
+                        JProperty tag_name = prop.FirstOrDefault(b => b.Name == "tag_name");
+                        JProperty id = prop.FirstOrDefault(b => b.Name == "id");
+                        JProperty published = prop.FirstOrDefault(b => b.Name == "published_at");
+                        JProperty zip_url = prop.FirstOrDefault(b => b.Name == "zipball_url");
+                        JProperty jpassets = prop.FirstOrDefault(b => b.Name == "assets");
+                        JProperty body = prop.FirstOrDefault(b => b.Name == "body");
+                        JProperty name = null;
+                        JProperty size = null;
+
+                        string tagname = tag_name.Value.ToString();
+                        string release = tagname.Replace("v", string.Empty);
+
+                        if (release == availableVersion)
+                        {
+                            try
+                            {
+                                foreach (JToken y in jpassets.Children())
+                                {
+                                    foreach (JToken z in y.Children())
+                                    {
+                                        var assets = z.Children<JProperty>();
+                                        name = assets.FirstOrDefault(b => b.Name == "name");
+                                        size = assets.FirstOrDefault(b => b.Name == "size");
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                            }
+
+                            string publishstring = published.Value.ToString();
+                            string[] publishStrings = publishstring.Split(' ');
+                            double publishDate = 0;
+                            try
+                            {
+                                publishDate = (Agent.Core.Utils.Time.DateToEpoch(publishStrings[0]));
+                            }
+                            catch
+                            {
+                            }
+
+                            try
+                            {
+                                patch.Name = "vFenseAgent";
+                                patch.VendorName = "vFense";
+                                patch.ReleaseDate = publishDate;
+                                patch.Description = body.Value.ToString();
+                                patch.Version = release;
+                                patch.VendorId = id.Value.ToString();
+                                patch.VendorSeverity = "Important";
+                                patch.Status = "available";
+                                patch.SupportUrl = @"https://github.com/toppatch/vFenseAgent-win/issues";
+
+                                try
+                                {
+                                    var assetslist = new DownloadUri();
+                                    assetslist.FileName = name.Value.ToString();
+                                    assetslist.Uri = zip_url.Value.ToString();
+                                    assetslist.FileSize = int.Parse(size.Value.ToString());
+
+                                    patch.FileData.Add(assetslist);
+                                }
+                                catch
+                                {
+                                    Logger.Log("Error while populating filedata for the agent patch data", LogLevel.Warning);
+                                }
+                                }
+                            catch
+                            {
+                                Logger.Log("Error while populating agent patch data.", LogLevel.Warning);
+                            }
+
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(e.Message);
+                    Logger.Log("Error while parsing agent udpate data.", LogLevel.Error);
+                }
+
+                patchData.Add(patch);
+            }
+            catch
+            {
+                Logger.Log("Error in AgentPatchUdateData.", LogLevel.Error);
+            }
+
+            return patchData;
+        }
+
+        /// <summary>
+        /// Checks the registry key file to retrive the current version installed on the system.
+        /// </summary>
+        /// <returns>Returns a string with the version installed, or empty string if it fails.</returns>
+        public static string CurrentInstalledVersion()
+        {
+            {
+                string topPatchRegistry;
+                const string key = "Version";
+
+
+                //64bit or 32bit Machine?
+                if (Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE") == "x86"
+                    && Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432") == null)
+                    //32bit
+                    topPatchRegistry = @"SOFTWARE\TopPatch Inc.\TopPatch Agent";
+                else
+                    //64bit
+                    topPatchRegistry = @"SOFTWARE\Wow6432Node\TopPatch Inc.\TopPatch Agent";
+
+
+                //Retrieve the Version number from the TopPatch Agent Registry Key
+                try
+                {
+                    using (var rKey = Registry.LocalMachine.OpenSubKey(topPatchRegistry))
+                    {
+                        var installedVersion = ((rKey == null) || (rKey.GetValue(key) == null)) ? String.Empty : rKey.GetValue(key).ToString();
+                        return installedVersion;
+                    }
+                }
+                catch (Exception) { return string.Empty; }
+            }
+        }
+        
+        
     }
-
-
 }

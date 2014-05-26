@@ -161,6 +161,37 @@ namespace Agent.Core.Utils
             return epoch;
         }
 
+        /// <summary>
+        /// Converts a sting with a date time in it to epoch time.
+        /// String date most be formated as follows.
+        /// month/date/year.
+        /// </summary>
+        /// <param name="date">Date string, month/date/year.</param>
+        /// <returns>Returns int with epoch time</returns>
+        public static int DateToEpoch(string date)
+        {
+            try
+            {
+                TimeSpan epoch;
+                // month[0], date[1], year[2]
+                string[] dateStrings = date.Split('/');
+                int year = int.Parse(dateStrings[2]);
+                int month = int.Parse(dateStrings[0]);
+                int day = int.Parse(dateStrings[1]);
+
+                epoch = (new DateTime(year, month, day) -
+                         new DateTime(1970, 1, 1));
+
+
+                return (int) epoch.TotalSeconds;
+            }
+            catch
+            {
+                Logger.Log("Error converting the date string to epoch time.", LogLevel.Warning);
+                return 0;
+            }
+        }
+
         public class MyTimeZone
         {
             public string utc_offset = string.Empty;
