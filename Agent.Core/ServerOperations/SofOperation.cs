@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Agent.Core.Utils;
@@ -418,7 +420,63 @@ namespace Agent.Core.ServerOperations
             }
 
             return "/rvl/v1/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
-        } 
+        }
+
+        public static string AvailableAgentUpdate()
+        {
+            try
+            {
+                int a = 0;
+                string respUri = null;
+                string respMethod = null;
+                JProperty Data = null;
+
+                do
+                {
+                    
+                    try
+                    {
+                        var prop = responseUri.Children<JProperty>();
+                        Data = prop.FirstOrDefault(b => b.Name == "available_agent_update");
+                    }
+                    catch
+                    {
+                        Thread.Sleep(5000);
+                    }
+                        
+
+                    JProperty uri = null;
+                    JProperty method = null;
+
+                    try
+                    {
+                        foreach (JToken x in Data.Children())
+                        {
+                            var xdata = x.Children<JProperty>();
+                            uri = xdata.FirstOrDefault(b => b.Name == "response_uri");
+                            method = xdata.FirstOrDefault(b => b.Name == "request_method");
+                        }
+
+                        respUri = uri.Value.ToString();
+                        respMethod = method.Value.ToString();
+                    }
+                    catch
+                    { }
+
+                } while (a <= 10 && Data == null); 
+
+
+                if (!string.IsNullOrEmpty(respUri) && !string.IsNullOrEmpty(respMethod))
+                    return (respUri + Delimeter + respMethod);
+
+            }
+            catch
+            {
+                return "/rvl/v1/" + Settings.AgentId + "/rv/available_agent_update" + Delimeter + HttpMethods.Put;
+            }
+
+            return "/rvl/v1/" + Settings.AgentId + "/rv/available_agent_update" + Delimeter + HttpMethods.Put;
+        }
 
         //MONITOR
         public static string MonData()
