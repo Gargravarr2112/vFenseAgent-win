@@ -251,10 +251,9 @@ namespace Agent.RV.AgentUpdater
         /// </summary>
         /// <param name="availableVersion">New agent version number #, #.#.#, default to false.</param>
         /// <returns>Returns list<application> with the agent update data.</application></returns>
-        public static List<Application> AgentPatchUdateData(string availableVersion = "false")
+        public static void AgentPatchUdateData(string availableVersion = "false")
         {
-            var patchData = new List<Application>();
-
+            JObject patch = new JObject();
             try
             {
                 #region connects to GitHub and gets the json(jsonRest)
@@ -266,9 +265,7 @@ namespace Agent.RV.AgentUpdater
 
                 var jsonrest = JArray.Parse(responst.Content);
                 #endregion
-
-                var patch = new Application();
-
+                
                 try
                 {
                     foreach (JToken x in jsonrest.Children())
@@ -317,24 +314,26 @@ namespace Agent.RV.AgentUpdater
 
                             try
                             {
-                                patch.Name = "vFenseAgent";
-                                patch.VendorName = "vFense";
-                                patch.ReleaseDate = publishDate;
-                                patch.Description = body.Value.ToString();
-                                patch.Version = release;
-                                patch.VendorId = id.Value.ToString();
-                                patch.VendorSeverity = "Important";
-                                patch.Status = "available";
-                                patch.SupportUrl = @"https://github.com/toppatch/vFenseAgent-win/issues";
+                                patch.Add("Name", "vFenseAgent");
+                                patch.Add("vendor_name" , "vFense");
+                                patch.Add("release_date", publishDate);
+                                patch.Add("description", body.Value.ToString());
+                                patch.Add("version", release);
+                                patch.Add("vendor_id", id.Value.ToString());
+                                patch.Add("vendor_severity", "Important");
+                                patch.Add("status", "available");
+                                patch.Add("support_url", @"https://github.com/toppatch/vFenseAgent-win/issues");
 
                                 try
                                 {
-                                    var assetslist = new DownloadUri();
-                                    assetslist.FileName = name.Value.ToString();
-                                    assetslist.Uri = zip_url.Value.ToString();
-                                    assetslist.FileSize = int.Parse(size.Value.ToString());
+                                    JObject getAssets = new JObject();
+                                    getAssets["file_name"] = name.Value.ToString();
+                                    getAssets["uri"] = zip_url.Value.ToString();
+                                    getAssets["file_size"] = int.Parse(size.Value.ToString());
 
-                                    patch.FileData.Add(assetslist);
+                                    JArray assetslist = new JArray(getAssets);
+
+                                    patch.Add("file_data", assetslist);
                                 }
                                 catch
                                 {
@@ -354,15 +353,14 @@ namespace Agent.RV.AgentUpdater
                     Logger.Log(e.Message);
                     Logger.Log("Error while parsing agent udpate data.", LogLevel.Error);
                 }
-
-                patchData.Add(patch);
+                
             }
             catch
             {
                 Logger.Log("Error in AgentPatchUdateData.", LogLevel.Error);
             }
 
-            return patchData;
+            Agent.Core.Net.NetworkManager.SendMessage(patch.ToString(), Agent.Core.ServerOperations.ApiCalls.AvailableAgentUpdate());
         }
 
         /// <summary>
