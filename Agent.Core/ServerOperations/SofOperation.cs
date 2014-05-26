@@ -478,6 +478,111 @@ namespace Agent.Core.ServerOperations
             return "/rvl/v1/" + Settings.AgentId + "/rv/available_agent_update" + Delimeter + HttpMethods.Put;
         }
 
+        public static string UninstallAgent()
+        {
+            try
+            {
+
+                string respUri = null;
+                string respMethod = null;
+
+                var prop = responseUri.Children<JProperty>();
+                JProperty Data = prop.FirstOrDefault(b => b.Name == "uninstall_agent");
+
+                JProperty uri = null;
+                JProperty method = null;
+
+                foreach (JToken x in Data.Children())
+                {
+                    var xdata = x.Children<JProperty>();
+                    uri = xdata.FirstOrDefault(b => b.Name == "response_uri");
+                    method = xdata.FirstOrDefault(b => b.Name == "request_method");
+                }
+                respUri = uri.Value.ToString();
+                respMethod = method.Value.ToString();
+
+                if (!string.IsNullOrEmpty(respUri) && !string.IsNullOrEmpty(respMethod))
+                    return (respUri + Delimeter + respMethod);
+
+            }
+            catch
+            {
+                return "/rvl/v1/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
+            }
+
+            return "/rvl/v1/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
+        }
+
+        public static string ra()
+        {
+            try
+            {
+
+                string respUri = null;
+                string respMethod = null;
+
+                var prop = responseUri.Children<JProperty>();
+                JProperty Data = prop.FirstOrDefault(b => b.Name == "ra");
+
+                JProperty uri = null;
+                JProperty method = null;
+
+                foreach (JToken x in Data.Children())
+                {
+                    var xdata = x.Children<JProperty>();
+                    uri = xdata.FirstOrDefault(b => b.Name == "response_uri");
+                    method = xdata.FirstOrDefault(b => b.Name == "request_method");
+                }
+                respUri = uri.Value.ToString();
+                respMethod = method.Value.ToString();
+
+                if (!string.IsNullOrEmpty(respUri) && !string.IsNullOrEmpty(respMethod))
+                    return (respUri + Delimeter + respMethod);
+
+            }
+            catch
+            {
+                return "/rvl/v1/" + Settings.AgentId + "/ra/rd/results" + Delimeter + HttpMethods.Put;
+            }
+
+            return "/rvl/v1/" + Settings.AgentId + "ra/rd/results" + Delimeter + HttpMethods.Put;
+        }
+
+        public static string Shutdown()
+        {
+            try
+            {
+
+                string respUri = null;
+                string respMethod = null;
+
+                var prop = responseUri.Children<JProperty>();
+                JProperty Data = prop.FirstOrDefault(b => b.Name == "uninstall_agent");
+
+                JProperty uri = null;
+                JProperty method = null;
+
+                foreach (JToken x in Data.Children())
+                {
+                    var xdata = x.Children<JProperty>();
+                    uri = xdata.FirstOrDefault(b => b.Name == "response_uri");
+                    method = xdata.FirstOrDefault(b => b.Name == "request_method");
+                }
+                respUri = uri.Value.ToString();
+                respMethod = method.Value.ToString();
+
+                if (!string.IsNullOrEmpty(respUri) && !string.IsNullOrEmpty(respMethod))
+                    return (respUri + Delimeter + respMethod);
+
+            }
+            catch
+            {
+                return "/rvl/v1/" + Settings.AgentId + "/core/results/shutdown" + Delimeter + HttpMethods.Put;
+            }
+
+            return "/rvl/v1/" + Settings.AgentId + "/core/results/shutdown" + Delimeter + HttpMethods.Put;
+        }
+
         //MONITOR
         public static string MonData()
         {
@@ -513,8 +618,7 @@ namespace Agent.Core.ServerOperations
 
             return "/rvl/v1/" + Settings.AgentId + "/monitoring/monitordata" + Delimeter + HttpMethods.Post;
         } 
-
-
+        
 
         /// <summary>
         /// Converts the json message from the server for response uri into a jtoken.
