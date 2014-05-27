@@ -279,6 +279,7 @@ namespace Agent.RV.AgentUpdater
                         JProperty body = prop.FirstOrDefault(b => b.Name == "body");
                         JProperty name = null;
                         JProperty size = null;
+                        JProperty url = null;
 
                         string tagname = tag_name.Value.ToString();
                         string release = tagname.Replace("v", string.Empty);
@@ -294,6 +295,7 @@ namespace Agent.RV.AgentUpdater
                                         var assets = z.Children<JProperty>();
                                         name = assets.FirstOrDefault(b => b.Name == "name");
                                         size = assets.FirstOrDefault(b => b.Name == "size");
+                                        url = assets.FirstOrDefault(b => b.Name == "url");
                                     }
                                 }
                             }
@@ -304,9 +306,13 @@ namespace Agent.RV.AgentUpdater
                             string publishstring = published.Value.ToString();
                             string[] publishStrings = publishstring.Split(' ');
                             double publishDate = 0;
+
                             try
                             {
-                                publishDate = (Agent.Core.Utils.Time.DateToEpoch(publishStrings[0]));
+                                double preDate = (Agent.Core.Utils.Time.DateToEpoch(publishStrings[0]));
+                                string stringDate = (string) preDate.ToString();
+                                string[] splitDate = stringDate.Split('.');
+                                publishDate = double.Parse(splitDate[0]);
                             }
                             catch
                             {
@@ -320,15 +326,20 @@ namespace Agent.RV.AgentUpdater
                                 patch.Add("description", body.Value.ToString());
                                 patch.Add("version", release);
                                 patch.Add("vendor_id", id.Value.ToString());
-                                patch.Add("vendor_severity", "Important");
+                                patch.Add("vendor_severity", "recommended");
                                 patch.Add("status", "available");
+                                patch.Add("reboot_required", "no");
+                                patch.Add("install_date", 0);
+                                patch.Add("repo", "");
+                                patch.Add("kb", "");
                                 patch.Add("support_url", @"https://github.com/toppatch/vFenseAgent-win/issues");
 
                                 try
                                 {
                                     JObject getAssets = new JObject();
+                                    getAssets["file_hash"] = string.Empty;
                                     getAssets["file_name"] = name.Value.ToString();
-                                    getAssets["uri"] = zip_url.Value.ToString();
+                                    getAssets["uri"] = url.Value.ToString();
                                     getAssets["file_size"] = int.Parse(size.Value.ToString());
 
                                     JArray assetslist = new JArray(getAssets);
@@ -339,6 +350,17 @@ namespace Agent.RV.AgentUpdater
                                 {
                                     Logger.Log("Error while populating filedata for the agent patch data", LogLevel.Warning);
                                 }
+
+                                try
+                                {
+                                    //JObject dependencies = new JObject();
+                                    JArray dependArray = new JArray();
+                                    patch.Add("dependencies", dependArray);
+                                }
+                                catch
+                                {
+                                }
+
                                 }
                             catch
                             {
@@ -360,7 +382,10 @@ namespace Agent.RV.AgentUpdater
                 Logger.Log("Error in AgentPatchUdateData.", LogLevel.Error);
             }
 
-            Agent.Core.Net.NetworkManager.SendMessage(patch.ToString(), Agent.Core.ServerOperations.ApiCalls.AvailableAgentUpdate());
+            JObject agentUpdate = new JObject();
+            agentUpdate.Add("data", patch);
+
+            Agent.Core.Net.NetworkManager.SendMessage(agentUpdate.ToString(), Agent.Core.ServerOperations.ApiCalls.AvailableAgentUpdate());
         }
 
         /// <summary>
