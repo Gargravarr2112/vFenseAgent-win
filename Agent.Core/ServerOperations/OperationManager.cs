@@ -567,7 +567,6 @@ namespace Agent.Core.ServerOperations
             catch (Exception)
             {
                 Logger.Log("Failed while getting Hardware Info.", LogLevel.Critical);
-                throw;
             }
 
             return hardwareinfo.ToString();

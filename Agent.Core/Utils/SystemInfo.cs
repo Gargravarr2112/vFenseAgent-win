@@ -144,8 +144,7 @@ namespace Agent.Core.Utils
             }
             catch (Exception)
             {
-
-                throw;
+                Logger.Log("Error while gathering cpu info.", LogLevel.Error);
             }
 
             return cpuInfo;
@@ -161,14 +160,16 @@ namespace Agent.Core.Utils
 
             try
             {
-                videoInfo["name"] = VideoDetails("Caption");
-                videoInfo["speed_mhz"] = VideoDetails("AdapterDACType");
-                videoInfo["ram_kb"] = VideoDetails("AdapterRAM");
+                try { videoInfo["name"] = VideoDetails("Caption"); }
+                catch { videoInfo["name"] = string.Empty; }
+                try {videoInfo["speed_mhz"] = VideoDetails("AdapterDACType");}
+                catch { videoInfo["speed_mhz"] = string.Empty; }
+                try { videoInfo["ram_kb"] = VideoDetails("AdapterRAM"); }
+                catch { videoInfo["ram_kb"] = string.Empty; }
             }
             catch (Exception)
             {
-                
-                throw;
+                Logger.Log("Error while gathering video card info.", LogLevel.Error);
             }
 
             return videoInfo;
@@ -178,11 +179,10 @@ namespace Agent.Core.Utils
         /// Gets the network information as per the requiremtns of the server.
         /// 
         /// </summary>
-        /// <returns>Returns JObject with network info in it.</returns>
-        public static JObject GetNetwork()
+        /// <returns>Returns jArray with all the network info on the system, include multiple network cards.</returns>
+        public static JArray GetNetwork()
         {
-            var networkInfo = new JObject();
-            var controller = new JObject();
+            var controller = new JArray();
             try
             {
                 foreach (var net in NetworkInterface.GetAllNetworkInterfaces())
@@ -194,20 +194,21 @@ namespace Agent.Core.Utils
                         //Obtain IP for the particular Interface
                         foreach (var ip in net.GetIPProperties().UnicastAddresses)
                         {
+                            JObject controllers = new JObject();
                             if (ip.Address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork) continue;
-                            controller.Add("ip_address", ip.Address.ToString());
-                            controller.Add("mac", net.GetPhysicalAddress().ToString());
-                            controller.Add("name", net.Name);
+                            controllers.Add("ip_address", ip.Address.ToString());
+                            controllers.Add("mac", net.GetPhysicalAddress().ToString());
+                            controllers.Add("name", net.Name);
+                            controller.Add(controllers);
                             break;
                         }
 
                     }
                 }
             }
-            catch (Exception)
+            catch 
             {
-
-                throw;
+                Logger.Log("Error while gathering network card info.", LogLevel.Error);
             }
             return controller;
         }
@@ -257,8 +258,7 @@ namespace Agent.Core.Utils
             }
             catch (Exception)
             {
-                
-                throw;
+                Logger.Log("Error while gathering harddrive info.", LogLevel.Error);
             }
 
             return harddriveinfo;
