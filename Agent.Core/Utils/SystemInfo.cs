@@ -160,12 +160,9 @@ namespace Agent.Core.Utils
 
             try
             {
-                try { videoInfo["name"] = VideoDetails("Caption"); }
-                catch { videoInfo["name"] = string.Empty; }
-                try {videoInfo["speed_mhz"] = VideoDetails("AdapterDACType");}
-                catch { videoInfo["speed_mhz"] = string.Empty; }
-                try { videoInfo["ram_kb"] = VideoDetails("AdapterRAM"); }
-                catch { videoInfo["ram_kb"] = string.Empty; }
+                videoInfo["name"] = VideoDetails("Caption");
+                videoInfo["speed_mhz"] = VideoDetails("AdapterDACType");
+                videoInfo["ram_kb"] = VideoDetails("AdapterRAM");
             }
             catch (Exception)
             {
