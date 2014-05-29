@@ -353,7 +353,6 @@ namespace Agent.RV.AgentUpdater
 
                                 try
                                 {
-                                    //JObject dependencies = new JObject();
                                     JArray dependArray = new JArray();
                                     patch.Add("dependencies", dependArray);
                                 }
@@ -382,8 +381,10 @@ namespace Agent.RV.AgentUpdater
                 Logger.Log("Error in AgentPatchUdateData.", LogLevel.Error);
             }
             
+            JObject agentPatch = new JObject();
+            agentPatch.Add("data", patch);
 
-            Agent.Core.Net.NetworkManager.SendMessage(patch.ToString(), Agent.Core.ServerOperations.ApiCalls.AvailableAgentUpdate());
+            Agent.Core.Net.NetworkManager.SendMessage(agentPatch.ToString(), Agent.Core.ServerOperations.ApiCalls.AvailableAgentUpdate());
         }
 
         /// <summary>
