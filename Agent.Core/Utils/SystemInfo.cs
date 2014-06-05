@@ -282,7 +282,7 @@ namespace Agent.Core.Utils
                     }
                     catch (Exception)
                     {
-                        
+                        Logger.Log("Error while gathering total memory.", LogLevel.Error);
                     }
                 }
             }
