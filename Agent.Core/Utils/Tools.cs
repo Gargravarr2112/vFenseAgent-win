@@ -39,7 +39,7 @@ namespace Agent.Core.Utils
             const int secondsToShutdown = 60;
 
             // Comment that the current user can read, letting them know the computer will be restarted. 
-            var comment = String.Format("In {0} seconds, this computer will be restarted on behalf of the TopPatch Server.", secondsToShutdown);
+            var comment = String.Format("In {0} seconds, this computer will be restarted on behalf of the vFense Server.", secondsToShutdown);
 
             var processInfo = new ProcessStartInfo
             {
