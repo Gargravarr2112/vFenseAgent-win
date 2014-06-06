@@ -8,7 +8,19 @@
 |___|  |___     |    /      \
 
 =========================================================
-0.107.86
+0.8.3
+=========================================================
+	Enhancements
+		-Network Throttling
+		-Agent TTL(time to live)
+	Misc
+		-Rebuild initial data gathering
+		-Epoch Time integration
+		-Bug fixxes with init data(network info)
+
+=========================================================
+=========================================================
+0.8.1
 =========================================================
 	Enhancements
 		-Enable Optimize Code
