@@ -99,11 +99,11 @@ namespace Agent.RV.AgentUpdater
 
                                 if (File.Exists(filepath))
                                 {
-                                    var localFileHash = RvUtils.Md5HashFile(filepath).ToLower();
-                                    Logger.Log("Download Complete,  {0}", LogLevel.Info, file.FileName);
-                                    Logger.Log("Checking MD5 Hash...");
-                                    Logger.Log("Incoming Hash: {0}", LogLevel.Info, file.Hash);
-                                    Logger.Log("Local Hash: {0}", LogLevel.Info, localFileHash);
+                                    //var localFileHash = RvUtils.Md5HashFile(filepath).ToLower();
+                                    //Logger.Log("Download Complete,  {0}", LogLevel.Info, file.FileName);
+                                    //Logger.Log("Checking MD5 Hash...");
+                                    //Logger.Log("Incoming Hash: {0}", LogLevel.Info, file.Hash);
+                                    //Logger.Log("Local Hash: {0}", LogLevel.Info, localFileHash);
                                     downloaded = true;
 
                                     //if (localFileHash != file.Hash.ToLower())
