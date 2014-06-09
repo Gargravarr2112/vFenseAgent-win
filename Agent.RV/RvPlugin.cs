@@ -15,6 +15,7 @@ using Agent.RV.WindowsApps;
 using Agent.RV.SupportedApps;
 using Agent.RV.CustomApps;
 using Agent.RV.AgentUpdater;
+using Ionic.Zip;
 
 
 namespace Agent.RV
@@ -674,17 +675,61 @@ namespace Agent.RV
                                         var startInfo = new ProcessStartInfo();
                                         var fileName = String.Empty;
 
-                                        foreach (var item in updateDownloadResults.filedata_app_uris)
-                                        {
-                                            var splitted = item.file_name.Split(new[] {'.'});
-                                            if (splitted[0] == "UpdateInstaller")
-                                                fileName = item.file_name;
-                                        }
+                                        //foreach (var item in updateDownloadResults.filedata_app_uris)
+                                        //{
+                                        //    var splitted = item.file_name.Split(new[] {'.'});
+                                        //    if (splitted[0] == "UpdateInstaller")
+                                        //        fileName = item.file_name;
+                                        //}
 
-                                        if (String.IsNullOrEmpty(fileName))
-                                            fileName = "UpdateInstaller.exe";
+                                        //if (String.IsNullOrEmpty(fileName))
+                                        //    fileName = "UpdateInstaller.exe";
 
                                         var filePath = Path.Combine(AgentUpdateManager.AgentUpdateDirectory, fileName);
+
+                                        string[] aufile = Directory.GetFiles(AgentUpdateManager.AgentUpdateDirectory);
+                                        string zipname = null;
+                                        foreach (string rar in aufile)
+                                        {
+                                            if (rar.EndsWith(".zip"))
+                                            {
+                                                zipname = rar;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!string.IsNullOrEmpty(zipname))
+                                        {
+                                            var ZippedFile = Path.Combine(AgentUpdateManager.AgentUpdateDirectory, zipname);
+                                            if (File.Exists(ZippedFile))
+                                            {
+                                                using (ZipFile zip = ZipFile.Read(ZippedFile))
+                                                {
+                                                    zip.ExtractAll(filePath);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            savedOp.error = "Did not get the file name/path.";
+                                            continue;
+                                        }
+                                        aufile = Directory.GetDirectories(AgentUpdateManager.AgentUpdateDirectory);                                             
+                                        foreach (string file in aufile)
+                                        {
+                                            if (!string.IsNullOrEmpty(file))
+                                            {
+                                                string[] subfile = Directory.GetFiles(file);
+                                                foreach (string subfiles in subfile)
+                                                {
+                                                    if (subfiles.EndsWith("PatchPayload.exe"))
+                                                    {
+                                                        filePath = subfiles;
+                                                    }
+                                                }
+                                            }
+                                        }
+
 
                                         startInfo.FileName = filePath;
                                         startInfo.Arguments = updateDownloadResults.filedata_app_clioptions;
