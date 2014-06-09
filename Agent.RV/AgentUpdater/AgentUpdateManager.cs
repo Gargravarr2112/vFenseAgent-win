@@ -106,13 +106,13 @@ namespace Agent.RV.AgentUpdater
                                     Logger.Log("Local Hash: {0}", LogLevel.Info, localFileHash);
                                     downloaded = true;
 
-                                    if (localFileHash != file.Hash.ToLower())
-                                    {
-                                        Logger.Log("Local file {0} Hash did not match remote's. Retrying with a different server.", LogLevel.Info, file.FileName);
-                                        update.error = "Local file Hash did not match remote. Bad file integrity. ";
-                                        update.success = false.ToString().ToLower();
-                                        downloaded = false;
-                                    }
+                                    //if (localFileHash != file.Hash.ToLower())
+                                    //{
+                                    //    Logger.Log("Local file {0} Hash did not match remote's. Retrying with a different server.", LogLevel.Info, file.FileName);
+                                    //    update.error = "Local file Hash did not match remote. Bad file integrity. ";
+                                    //    update.success = false.ToString().ToLower();
+                                    //    downloaded = false;
+                                    //}
                                 }
                                 else
                                 {
