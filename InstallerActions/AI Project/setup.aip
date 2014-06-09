@@ -56,7 +56,7 @@
     <ROW Property="ProductCode" Value="1033:{DBB6951B-ABF2-4571-A925-02929D9519A8} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="TopPatch Agent"/>
-    <ROW Property="ProductVersion" Value="0.8.2" Type="32"/>
+    <ROW Property="ProductVersion" Value="0.8.3" Type="32"/>
     <ROW Property="REBOOT" MultiBuildValue="DefaultBuild:Suppress"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{EEF08928-1597-4376-8CFE-C404B14EDB4C}"/>
