@@ -40,26 +40,12 @@ namespace PatchPayload
             {
                 if (!Directory.Exists(Data.AgentUpdateDirectory))
                     Directory.CreateDirectory(Data.AgentUpdateDirectory);
-                //else
-                //{
-                //    try
-                //    {
-                //        Directory.Delete(Data.AgentUpdateDirectory, true);
-                //        Directory.CreateDirectory(Data.AgentUpdateDirectory);
-                //    }
-                //    catch { }
-                //}
 
                 var files = new StringCollection();
 
 
                 Data.Logger("Loading up Agent Updater v" + versionNumberPatcher);
-
-                //var configFile = Path.Combine(Tools.RetrieveInstallationPath(), "agent.config");
-                //Tools.GetProxyFromConfigFile(configFile);
-
-                //Data.Logger("Preparing to Download Content from Server.");
-                //DownloadPatchContent();
+                
 
                 Data.Logger("Upgrading RV Agent from v" + Tools.RetrieveCurrentAgentVersion() + " to v" + versionNumber);
                 var contents = Directory.GetFiles(Data.AgentUpdateDirectory);
@@ -92,10 +78,12 @@ namespace PatchPayload
             var tpaServiceFilePath = Path.Combine(rootDirectoryTp, "Agent.RV.Service.exe");
             var tpaMaintenanceFilePath = Path.Combine(rootDirectoryTp, "Agent.RV.WatcherService.exe");
 
+            var operation = new Operations.SavedOpData();
+
             try
             {
                 var savedOperations = Operations.LoadOpDirectory().Where(p => p.operation == OperationType).ToList();
-                var operation = new Operations.SavedOpData();
+                
 
                 if (savedOperations.Any())
                 {
