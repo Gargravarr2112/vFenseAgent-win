@@ -19,107 +19,12 @@ namespace PatchPayload
         public static string OperationType = null;//Data.OperationValue.InstallAgentUpdate;
         public static string InstallerName = Data.OperationValue.UpdateInstallerName;
         public static string versionNumber = "";  //AGENT VERSION TO UPGRADE TO
-        public const string versionNumberPatcher = "1.2";  //THE UPDATER VERSION NUMBER (THIS PROGRAM)
-
-        #region download links
-        private const string AgentCore = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/Agent.Core.dll";
-        private const string AgentRv = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/Agent.RV.dll";
-        private const string AgentRA = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/Agent.RA.dll";
-        private const string AgentMonitoring = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/Agent.Monitoring.dll";
-        private const string TpaServiceFile = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/Agent.RV.Service.exe";
-        private const string TpaMaintenanceFile = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/Agent.RV.WatcherService.exe";
-        private const string RestSharp = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/RestSharp.dll";
-        private const string JsonDll = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/Newtonsoft.Json.dll";
-        private const string NLog = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/NLog.dll";
-        private const string MicroCompress1 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/Microsoft.Deployment.Compression.dll";
-        private const string MicroCompress2 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/Microsoft.Deployment.Compression.Cab.dll";
-        //############################################**Updates for Remote Assist**##########################################################################################
-        //***openssh files***
-        private const string addUser = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/addUser.cmd";
-        private const string bash = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/bash.exe";
-        private const string chmod = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/chmod.exe";
-        private const string chown = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/chown.exe";
-        private const string cygcrypt0 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygcrypt0.dll";
-        private const string cygcrypto097 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygcrypto0.9.7.dll";
-        private const string cygcrypto098 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygcrypto0.9.8.dll";
-        private const string cygedit0 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygedit0.dll";
-        private const string cyggccs1 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cyggcc_s1.dll";
-        private const string cygiconv2 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygiconv2.dll";
-        private const string cygintl2 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygintl2.dll";
-        private const string cygintl3 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygintl3.dll";
-        private const string cygintl8 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygintl8.dll";
-        private const string cygminires = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygminires.dll";
-        private const string cygncures10 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygncurses10.dll";
-        private const string cygpath = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygpath.exe";
-        private const string cygrunsrv = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygrunsrv.exe";
-        private const string cygssp0 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygssp0.dll";
-        private const string cygwin1 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygwin1.dll";
-        private const string cygwrap0 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygwrap0.dll";
-        private const string cygz = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/cygz.dll";
-        private const string xfalse = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/false.exe";
-        private const string last = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/last.exe";
-        private const string ls = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/ls.exe";
-        private const string mkdir = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/mkdir.exe";
-        private const string mkgroup = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/mkgroup.exe";
-        private const string mkpasswd = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/mkpasswd.c";
-        private const string mkpasswdexe = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/mkpasswd.exe";
-        private const string quietcmd = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/quietcmd.bat";
-        private const string rm = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/rm.exe";
-        private const string scp = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/scp.exe";
-        private const string sftp = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/sftp.exe";
-        private const string sh = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/sh.exe";
-        private const string ssh = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/ssh.exe";
-        private const string sshadd = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/sshadd.exe";
-        private const string sshagent = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/sshagent.exe";
-        private const string sshkeygen = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/sshkeygen.exe";
-        private const string sshkeyscan = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/sshkeyscan.exe";
-        private const string cswitch = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/switch.c";
-        private const string xswitch = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/switch.exe";
-        //***vnc files***
-        private const string sas = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/sas.dll";
-        private const string screenhooks32 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/screenhooks32.dll";
-        private const string screenhooks64 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/screenhooks64.dll";
-        private const string tvnserver32 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/tvnserver32.exe";
-        private const string tvnserver64 = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/tvnserver64.exe";
-        //***etc files***
-        private const string tunnel = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/tunnel";
-        private const string ptunnel = @"http://updater.toppatch.com/Packages/Products/RV_AGENTS/Windows/LatestPatch/tunnel.pub";
-        //###################################################################################################################################################################
-        #endregion
+        public const string versionNumberPatcher = "2.0";  //THE UPDATER VERSION NUMBER (THIS PROGRAM)
+        
 
         static void Main(string[] args)
         {
-            //if (args.Length > 0)
-            //{
-            //    for (var x = 0; x <= args.Length - 1; x++)
-            //    {
-            //        switch (args[x])
-            //        {
-            //            case "--help":
-            //            case "help":
-            //            case "-help":
-            //            case "-h":
-            //            case "/?":
-            //            case "?":
-            //                Tools.DisplayHelpScreen();
-            //                break;
-
-            //            case "/v":
-            //                versionNumber = args[x + 1];
-            //                break;
-
-            //            case "/u":
-            //                OperationType = Data.OperationValue.InstallAgentUpdate;
-            //                break;
-
-            //            case "/c":
-            //                OperationType = Data.OperationValue.InstallCustomApp;
-            //                break;
-
-            //        }
-            //    }
-            //}
-
+           
             var vfiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory);
 
             foreach (string file in vfiles)
@@ -178,43 +83,7 @@ namespace PatchPayload
             }
 
         }
-
-        private static void DownloadPatchContent()
-        {
-            var defaultPath = Data.AgentUpdateDirectory;
-            var uris = new List<string> { AgentCore, AgentRv, AgentRA, AgentMonitoring, RestSharp, TpaMaintenanceFile, TpaServiceFile, MicroCompress1, MicroCompress2,
-                                            NLog, JsonDll, addUser, bash, chmod, chown, cygcrypt0, cygcrypto097, cygcrypto098, cygedit0, cyggccs1, cygiconv2, cygintl2, 
-                                            cygintl3, cygintl8, cygminires, cygncures10, cygpath, cygrunsrv, cygssp0, cygwin1, cygwrap0, cygz, xfalse, last, ls, mkdir, 
-                                            mkgroup, mkpasswd, mkpasswdexe, quietcmd, rm, scp, sftp, sh, ssh, sshadd, sshagent, sshkeygen, sshkeyscan, cswitch, xswitch,
-                                            sas, screenhooks32, screenhooks64, tvnserver32, tvnserver64};
-
-            Data.Logger("Starting Downloads...");
-            foreach (var uri in uris)
-            {
-                Data.Logger("..." + uri + "...");
-                try
-                {
-                    using (var client = new WebClient())
-                    {
-                        var stripped = uri.Split(new[] { '/' });
-                        var filename = stripped[stripped.Length - 1];
-
-                        if (Data.ProxyObj != null)
-                            client.Proxy = Data.ProxyObj;
-
-                        client.DownloadFile(uri, Path.Combine(defaultPath, filename));
-                        Data.Logger("Downloaded " + filename);
-                    }
-                }
-                catch
-                {
-                    Data.Logger("Unable to Download!!!");
-                }
-            }
-
-        }
-
-
+        
         private static void StartPatchProcess(StringCollection files, string newVersion)
         {
             const string tpaServiceName = "TpaService";
@@ -804,5 +673,6 @@ namespace PatchPayload
                 ServiceTools.ServiceInstaller.InstallAndStart(tpaServiceName, "TpaService", tpaServiceFilePath);
             }
         }
+    
     }
 }
