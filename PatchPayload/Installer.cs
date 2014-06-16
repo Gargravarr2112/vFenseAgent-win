@@ -1,27 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading;
 
 namespace PatchPayload
 {
     public static class Installer
     {
-        //###################################################################################################################################################################
-        /*
-         * VERY IMPORTANT
-         * THIS INFORMATION MUST BE FILLED OUT, IT DETERMINES HOW THE UPDATER WILL BEHAVE.
-        */
-        //###################################################################################################################################################################
+        //##############################################################################################
+        /*#                                                                                            #
+         *# VERY IMPORTANT                                                                             #
+         *# THIS INFORMATION MUST BE FILLED OUT, IT DETERMINES HOW THE UPDATER WILL BEHAVE.            #
+        */                                                                                            
+        //##############################################################################################
         public static string OperationType = null;//Data.OperationValue.InstallAgentUpdate;
         public static string InstallerName = Data.OperationValue.UpdateInstallerName;
         public static string versionNumber = "";  //AGENT VERSION TO UPGRADE TO
         public const string versionNumberPatcher = "2.0";  //THE UPDATER VERSION NUMBER (THIS PROGRAM)
         
-
         static void Main(string[] args)
         {
            
