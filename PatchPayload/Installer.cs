@@ -14,8 +14,7 @@ namespace PatchPayload
          *# THIS INFORMATION MUST BE FILLED OUT, IT DETERMINES HOW THE UPDATER WILL BEHAVE.            #
         */                                                                                            
         //##############################################################################################
-        public static string OperationType = null;//Data.OperationValue.InstallAgentUpdate;
-        public static string InstallerName = Data.OperationValue.UpdateInstallerName;
+        public static string OperationType = "install_agent_update";//null;//Data.OperationValue.InstallAgentUpdate;
         public static string versionNumber = "";  //AGENT VERSION TO UPGRADE TO
         public const string versionNumberPatcher = "2.0";  //THE UPDATER VERSION NUMBER (THIS PROGRAM)
         
@@ -83,14 +82,15 @@ namespace PatchPayload
             try
             {
                 var savedOperations = Operations.LoadOpDirectory().Where(p => p.operation == OperationType).ToList();
-                
+
+                string installerName = "v" + newVersion.Replace(".", "_") + ".zip";
 
                 if (savedOperations.Any())
                 {
                     foreach (var item in savedOperations)
                     {
                         var data = (from d in item.filedata_app_uris
-                                    where d.file_name.ToLower() == InstallerName
+                                    where d.file_name.ToLower() == installerName
                                     select d).FirstOrDefault();
                         if (data != null)
                             operation = item;
