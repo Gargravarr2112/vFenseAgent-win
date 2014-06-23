@@ -320,7 +320,7 @@ namespace Agent.RV.AgentUpdater
 
                             try
                             {
-                                patch.Add("Name", "vFenseAgent");
+                                patch.Add("name", "vFenseAgent");
                                 patch.Add("vendor_name" , "vFense");
                                 patch.Add("release_date", publishDate);
                                 patch.Add("description", body.Value.ToString());
@@ -339,7 +339,7 @@ namespace Agent.RV.AgentUpdater
                                     JObject getAssets = new JObject();
                                     getAssets["file_hash"] = string.Empty;
                                     getAssets["file_name"] = name.Value.ToString();
-                                    getAssets["uri"] = url.Value.ToString();
+                                    getAssets["file_uri"] = url.Value.ToString();
                                     getAssets["file_size"] = int.Parse(size.Value.ToString());
 
                                     JArray assetslist = new JArray(getAssets);
@@ -353,7 +353,6 @@ namespace Agent.RV.AgentUpdater
 
                                 try
                                 {
-                                    //JObject dependencies = new JObject();
                                     JArray dependArray = new JArray();
                                     patch.Add("dependencies", dependArray);
                                 }
@@ -381,11 +380,11 @@ namespace Agent.RV.AgentUpdater
             {
                 Logger.Log("Error in AgentPatchUdateData.", LogLevel.Error);
             }
+            
+            JObject agentPatch = new JObject();
+            agentPatch.Add("data", patch);
 
-            JObject agentUpdate = new JObject();
-            agentUpdate.Add("data", patch);
-
-            Agent.Core.Net.NetworkManager.SendMessage(agentUpdate.ToString(), Agent.Core.ServerOperations.ApiCalls.AvailableAgentUpdate());
+            Agent.Core.Net.NetworkManager.SendMessage(agentPatch.ToString(), Agent.Core.ServerOperations.ApiCalls.AvailableAgentUpdate());
         }
 
         /// <summary>
