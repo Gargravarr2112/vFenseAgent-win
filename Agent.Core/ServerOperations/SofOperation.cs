@@ -442,7 +442,7 @@ namespace Agent.Core.ServerOperations
                     catch
                     {
                         a++;
-                        Thread.Sleep(5000);
+                        Thread.Sleep(10000);
                     }
                         
 
@@ -464,7 +464,7 @@ namespace Agent.Core.ServerOperations
                     catch
                     { }
 
-                } while (a <= 10 && Data == null); 
+                } while (a <= 100 && Data == null); 
 
 
                 if (!string.IsNullOrEmpty(respUri) && !string.IsNullOrEmpty(respMethod))
