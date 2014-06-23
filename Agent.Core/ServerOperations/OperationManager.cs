@@ -554,15 +554,17 @@ namespace Agent.Core.ServerOperations
 
             try
             {
-                var cpu = new JArray(SystemInfo.GetCpuInfo());
-                var display = new JArray(SystemInfo.GetVideoInfo());
-                var network = new JArray(SystemInfo.GetNetwork());
-                var harddrive = new JArray(SystemInfo.GetHardDrive());
+                JArray cpu = new JArray(SystemInfo.GetCpuInfo());
+                JArray display = new JArray(SystemInfo.GetVideoInfo());
+                JArray network = new JArray(SystemInfo.GetNetwork());
+                JArray harddrive = new JArray(SystemInfo.GetHardDrive());
+                JArray bios = new JArray(SystemInfo.GetBiosInfo());
                 hardwareinfo["cpu"] = cpu;
                 hardwareinfo["display"] = display;
                 hardwareinfo["network"] = network;
                 hardwareinfo["storage"] = harddrive;
                 hardwareinfo["memory"] = SystemInfo.GetMemory();
+                hardwareinfo["bios"] = bios;
             }
             catch (Exception)
             {

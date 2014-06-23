@@ -291,6 +291,41 @@ namespace Agent.Core.Utils
             return memory;
         }
 
+        /// <summary>
+        /// Gets the Bios information from the system.
+        /// As per the server requeriments.
+        /// </summary>
+        /// <returns>Returns a JObject with the BIOS info in it.</returns>
+        public static JObject GetBiosInfo()
+        {
+            JObject biosInfo = new JObject();
+
+            try
+            {
+                biosInfo["status"] = BiosDetails("Status");
+                biosInfo["manufacturer"] = BiosDetails("Manufacturer");
+                biosInfo["version"] = BiosDetails("SMBIOSBIOSVersion");
+                biosInfo["major"] = BiosDetails("SMBIOSMajorVersion");
+                biosInfo["minor"] = BiosDetails("SMBIOSMinorVersion");
+                biosInfo["serial_number"] = BiosDetails("SerialNumber");
+
+                string releaseDate = BiosDetails("ReleaseDate");
+                string[] x = releaseDate.Split('.');
+
+                long date =  !string.IsNullOrEmpty(x[0]) ? long.Parse(x[0]) : 0;
+
+                biosInfo["release_date"] = date;
+
+            }
+            catch
+            {
+                Logger.Log("Error while gathering the BIOS information", LogLevel.Error);
+            }
+
+
+            return biosInfo;
+        }
+
 
 
 #endregion
