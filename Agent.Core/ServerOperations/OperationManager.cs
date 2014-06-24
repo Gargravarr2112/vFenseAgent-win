@@ -681,32 +681,7 @@ namespace Agent.Core.ServerOperations
             if (success)
             {
                 var operation = new SofOperation(message);
-
-                switch (operation.Type)
-                {
-                    case OperationValue.InstallWindowsUpdate:
-                        Operations.SaveOperationsToDisk(operation.RawOperation, Operations.OperationType.InstallOsUpdate);
-                        return true;
-
-                    case OperationValue.InstallSupportedApp:
-                        Operations.SaveOperationsToDisk(operation.RawOperation, Operations.OperationType.InstallSupportedApp);
-                        return true;
-
-                    case OperationValue.InstallCustomApp:
-                        Operations.SaveOperationsToDisk(operation.RawOperation, Operations.OperationType.InstallCustomApp);
-                        return true;
-
-                    case OperationValue.InstallAgentUpdate:
-                        Operations.SaveOperationsToDisk(operation.RawOperation, Operations.OperationType.InstallAgentUpdate);
-                        return true;
-
-                    case OperationValue.Uninstall:
-                        Operations.SaveOperationsToDisk(operation.RawOperation, Operations.OperationType.UninstallApplication);
-                        return true;
-
-                    default:
-                        return false;
-                }
+                Agent.Core.Operations.Serialize(operation.RawOperation);
             }
 
          return false;

@@ -78,41 +78,7 @@ namespace Agent.Core
             }
             return text;
         }
-
-        // TODO: need to better mainstream this method and related method.
-        /// <summary>
-        /// Bridge before saving the received operation from the server to the disk to get process.
-        /// Used to work with different serialazation methods, now all work together. 
-        /// </summary>
-        /// <param name="operationJson">Json message from the server.</param>
-        /// <param name="opType">Operation to be performed.</param>
-        public static void SaveOperationsToDisk(string operationJson, OperationType opType)
-        {
-            switch (opType)
-            {
-                case OperationType.InstallOsUpdate:
-                    SerializeOsUpdates(operationJson);
-                    break;
-
-                case OperationType.InstallSupportedApp:
-                    SerializeSupportedApp(operationJson);
-                    break;
-
-                case OperationType.InstallCustomApp:
-                    SerializeCustomApps(operationJson);
-                    break;
-
-                case OperationType.InstallAgentUpdate:
-                    SerializeAgentUpdate(operationJson);
-                    break;
-
-                case OperationType.UninstallApplication:
-                    SerializeUninstallApp(operationJson);
-                    break;
-            }
-
-        }
-
+        
         public static void SaveAvailableUpdateToDisk(string updateName , Dictionary<string, List<DownloadUri>> bundlesDict)
         {
             foreach (var data in bundlesDict)
@@ -292,8 +258,7 @@ namespace Agent.Core
             DeleteFile(operation);
             DeleteLocalUpdateBundleFolder(operation);
         }
-
-
+        
         private static bool IsFileReady(String filePath)
         {
             try
@@ -305,31 +270,7 @@ namespace Agent.Core
             }
             catch (Exception) { return false; }
         }
-
-        private static void SerializeOsUpdates(string operationJson)
-        {
-            Serialize(operationJson);
-        }
-
-        private static void SerializeSupportedApp(string operationJson)
-        {
-            Serialize(operationJson);
-        }
-
-        private static void SerializeCustomApps(string operationJson)
-        {
-            Serialize(operationJson);
-        }
-
-        private static void SerializeAgentUpdate(string operationJson)
-        {
-            Serialize(operationJson);
-        }
-
-        private static void SerializeUninstallApp(string operationJson)
-        {
-            Serialize(operationJson);
-        }
+        
 
         /// <summary>
         /// Example of how a json from the server should look with an incoming operation.
@@ -360,7 +301,7 @@ namespace Agent.Core
         ///]
         /// </summary>
         /// <param name="operationJson">Message from the server.</param>
-        private static void Serialize(string operationJson)
+        public static void Serialize(string operationJson)
         {
             var parsed = JObject.Parse(operationJson);
             var deserialized = JsonConvert.DeserializeObject<IncomingData>(parsed.ToString());
