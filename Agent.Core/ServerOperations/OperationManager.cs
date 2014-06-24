@@ -682,6 +682,7 @@ namespace Agent.Core.ServerOperations
             {
                 var operation = new SofOperation(message);
                 Agent.Core.Operations.Serialize(operation.RawOperation);
+                return true;
             }
 
          return false;
