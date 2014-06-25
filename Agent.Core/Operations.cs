@@ -234,6 +234,10 @@ namespace Agent.Core
             return null;
         }
 
+        /// <summary>
+        /// Delete the operation from the operations file.
+        /// </summary>
+        /// <param name="operation">Operation to be delete.</param>
         public static void DeleteFile(SavedOpData operation)
         {
             var id = operation.filedata_app_id;
