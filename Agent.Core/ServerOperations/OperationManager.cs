@@ -225,6 +225,10 @@ namespace Agent.Core.ServerOperations
             }
         }
 
+        /// <summary>
+        /// Processes operation after a reboot.
+        /// </summary>
+        /// <param name="operation">Operation.</param>
         public void ProcessAfterRebootResults(ISofOperation operation)
         {
             if (operation != null)
@@ -250,6 +254,9 @@ namespace Agent.Core.ServerOperations
             }
         }
 
+        /// <summary>
+        /// Prepairs the agent to send the first operation after agent boot.
+        /// </summary>
         public void InitialDataSender()
         {
             var operation = new SofOperation();
@@ -424,6 +431,11 @@ namespace Agent.Core.ServerOperations
             MajorFailure(operation, e);
         }
 
+        /// <summary>
+        /// Generates Json object for the server after the operatoin fails.
+        /// </summary>
+        /// <param name="operation">Operation with the information to send to the server</param>
+        /// <param name="e">Error msg.</param>
         private void MajorFailure(ISofOperation operation, Exception e)
         {
             var json = new JObject();
@@ -437,12 +449,9 @@ namespace Agent.Core.ServerOperations
             json.Add("apps_to_delete", new JArray());
             json.Add("apps_to_add", new JArray());
             json.Add("reboot_required", false.ToString().ToLower());
-            //TODO need to change string into jsonobject, crashing agent sever communication
-            json.Add("data", emptyData());      //"{\r\n  \"name\": \"\",\r\n  \"description\": \"\",\r\n  \"kb\": \"\",\r\n " +
-                                                //" \"vendor_severity\": \"\",\r\n  \"rv_severity\": \"\",\r\n  \"support_url\": \"\",\r\n  " +
-                                                //"\"release_date\": 0.0,\r\n  \"vendor_id\": \"\",\r\n  \"vendor_name\": \"\",\r\n  \"repo\": \"\",\r\n  " +
-                                                //"\"version\": \"\",\r\n  \"file_data\": []\r\n}");
-            
+
+            json.Add("data", emptyData());   
+
             var results = SendResults(json.ToString(), operation.Api);
 
             double temp;
@@ -455,28 +464,7 @@ namespace Agent.Core.ServerOperations
 
             
         }
-
-        //TODO need to fix, was a quick work around for a agent server communication error
-        private static JObject emptyData()
-        {
-            var data = new JObject();
-            
-            data.Add("name", "");
-            data.Add("description", "");
-            data.Add("kb", "");
-            data.Add("vendor_severity", "");
-            data.Add("rv_serverity", "");
-            data.Add("support_url", "");
-            data.Add("release_date", "");
-            data.Add("vendor_id", "");
-            data.Add("vendor_name", "");
-            data.Add("repo", "");
-            data.Add("version", "");
-            data.Add("file_data", "");
-
-            return data;
-        }
-
+        
         /// <summary>
         /// Gets the Sysntem information as per the server requirements.
         /// example of format:
@@ -572,6 +560,11 @@ namespace Agent.Core.ServerOperations
             return hardwareinfo.ToString();
         }
 
+        /// <summary>
+        /// Puts operation into que and send it to be process.
+        /// </summary>
+        /// <param name="operation">Operation from server.</param>
+        /// <returns>Bool, if operatin is added to que and processed.</returns>
         private bool AddToOperationQueue(string operation)
         {
             if (_queue.Put(operation))
@@ -581,6 +574,11 @@ namespace Agent.Core.ServerOperations
             return ConfirmOperation(operation, false);
         }
 
+        /// <summary>
+        /// Updates operatoin if it failed to send the results to the server.
+        /// </summary>
+        /// <param name="operation">Operation that needs to be updated.</param>
+        /// <param name="api">Operation api call.</param>
         private void AddToOperationResultsQueue(string operation, string api)
         {
             //Merge operation with the api
@@ -588,6 +586,9 @@ namespace Agent.Core.ServerOperations
             _resultsQueue.Put(merged);
         }
 
+        /// <summary>
+        /// Checks the operation queue.
+        /// </summary>
         private void QueueCheckerLoop()
         {
             while (true)
@@ -609,6 +610,9 @@ namespace Agent.Core.ServerOperations
             }
         }
 
+        /// <summary>
+        /// Loop to check the files in queues.
+        /// </summary>
         private void OperationsQueueCheckerLoop()
         {
             //Set minutes to wait before putting operation back into queue.
@@ -657,6 +661,9 @@ namespace Agent.Core.ServerOperations
             }
         }
 
+        /// <summary>
+        /// Loop to check results on results queue to be send to the server.
+        /// </summary>
         private void ResultsQueueCheckerLoop()
         {
             while (true)
@@ -676,37 +683,20 @@ namespace Agent.Core.ServerOperations
             }
         }
 
+        /// <summary>
+        /// Gets the operation send from the server and sends it to get serialized.
+        /// Bool condition most be true.
+        /// </summary>
+        /// <param name="message">Raw server msg with operation.</param>
+        /// <param name="success">Bool for operation.</param>
+        /// <returns></returns>
         private static bool ConfirmOperation(string message, bool success)
         {
             if (success)
             {
                 var operation = new SofOperation(message);
-
-                switch (operation.Type)
-                {
-                    case OperationValue.InstallWindowsUpdate:
-                        Operations.SaveOperationsToDisk(operation.RawOperation, Operations.OperationType.InstallOsUpdate);
-                        return true;
-
-                    case OperationValue.InstallSupportedApp:
-                        Operations.SaveOperationsToDisk(operation.RawOperation, Operations.OperationType.InstallSupportedApp);
-                        return true;
-
-                    case OperationValue.InstallCustomApp:
-                        Operations.SaveOperationsToDisk(operation.RawOperation, Operations.OperationType.InstallCustomApp);
-                        return true;
-
-                    case OperationValue.InstallAgentUpdate:
-                        Operations.SaveOperationsToDisk(operation.RawOperation, Operations.OperationType.InstallAgentUpdate);
-                        return true;
-
-                    case OperationValue.Uninstall:
-                        Operations.SaveOperationsToDisk(operation.RawOperation, Operations.OperationType.UninstallApplication);
-                        return true;
-
-                    default:
-                        return false;
-                }
+                Agent.Core.Operations.Serialize(operation.RawOperation);
+                return true;
             }
 
          return false;
@@ -747,7 +737,29 @@ namespace Agent.Core.ServerOperations
             Tools.SaveUptime();
         }
 
+        /// <summary>
+        /// Generates empty JObject for field "DATA" on msg to the server.
+        /// </summary>
+        /// <returns>Empty JObject.</returns>
+        private static JObject emptyData()
+        {
+            var data = new JObject();
 
+            data.Add("name", "");
+            data.Add("description", "");
+            data.Add("kb", "");
+            data.Add("vendor_severity", "");
+            data.Add("rv_serverity", "");
+            data.Add("support_url", "");
+            data.Add("release_date", "");
+            data.Add("vendor_id", "");
+            data.Add("vendor_name", "");
+            data.Add("repo", "");
+            data.Add("version", "");
+            data.Add("file_data", "");
+
+            return data;
+        }
      
     }
 
