@@ -54,6 +54,10 @@ namespace Agent.Core
             return tempList;
         }
 
+        /// <summary>
+        /// Checks the operations file for any operations, adds then to the queue.
+        /// </summary>
+        /// <returns>Returns false if empty operation folder, or operations in the folder.</returns>
         public static bool OperationsRemaining()
         {
             try
@@ -70,6 +74,12 @@ namespace Agent.Core
             }
         }
 
+        /// <summary>
+        /// Comverts a string into a valid file name.
+        /// Replaces all windows invalid characters with '_' in the string name.
+        /// </summary>
+        /// <param name="text">String name.</param>
+        /// <returns>Valid windows file name, with invalid characters removed.</returns>
         public static string StringToFileName(string text)
         {
             foreach (var c in Path.GetInvalidFileNameChars())
@@ -79,6 +89,11 @@ namespace Agent.Core
             return text;
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updateName"></param>
+        /// <param name="bundlesDict"></param>
         public static void SaveAvailableUpdateToDisk(string updateName , Dictionary<string, List<DownloadUri>> bundlesDict)
         {
             foreach (var data in bundlesDict)
