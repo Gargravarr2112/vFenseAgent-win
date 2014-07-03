@@ -87,13 +87,14 @@ namespace Agent.Core
                 text = text.Replace(c, '_');
             }
             return text;
-        }
-        
+        }  
+      
         /// <summary>
-        /// 
+        /// Saves the bundle with all the updates send to the agent, and saves then to a folder.
+        /// Saves each update received into the folder for processing.
         /// </summary>
-        /// <param name="updateName"></param>
-        /// <param name="bundlesDict"></param>
+        /// <param name="updateName">String with desired folder name.</param>
+        /// <param name="bundlesDict">Dictionary of type "DownloadUri" containing the updates.</param>
         public static void SaveAvailableUpdateToDisk(string updateName , Dictionary<string, List<DownloadUri>> bundlesDict)
         {
             foreach (var data in bundlesDict)
@@ -112,7 +113,11 @@ namespace Agent.Core
                 File.WriteAllText(filepath, json);
             }
         }
-
+        
+        /// <summary>
+        /// Deletes the folder comtaining the bundle with the update data.
+        /// </summary>
+        /// <param name="update">Folder path/name.</param>
         public static void DeleteLocalUpdateBundleFolder(SavedOpData update)
         {
             try
@@ -151,6 +156,14 @@ namespace Agent.Core
             }
         }
 
+        /// <summary>
+        /// Updates the operatoin with the new current status.
+        /// Deserializes the operaion, updates it, and serilizes it back.
+        /// </summary>
+        /// <param name="operation">Operatoin to update.</param>
+        /// <param name="installSuccess">Status for the state in the operation, install status(bool).</param>
+        /// <param name="rebootNeeded">If operation requires a system reboot(bool).</param>
+        /// <param name="opStatus">Status of the current state in the operation(Pending=0, Processing=1, Rebooting=2, ResultsPending=3).</param>
         public static void UpdateOperation(SavedOpData operation, bool installSuccess, bool rebootNeeded, OperationStatus opStatus)
         {
             var id       = operation.filedata_app_id;
@@ -178,6 +191,12 @@ namespace Agent.Core
             }
         }
 
+        /// <summary>
+        /// Updates the operations status to the current set status.
+        /// Deserializes the operations, changes the status to the current status and serializes it back.
+        /// </summary>
+        /// <param name="operation">Operation to update.</param>
+        /// <param name="opStatus">New status for the operation to be updated to.</param>
         public static void UpdateStatus(SavedOpData operation, OperationStatus opStatus)
         {
             var id = operation.filedata_app_id;
@@ -203,6 +222,11 @@ namespace Agent.Core
             }
         }
 
+        /// <summary>
+        /// Gets the raw operation, aka string.
+        /// </summary>
+        /// <param name="operation">Operation to read.</param>
+        /// <returns>String containing the operation.</returns>
         public static string GetRawOperation(SavedOpData operation)
         {
             var id = operation.filedata_app_id;
@@ -229,6 +253,11 @@ namespace Agent.Core
 
         }
 
+        /// <summary>
+        /// Gets a string with the time the operation was created/saved to the disk..
+        /// </summary>
+        /// <param name="operation">Operation to get the created time/saved to disk.</param>
+        /// <returns>String with the time.</returns>
         public static string GetCreationTime(SavedOpData operation)
         {
             var id = operation.filedata_app_id;
@@ -272,12 +301,21 @@ namespace Agent.Core
             }
         }
 
+        /// <summary>
+        /// Deletes all file and folders related to the operation.
+        /// </summary>
+        /// <param name="operation">Operation to be deleted.</param>
         public static void CleanAllOperationData(SavedOpData operation)
         {
             DeleteFile(operation);
             DeleteLocalUpdateBundleFolder(operation);
         }
         
+        /// <summary>
+        /// Check file using filestream/input stream.
+        /// </summary>
+        /// <param name="filePath">Path to the file to check.</param>
+        /// <returns>Bool if file lenght is  > 0.</returns>
         private static bool IsFileReady(String filePath)
         {
             try
@@ -290,7 +328,6 @@ namespace Agent.Core
             catch (Exception) { return false; }
         }
         
-
         /// <summary>
         /// Example of how a json from the server should look with an incoming operation.
         /// [
