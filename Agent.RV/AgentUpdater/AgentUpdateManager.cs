@@ -19,6 +19,8 @@ namespace Agent.RV.AgentUpdater
         //Backup Directory = C:\ProgramData\TopPatchBackup\
         public static readonly string AgentUpdateDirectory = Path.Combine(Settings.TempDirectory, "RVAgentUpdate");
 
+        private static string GithubRepo = "https://api.github.com/repos/vFense/vFenseAgent-win/releases";
+
         public static RVsofResult AddAppDetailsToResults(RVsofResult results)
         {
             results.Data.Name           = String.Empty;
@@ -167,7 +169,7 @@ namespace Agent.RV.AgentUpdater
             try
             {
                 #region connects to GitHub and gets the json(jsonrest)
-                RestRequest request = new RestRequest("https://api.github.com/repos/toppatch/vFenseAgent-win/releases");
+                RestRequest request = new RestRequest(GithubRepo);
 
                 RestClient client = new RestClient();
 
@@ -257,7 +259,7 @@ namespace Agent.RV.AgentUpdater
             try
             {
                 #region connects to GitHub and gets the json(jsonRest)
-                RestRequest request = new RestRequest("https://api.github.com/repos/toppatch/vFenseAgent-win/releases");
+                RestRequest request = new RestRequest(GithubRepo);
 
                 RestClient client = new RestClient();
 
