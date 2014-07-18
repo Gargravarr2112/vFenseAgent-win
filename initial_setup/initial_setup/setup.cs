@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Net;
 
 namespace initial_setup
 {
@@ -32,8 +33,13 @@ namespace initial_setup
 
             if (!Directory.Exists(downloadpath))
                 Directory.CreateDirectory(downloadpath);
-            Tools.DownloadThrottle(downloadpath, downloadlink, "dependencies", dlspeed);
-            
+
+            WebClient webClient = new WebClient();
+            string downloadpathName = downloadpath + @"\dependecies.zip";
+
+            webClient.DownloadFile(downloadlink, downloadpathName);     //Tools.DownloadThrottle(downloadpath, downloadlink, "dependencies.zip", dlspeed);
+
+
         }
 
         public void DoExtract()

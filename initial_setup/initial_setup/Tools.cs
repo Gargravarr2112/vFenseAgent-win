@@ -166,6 +166,9 @@ namespace initial_setup
                                         name = assets.FirstOrDefault(b => b.Name == "name");
                                         size = assets.FirstOrDefault(b => b.Name == "size");
                                         url = assets.FirstOrDefault(b => b.Name == "url");
+                                        JProperty urilink = assets.FirstOrDefault(b => b.Name == "browser_download_url");
+                                        link = urilink.Value.ToString();
+
                                     }
                                 }
                             }
@@ -193,7 +196,6 @@ namespace initial_setup
                                 patch.Add("kb", "");
                                 patch.Add("support_url", @"https://github.com/toppatch/vFenseAgent-win/issues");
                                 patch.Add("download_link", download.Value.ToString());
-                                link = download.Value.ToString();
 
 
                                 try
