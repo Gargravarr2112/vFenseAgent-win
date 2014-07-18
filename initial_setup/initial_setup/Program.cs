@@ -12,12 +12,14 @@ namespace initial_setup
         {
             DoPatcher initsetup = new DoPatcher();
 
-            //DoPatcher.DoDownload();
-            //DoPatcher.MoveFiles();
+            initsetup.DoDownload();
+            initsetup.DoExtract();
+            initsetup.MoveFiles();
             Console.Beep();
             Console.Beep();
             Console.WriteLine("Finished with Initial setup.");
             Thread.Sleep(1500);
+            Console.ReadKey();
         }
     }
 }

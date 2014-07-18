@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Net;
 
 namespace initial_setup
 {
@@ -28,13 +26,20 @@ namespace initial_setup
                 Directory.CreateDirectory(defaultPath);
             
             string downloadpath = Path.Combine(defaultPath, "download");
+            string version = Tools.GetAvailableVersion();
+            string downloadlink = Tools.GetDownloadLink(version);
+            byte dlspeed = 255;
 
             if (!Directory.Exists(downloadpath))
                 Directory.CreateDirectory(downloadpath);
-
+            Tools.DownloadThrottle(downloadpath, downloadlink, "dependencies", dlspeed);
             
         }
 
+        public void DoExtract()
+        {
+            
+        }
         public StringCollection GetFileStrings()
         {
             files.Clear();
@@ -517,3 +522,4 @@ namespace initial_setup
         }
     }
 }
+
