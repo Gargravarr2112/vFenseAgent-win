@@ -13,7 +13,6 @@ namespace initial_setup
             DoPatcher initsetup = new DoPatcher();
 
             initsetup.DoDownload();
-            initsetup.DoExtract();
             initsetup.MoveFiles();
             Console.Beep();
             Console.Beep();

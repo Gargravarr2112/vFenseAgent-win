@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.IO;
 using System.Net;
+using Ionic.Zip;
 
 namespace initial_setup
 {
@@ -39,18 +40,50 @@ namespace initial_setup
 
             webClient.DownloadFile(downloadlink, downloadpathName);     //Tools.DownloadThrottle(downloadpath, downloadlink, "dependencies.zip", dlspeed);
 
+            string[] aufile = Directory.GetFiles(downloadpath);
+            string zipname = null;
+            foreach (string rar in aufile)
+            {
+                if (rar.EndsWith(".zip"))
+                {
+                    zipname = rar;
+                    break;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(zipname))
+            {
+                var ZippedFile = Path.Combine(downloadpath, zipname);
+                if (File.Exists(ZippedFile))
+                {
+                    using (ZipFile zip = ZipFile.Read(ZippedFile))
+                    {
+                        zip.ExtractAll(downloadpath);
+                    }
+                }
+            }
+            else
+            {
+                Data.Logger("Did not get the file name/path.");
+            }
+
+            File.Delete(zipname);
+
+            string[] renameFile = Directory.GetDirectories(downloadpath);
+
+            foreach (string dir in renameFile)
+            {
+                Directory.Move(dir, downloadpath + @"\dependencies");
+            }
 
         }
 
-        public void DoExtract()
-        {
-            
-        }
+       
         public StringCollection GetFileStrings()
         {
             files.Clear();
 
-            string downloadpath = Path.Combine(defaultPath, "download");
+            string downloadpath = Path.Combine(defaultPath, @"download\dependencies");
 
             var contents = Directory.GetFiles(downloadpath);
 
@@ -505,7 +538,7 @@ namespace initial_setup
 
                     }
                 }
-                Directory.Delete(download);
+                Directory.Delete(download, true);
             }
 
             if (Directory.Exists(pluginsDir))
