@@ -17,8 +17,7 @@ namespace initial_setup
             Console.Beep();
             Console.Beep();
             Console.WriteLine("Finished with Initial setup.");
-            Thread.Sleep(1500);
-            Console.ReadKey();
+            Thread.Sleep(2500);
         }
     }
 }
