@@ -13,40 +13,40 @@ namespace Agent.Core.Utils
     {
         public static readonly string EmptyValue = String.Empty;
         public static WebProxy Proxy;
-  
-        // Directory stuff
-        private static readonly string agentDirectory    = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        private static readonly string pluginDirectory   = Path.Combine(agentDirectory, "plugins");
-        private static readonly string logDirectory      = Path.Combine(agentDirectory, "logs");
-        private static readonly string binDirectory      = Path.Combine(agentDirectory, "bin");
-        private static readonly string updateDirectory   = Path.Combine(agentDirectory, "updates");
-        private static readonly string savedUpdatesDirectory = Path.Combine(agentDirectory, "content");
-        private static readonly string tempDirectory     = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TopPatch");
-        private static readonly string etcDirectory = Path.Combine(agentDirectory, "etc");
-        private static readonly string opDirectory       = Path.Combine(agentDirectory, "operations");
-        private static string _proxyaddress              = string.Empty;
-        private static string _proxyport                 = string.Empty;
 
-        public static string AgentDirectory         { get { return agentDirectory; } }
-        public static string PluginDirectory        { get { return pluginDirectory; } }
-        public static string LogDirectory           { get { return logDirectory; } }
-        public static string BinDirectory           { get { return binDirectory; } }
+        // Directory stuff
+        private static readonly string agentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        private static readonly string pluginDirectory = Path.Combine(agentDirectory, "plugins");
+        private static readonly string logDirectory = Path.Combine(agentDirectory, "logs");
+        private static readonly string binDirectory = Path.Combine(agentDirectory, "bin");
+        private static readonly string updateDirectory = Path.Combine(agentDirectory, "updates");
+        private static readonly string savedUpdatesDirectory = Path.Combine(agentDirectory, "content");
+        private static readonly string tempDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TopPatch");
+        private static readonly string etcDirectory = Path.Combine(agentDirectory, "etc");
+        private static readonly string opDirectory = Path.Combine(agentDirectory, "operations");
+        private static string _proxyaddress = string.Empty;
+        private static string _proxyport = string.Empty;
+
+        public static string AgentDirectory { get { return agentDirectory; } }
+        public static string PluginDirectory { get { return pluginDirectory; } }
+        public static string LogDirectory { get { return logDirectory; } }
+        public static string BinDirectory { get { return binDirectory; } }
         public static string EtcDirectory { get { return etcDirectory; } }
-        public static string TempDirectory          { get { return tempDirectory; } }
-        public static string OpDirectory            { get { return opDirectory; } }
-        public static string UpdateDirectory        { get { return updateDirectory; } }
-        public static string SavedUpdatesDirectory  { get { return savedUpdatesDirectory; } }
-        public static string CustomAppDirectory     { get { return Path.Combine(updateDirectory, "custom"); } }
-        public static string SupportedAppDirectory  { get { return Path.Combine(updateDirectory, "supported"); } }
+        public static string TempDirectory { get { return tempDirectory; } }
+        public static string OpDirectory { get { return opDirectory; } }
+        public static string UpdateDirectory { get { return updateDirectory; } }
+        public static string SavedUpdatesDirectory { get { return savedUpdatesDirectory; } }
+        public static string CustomAppDirectory { get { return Path.Combine(updateDirectory, "custom"); } }
+        public static string SupportedAppDirectory { get { return Path.Combine(updateDirectory, "supported"); } }
 
         private static Configuration _config;
-        
+
         private static string _serverAddress = String.Empty;
-      
+
         public static void RetrieveProxySettings()
         {
             _proxyaddress = ProxyAddress;
-            _proxyport    = ProxyPort;
+            _proxyport = ProxyPort;
 
             if (String.IsNullOrEmpty(_proxyaddress) || String.IsNullOrEmpty(_proxyport)) return;
 
@@ -153,13 +153,14 @@ namespace Agent.Core.Utils
             get
             {
                 if (_config.AppSettings.Settings["Customer"].Value == string.Empty)
-                       return "default";
+                    return "default";
                 return _config.AppSettings.Settings["Customer"].Value;
             }
-            set {
+            set
+            {
                 //Add Customer Name
                 _config.AppSettings.Settings["Customer"].Value = value;
-                
+
                 //Save changes to App.config file
                 _config.Save(ConfigurationSaveMode.Modified);
 
@@ -169,30 +170,14 @@ namespace Agent.Core.Utils
 
         }
 
-        public static string User
+        public static string Token
         {
-          get { return Decrypt(_config.AppSettings.Settings["nu"].Value);  }
-          
-          set
-          {
-                //Add Customer Name
-                _config.AppSettings.Settings["nu"].Value = value;
+            get { return (_config.AppSettings.Settings["Token"].Value); } //Decrypt: modified
 
-                //Save changes to App.config file
-                _config.Save(ConfigurationSaveMode.Modified);
-
-                //Force a reload of a changed section.
-                ConfigurationManager.RefreshSection("appSettings");            
-          }
-
-        }
-
-        public static string Pass {
-            get { return Decrypt(_config.AppSettings.Settings["wp"].Value); }
-
-            set {
-                //Add Customer Name
-                _config.AppSettings.Settings["wp"].Value = value;
+            set
+            {
+                //Add Customer Token
+                _config.AppSettings.Settings["Token"].Value = value;
 
                 //Save changes to App.config file
                 _config.Save(ConfigurationSaveMode.Modified);
@@ -202,6 +187,24 @@ namespace Agent.Core.Utils
             }
 
         }
+
+        //public static string Pass
+        //{
+        //    get { return Decrypt(_config.AppSettings.Settings["wp"].Value); }
+
+        //    set
+        //    {
+        //        //Add Customer Name
+        //        _config.AppSettings.Settings["wp"].Value = value;
+
+        //        //Save changes to App.config file
+        //        _config.Save(ConfigurationSaveMode.Modified);
+
+        //        //Force a reload of a changed section.
+        //        ConfigurationManager.RefreshSection("appSettings");
+        //    }
+
+        //}
 
         public static string ProxyAddress
         {
@@ -250,15 +253,15 @@ namespace Agent.Core.Utils
 
             if (!Directory.Exists(OpDirectory))
                 Directory.CreateDirectory(OpDirectory);
-                
+
             if (!Directory.Exists(EtcDirectory))
                 Directory.CreateDirectory(EtcDirectory);
         }
 
         public static NLog.LogLevel LogLevel
         {
-            get 
-            { 
+            get
+            {
                 string level = _config.AppSettings.Settings["LogLevel"].Value;
 
                 switch (level)
@@ -397,5 +400,5 @@ namespace Agent.Core.Utils
         }
     }
 
-    
+
 }

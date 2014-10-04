@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 using Agent.Core.Utils;
 using RestSharp;
 
-namespace Agent.Core.Net 
+namespace Agent.Core.Net
 {
     public static class NetworkManager
     {
@@ -16,8 +16,8 @@ namespace Agent.Core.Net
         public static event IncomingOperationHandler OnIncomingOperation;
         private static RestClient _client;
         private static RestRequest _request;
-        private static string _user = string.Empty;
-        private static string _pass = string.Empty;
+        private static string _token = string.Empty;
+        //private static string _pass = string.Empty;
 
         public static void Initialize(string address, int secondsToCheckin = 60000)
         {
@@ -26,10 +26,9 @@ namespace Agent.Core.Net
                 delegate { return true; };
 
             var serverAddress = Prefix + address;
-            _user = Settings.User;
-            _pass = Settings.Pass;
+            _token = Settings.Token;
 
-            _client = new RestClient(serverAddress) {CookieContainer = new CookieContainer(), Proxy = Settings.Proxy};
+            _client = new RestClient(serverAddress) { CookieContainer = new CookieContainer(), Proxy = Settings.Proxy };
 
             _timer = new Timer(secondsToCheckin);
             _timer.Elapsed += AgentCheckin;
@@ -68,7 +67,7 @@ namespace Agent.Core.Net
         /// that it needs to process.
         /// </summary>
         public static void Start()
-        {   
+        {
             _timer.Enabled = true;
         }
 
@@ -87,14 +86,14 @@ namespace Agent.Core.Net
             const string apiCall = ApiCalls.Login;
             var split = apiCall.Split(new[] { "|||" }, StringSplitOptions.None);
             var api = split[0];
-            
-            var json = new JObject();
-            json["name"]     = _user;
-            json["password"] = _pass;
 
-            _request = new RestRequest() {Resource = api, Method = Method.POST};
+            var json = new JObject();
+            json["token"] = _token;
+            //json["password"] = _pass;
+
+            _request = new RestRequest() { Resource = api, Method = Method.POST };
             _request.AddParameter("application/json; charset=utf-8", json.ToString(), ParameterType.RequestBody);
-            _request.RequestFormat = DataFormat.Json; 
+            _request.RequestFormat = DataFormat.Json;
 
             //Submit request and retrieve response
             var response = _client.Execute(_request);
@@ -102,26 +101,26 @@ namespace Agent.Core.Net
             //Process response from server
             switch (response.ResponseStatus)
             {
-                    case ResponseStatus.Completed:
+                case ResponseStatus.Completed:
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
                         Logger.Log("Successfully Logged in to RV Server");
                         return true;
                     }
                     return false;
-                    
-                    case ResponseStatus.None:
-                        Logger.Log("Received empty response from server...");
-                        return false;
-                    case ResponseStatus.TimedOut:
-                        Logger.Log("Connection timed out...");
-                        return false;
-                    case ResponseStatus.Error:
-                        Logger.Log("Received HTTP Error: {0}", LogLevel.Error, response.StatusCode);
-                        return false;
-                    case ResponseStatus.Aborted:
-                        Logger.Log("Connection was aborted.");
-                        return false;
+
+                case ResponseStatus.None:
+                    Logger.Log("Received empty response from server...");
+                    return false;
+                case ResponseStatus.TimedOut:
+                    Logger.Log("Connection timed out...");
+                    return false;
+                case ResponseStatus.Error:
+                    Logger.Log("Received HTTP Error: {0}", LogLevel.Error, response.StatusCode);
+                    return false;
+                case ResponseStatus.Aborted:
+                    Logger.Log("Connection was aborted.");
+                    return false;
 
                 default:
                     Logger.Log("Server did not respond...");
@@ -165,7 +164,7 @@ namespace Agent.Core.Net
                 {
                     System.Threading.Thread.Sleep(retryTimeout);
                 }
-            } 
+            }
         }
 
 
@@ -179,9 +178,9 @@ namespace Agent.Core.Net
         {
             try
             {
-                var split       = apicall.Split(new[] {"|||"}, StringSplitOptions.None);
-                var api         = split[0];
-                var httpmethod  = split[1];
+                var split = apicall.Split(new[] { "|||" }, StringSplitOptions.None);
+                var api = split[0];
+                var httpmethod = split[1];
 
                 //Identify HTTP Method and prepare parameters.
                 switch (httpmethod)
@@ -193,7 +192,7 @@ namespace Agent.Core.Net
                         break;
 
                     case HttpMethods.Get:
-                        _request = new RestRequest() { Resource = api, Method = Method.GET};
+                        _request = new RestRequest() { Resource = api, Method = Method.GET };
                         break;
 
                     case HttpMethods.Put:
@@ -206,7 +205,7 @@ namespace Agent.Core.Net
                         Logger.Log("Invalid HttpMethod, please check ApiCalls.");
                         break;
                 }
-              
+
                 //Submit Message and retrieve response
                 var response = _client.Execute(_request);
 
@@ -227,7 +226,7 @@ namespace Agent.Core.Net
                                 var jsonObject = JObject.Parse(response.Content);
                                 var operationType = jsonObject["rv_status_code"].ToString();
                                 var data = jsonObject["data"].ToString();
-                                
+
                                 switch (operationType)
                                 {
                                     case "3001": //New Agent
@@ -286,7 +285,7 @@ namespace Agent.Core.Net
                     default:
                         Logger.Log("Server did not respond...");
                         return response.StatusCode.ToString();
-                }  
+                }
 
             }
             catch (Exception e)
