@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Timers;
 using System.Net;
 using Agent.Core.ServerOperations;
@@ -94,6 +95,13 @@ namespace Agent.Core.Net
             _request = new RestRequest() { Resource = api, Method = Method.POST };
             _request.AddParameter("application/json; charset=utf-8", json.ToString(), ParameterType.RequestBody);
             _request.RequestFormat = DataFormat.Json;
+            
+            //Add header to log in JSON 
+            var authn = new JObject();
+            var token = new JArray();
+            token.Add(_token);
+            authn["Authenticatoin"] = token;
+            _request.AddHeader("auth_headers", authn.ToString());
 
             //Submit request and retrieve response
             var response = _client.Execute(_request);
