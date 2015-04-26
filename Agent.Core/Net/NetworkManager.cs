@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Timers;
 using System.Net;
 using Agent.Core.ServerOperations;
@@ -97,11 +98,15 @@ namespace Agent.Core.Net
             _request.RequestFormat = DataFormat.Json;
             
             //Add header to log in JSON 
-            var authn = new JObject();
-            var token = new JArray();
-            token.Add(_token);
-            authn["Authenticatoin"] = token;
-            _request.AddHeader("auth_headers", authn.ToString());
+            var authnHeader = new JArray();
+            var authn = new JArray();
+            var authnToken = new JObject();
+            authnToken["token"] = _token;
+            authn.Add(authnToken);
+            var authnTokenHeader = new JObject();
+            authnTokenHeader["Authentication"] = authn;
+            authnHeader.Add(authnTokenHeader);
+            _request.AddHeader("auth_headers", authnHeader.ToString());
 
             //Submit request and retrieve response
             var response = _client.Execute(_request);
