@@ -92,16 +92,16 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/core/newagent" + Delimeter + HttpMethods.Post;
+                return "/rvl/v2/core/newagent" + Delimeter + HttpMethods.Post;
             }
 
-            return "/rvl/v1/core/newagent" + Delimeter + HttpMethods.Post;
+            return "/rvl/v2/core/newagent" + Delimeter + HttpMethods.Post;
         }
 
 
         public static string CoreRebootResults()
         {
-            return "/rvl/v1/" + Settings.AgentId + "/core/results/reboot" + Delimeter + HttpMethods.Put;
+            return "/rvl/v2/" + Settings.AgentId + "/core/results/reboot" + Delimeter + HttpMethods.Put;
         }
 
         public static string CoreCheckIn()
@@ -133,10 +133,10 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/" + Settings.AgentId + "/core/checkin" + Delimeter + HttpMethods.Get;
+                return "/rvl/v2/" + Settings.AgentId + "/core/checkin" + Delimeter + HttpMethods.Get;
             }
 
-            return "/rvl/v1/" + Settings.AgentId + "/core/checkin" + Delimeter + HttpMethods.Get;
+            return "/rvl/v2/" + Settings.AgentId + "/core/checkin" + Delimeter + HttpMethods.Get;
         }
 
         public static string CoreStartUp()
@@ -168,10 +168,10 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/" + Settings.AgentId + "/core/startup" + Delimeter + HttpMethods.Put;
+                return "/rvl/v2/" + Settings.AgentId + "/core/startup" + Delimeter + HttpMethods.Put;
             }
 
-            return "/rvl/v1/" + Settings.AgentId + "/core/startup" + Delimeter + HttpMethods.Put;
+            return "/rvl/v2/" + Settings.AgentId + "/core/startup" + Delimeter + HttpMethods.Put;
         }
 
 
@@ -205,10 +205,10 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/os" + Delimeter + HttpMethods.Put;
+                return "/rvl/v2/" + Settings.AgentId + "/rv/results/install/apps/os" + Delimeter + HttpMethods.Put;
             }
 
-            return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/os" + Delimeter + HttpMethods.Put;
+            return "/rvl/v2/" + Settings.AgentId + "/rv/results/install/apps/os" + Delimeter + HttpMethods.Put;
         }
 
         public static string RvInstallCustomAppsResults()
@@ -240,10 +240,10 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/custom" + Delimeter + HttpMethods.Put;
+                return "/rvl/v2/" + Settings.AgentId + "/rv/results/install/apps/custom" + Delimeter + HttpMethods.Put;
             }
 
-            return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/custom" + Delimeter + HttpMethods.Put;
+            return "/rvl/v2/" + Settings.AgentId + "/rv/results/install/apps/custom" + Delimeter + HttpMethods.Put;
         }
 
         public static string RvInstallSupportedAppsResults()
@@ -275,10 +275,10 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/supported" + Delimeter +
+                return "/rvl/v2/" + Settings.AgentId + "/rv/results/install/apps/supported" + Delimeter +
                        HttpMethods.Put;
             }
-            return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/supported" + Delimeter +
+            return "/rvl/v2/" + Settings.AgentId + "/rv/results/install/apps/supported" + Delimeter +
                        HttpMethods.Put;
         } 
 
@@ -311,10 +311,10 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/agent" + Delimeter + HttpMethods.Put;
+                return "/rvl/v2/" + Settings.AgentId + "/rv/results/install/apps/agent" + Delimeter + HttpMethods.Put;
             }
 
-            return "/rvl/v1/" + Settings.AgentId + "/rv/results/install/apps/agent" + Delimeter + HttpMethods.Put;
+            return "/rvl/v2/" + Settings.AgentId + "/rv/results/install/apps/agent" + Delimeter + HttpMethods.Put;
         } 
 
         public static string RvRebootResults()
@@ -346,10 +346,10 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/" + Settings.AgentId + "/core/results/reboot" + Delimeter + HttpMethods.Put;
+                return "/rvl/v2/" + Settings.AgentId + "/core/results/reboot" + Delimeter + HttpMethods.Put;
             }
 
-            return "/rvl/v1/" + Settings.AgentId + "/core/results/reboot" + Delimeter + HttpMethods.Put;
+            return "/rvl/v2/" + Settings.AgentId + "/core/results/reboot" + Delimeter + HttpMethods.Put;
         }
 
         public static string RvUpdatesApplications()
@@ -381,10 +381,10 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/" + Settings.AgentId + "/rv/updatesapplications" + Delimeter + HttpMethods.Put;
+                return "/rvl/v2/" + Settings.AgentId + "/rv/updatesapplications" + Delimeter + HttpMethods.Put;
             }
 
-            return "/rvl/v1/" + Settings.AgentId + "/rv/updatesapplications" + Delimeter + HttpMethods.Put;
+            return "/rvl/v2/" + Settings.AgentId + "/rv/updatesapplications" + Delimeter + HttpMethods.Put;
         } 
 
         public static string RvUninstallOperation()
@@ -416,10 +416,10 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
+                return "/rvl/v2/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
             }
 
-            return "/rvl/v1/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
+            return "/rvl/v2/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
         }
 
         public static string AvailableAgentUpdate()
@@ -473,10 +473,10 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/" + Settings.AgentId + "/rv/available_agent_update" + Delimeter + HttpMethods.Put;
+                return "/rvl/v2/" + Settings.AgentId + "/rv/available_agent_update" + Delimeter + HttpMethods.Put;
             }
 
-            return "/rvl/v1/" + Settings.AgentId + "/rv/available_agent_update" + Delimeter + HttpMethods.Put;
+            return "/rvl/v2/" + Settings.AgentId + "/rv/available_agent_update" + Delimeter + HttpMethods.Put;
         }
 
         public static string UninstallAgent()
@@ -508,10 +508,10 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
+                return "/rvl/v2/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
             }
 
-            return "/rvl/v1/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
+            return "/rvl/v2/" + Settings.AgentId + "/rv/results/uninstall" + Delimeter + HttpMethods.Put;
         }
 
         public static string ra()
@@ -543,10 +543,10 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/" + Settings.AgentId + "/ra/rd/results" + Delimeter + HttpMethods.Put;
+                return "/rvl/v2/" + Settings.AgentId + "/ra/rd/results" + Delimeter + HttpMethods.Put;
             }
 
-            return "/rvl/v1/" + Settings.AgentId + "ra/rd/results" + Delimeter + HttpMethods.Put;
+            return "/rvl/v2/" + Settings.AgentId + "ra/rd/results" + Delimeter + HttpMethods.Put;
         }
 
         public static string Shutdown()
@@ -578,10 +578,10 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/" + Settings.AgentId + "/core/results/shutdown" + Delimeter + HttpMethods.Put;
+                return "/rvl/v2/" + Settings.AgentId + "/core/results/shutdown" + Delimeter + HttpMethods.Put;
             }
 
-            return "/rvl/v1/" + Settings.AgentId + "/core/results/shutdown" + Delimeter + HttpMethods.Put;
+            return "/rvl/v2/" + Settings.AgentId + "/core/results/shutdown" + Delimeter + HttpMethods.Put;
         }
 
         //MONITOR
@@ -614,10 +614,10 @@ namespace Agent.Core.ServerOperations
             }
             catch
             {
-                return "/rvl/v1/" + Settings.AgentId + "/monitoring/monitordata" + Delimeter + HttpMethods.Post;
+                return "/rvl/v2/" + Settings.AgentId + "/monitoring/monitordata" + Delimeter + HttpMethods.Post;
             }
 
-            return "/rvl/v1/" + Settings.AgentId + "/monitoring/monitordata" + Delimeter + HttpMethods.Post;
+            return "/rvl/v2/" + Settings.AgentId + "/monitoring/monitordata" + Delimeter + HttpMethods.Post;
         } 
         
 
