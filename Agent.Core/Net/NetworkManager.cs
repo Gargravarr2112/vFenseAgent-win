@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Mime;
 using System.Timers;
 using System.Net;
 using Agent.Core.ServerOperations;
@@ -92,12 +93,9 @@ namespace Agent.Core.Net
             var json = new JObject();
             json["token"] = _token;
             //json["password"] = _pass;
-
             _request = new RestRequest() { Resource = api, Method = Method.POST };
-            _request.AddParameter("application/json; charset=utf-8", json.ToString(), ParameterType.RequestBody);
-            _request.RequestFormat = DataFormat.Json;
-            
-            //Add header to log in JSON 
+
+            //Gather header to log in over JSON 
             var authnHeader = new JArray();
             var authn = new JArray();
             var authnToken = new JObject();
@@ -106,8 +104,12 @@ namespace Agent.Core.Net
             var authnTokenHeader = new JObject();
             authnTokenHeader["Authentication"] = authn;
             authnHeader.Add(authnTokenHeader);
-            _request.AddHeader("auth_headers", authnHeader.ToString());
+            _request.AddHeader("Authentication", authn.ToString());
 
+           
+            //_request.AddParameter(json.ToString(), ParameterType.RequestBody);
+            _request.RequestFormat = DataFormat.Json;
+            
             //Submit request and retrieve response
             var response = _client.Execute(_request);
 
