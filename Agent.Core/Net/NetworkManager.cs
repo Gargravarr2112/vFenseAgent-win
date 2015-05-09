@@ -91,9 +91,7 @@ namespace Agent.Core.Net
             var api = split[0];
 
             var json = new JObject();
-            json["token"] = _token;
-            //json["password"] = _pass;
-            _request = new RestRequest() { Resource = api, Method = Method.POST };
+            _request = new RestRequest() { Resource = api, Method = Method.GET };
 
             //Gather header to log in over JSON 
             var authnHeader = new JArray();
@@ -101,13 +99,9 @@ namespace Agent.Core.Net
             var authnToken = new JObject();
             authnToken["token"] = _token;
             authn.Add(authnToken);
-            var authnTokenHeader = new JObject();
-            authnTokenHeader["Authentication"] = authn;
-            authnHeader.Add(authnTokenHeader);
-            _request.AddHeader("Authentication", authn.ToString());
+            json["Authentication"] = authn;
 
-           
-            //_request.AddParameter(json.ToString(), ParameterType.RequestBody);
+            _request.AddParameter("application/json; charset=utf-8", json.ToString(), ParameterType.RequestBody);
             _request.RequestFormat = DataFormat.Json;
             
             //Submit request and retrieve response
